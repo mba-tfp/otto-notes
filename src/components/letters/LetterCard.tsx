@@ -29,10 +29,13 @@ interface LetterCardProps {
 }
 
 export const LetterCard = ({ letter, isActive, onClick }: LetterCardProps) => {
-  const { deleteLetter } = useLetters();
+  const { deleteLetter, unsendLetter } = useLetters();
   const { toast } = useToast();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showUnsendDialog, setShowUnsendDialog] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const canUndoSend = canUnsend(letter);
+  const showMenu = letter.status === 'to_be_sent' || canUndoSend;
 
   const formatTime = (date: Date) => {
     return format(new Date(date), 'h:mma').toLowerCase();
@@ -45,6 +48,15 @@ export const LetterCard = ({ letter, isActive, onClick }: LetterCardProps) => {
     toast({
       title: 'Letter deleted',
       description: `Letter for ${letter.patientName} has been deleted.`,
+    });
+  };
+
+  const handleUnsend = () => {
+    unsendLetter(letter.id);
+    setShowUnsendDialog(false);
+    toast({
+      title: "Letter moved back to 'To be sent'",
+      description: `Letter for ${letter.patientName} is editable again.`,
     });
   };
 
