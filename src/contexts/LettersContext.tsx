@@ -190,6 +190,14 @@ export const LettersProvider = ({ children }: { children: ReactNode }) => {
     ));
   };
 
+  const unsendLetter = (id: string) => {
+    setLetters(prev => prev.map(letter =>
+      letter.id === id && canUnsend(letter)
+        ? { ...letter, status: 'to_be_sent' as LetterStatus, sentAt: undefined, updatedAt: new Date() }
+        : letter
+    ));
+  };
+
   const deleteLetter = (id: string) => {
     setLetters(prev => prev.filter(letter => letter.id !== id));
     if (selectedLetterId === id) setSelectedLetterId(null);
