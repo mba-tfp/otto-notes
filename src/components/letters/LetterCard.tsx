@@ -78,8 +78,8 @@ export const LetterCard = ({ letter, isActive, onClick }: LetterCardProps) => {
             <MessageSquare className="h-3.5 w-3.5 text-[hsl(45_93%_47%)] shrink-0" />
           )}
           <span className="text-xs text-foreground/50 shrink-0">{formatTime(letter.sessionDate)}</span>
-          {/* Three-dot menu — only for to_be_sent letters; TODO: gate behind doctor/admin role */}
-          {letter.status === 'to_be_sent' && (
+          {/* Three-dot menu — to_be_sent: Delete; sent within 24h: Unsend */}
+          {showMenu && (
             <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -92,13 +92,20 @@ export const LetterCard = ({ letter, isActive, onClick }: LetterCardProps) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => setShowDeleteDialog(true)}
-                >
-                  <Trash2 className="h-3.5 w-3.5 mr-2" />
-                  Delete
-                </DropdownMenuItem>
+                {letter.status === 'to_be_sent' ? (
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => setShowDeleteDialog(true)}
+                  >
+                    <Trash2 className="h-3.5 w-3.5 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={() => setShowUnsendDialog(true)}>
+                    <Undo2 className="h-3.5 w-3.5 mr-2" />
+                    Unsend
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           )}
