@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Letter } from '@/types/letter';
 import { format } from 'date-fns';
-import { MoreHorizontal, Trash2, MessageSquare } from 'lucide-react';
+import { MoreHorizontal, Trash2, MessageSquare, Undo2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
