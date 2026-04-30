@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useLetters } from '@/contexts/LettersContext';
+import { useLetters, canUnsend } from '@/contexts/LettersContext';
 import { useToast } from '@/hooks/use-toast';
-import { Copy, Calendar, User, FileText, Download, Check, Save, Trash2, MessageSquare, CheckCircle2 } from 'lucide-react';
+import { Copy, Calendar, User, FileText, Download, Check, Save, Trash2, MessageSquare, CheckCircle2, Undo2 } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
