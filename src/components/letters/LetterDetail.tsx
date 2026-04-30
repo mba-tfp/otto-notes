@@ -267,6 +267,22 @@ export const LetterDetail = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Unsend Confirmation Dialog */}
+      <AlertDialog open={showUnsendDialog} onOpenChange={setShowUnsendDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unsend this letter?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The letter for {letter.patientName} will be moved back to "To be sent" and become editable again.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleUnsend}>Unsend</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
