@@ -170,6 +170,17 @@ export const LetterDetail = () => {
                 <Trash2 className="h-4 w-4" />
               </Button>
             )}
+            {canUndoSend && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-2 text-muted-foreground"
+                onClick={() => setShowUnsendDialog(true)}
+              >
+                <Undo2 className="h-4 w-4" />
+                Unsend
+              </Button>
+            )}
             <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground" onClick={handleCopy}>
               <Copy className="h-4 w-4" />
               Copy
