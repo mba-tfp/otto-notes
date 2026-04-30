@@ -21,13 +21,15 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export const LetterDetail = () => {
-  const { selectedLetterId, getLetter, updateLetterContent, markAsSent, deleteLetter, acknowledgeDoctorNote } = useLetters();
+  const { selectedLetterId, getLetter, updateLetterContent, markAsSent, unsendLetter, deleteLetter, acknowledgeDoctorNote } = useLetters();
   const { toast } = useToast();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showUnsendDialog, setShowUnsendDialog] = useState(false);
 
   const letter = selectedLetterId ? getLetter(selectedLetterId) : null;
   const isEditable = letter?.status === 'to_be_sent';
+  const canUndoSend = canUnsend(letter);
 
   const editor = useEditor({
     extensions: [
