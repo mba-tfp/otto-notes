@@ -95,6 +95,17 @@ export const LetterDetail = () => {
     }
   };
 
+  const handleUnsend = () => {
+    if (letter) {
+      unsendLetter(letter.id);
+      setShowUnsendDialog(false);
+      toast({
+        title: "Letter moved back to 'To be sent'",
+        description: `Letter for ${letter.patientName} is editable again.`,
+      });
+    }
+  };
+
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
