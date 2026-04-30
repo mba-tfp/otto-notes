@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { useLetters } from '@/contexts/LettersContext';
+import { useLetters, canUnsend } from '@/contexts/LettersContext';
 import { useToast } from '@/hooks/use-toast';
 
 interface LetterCardProps {
