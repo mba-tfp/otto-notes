@@ -221,6 +221,7 @@ export const LettersProvider = ({ children }: { children: ReactNode }) => {
       createLetter,
       updateLetterContent,
       markAsSent,
+      unsendLetter,
       deleteLetter,
       acknowledgeDoctorNote,
       getLetterBySessionId,
