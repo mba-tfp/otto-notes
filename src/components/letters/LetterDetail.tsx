@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useLetters } from '@/contexts/LettersContext';
+import { useLetters, canUnsend } from '@/contexts/LettersContext';
 import { useToast } from '@/hooks/use-toast';
-import { Copy, Calendar, User, FileText, Download, Check, Save, Trash2, MessageSquare, CheckCircle2 } from 'lucide-react';
+import { Copy, Calendar, User, FileText, Download, Check, Save, Trash2, MessageSquare, CheckCircle2, Undo2 } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
@@ -21,13 +21,15 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export const LetterDetail = () => {
-  const { selectedLetterId, getLetter, updateLetterContent, markAsSent, deleteLetter, acknowledgeDoctorNote } = useLetters();
+  const { selectedLetterId, getLetter, updateLetterContent, markAsSent, unsendLetter, deleteLetter, acknowledgeDoctorNote } = useLetters();
   const { toast } = useToast();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showUnsendDialog, setShowUnsendDialog] = useState(false);
 
   const letter = selectedLetterId ? getLetter(selectedLetterId) : null;
   const isEditable = letter?.status === 'to_be_sent';
+  const canUndoSend = canUnsend(letter);
 
   const editor = useEditor({
     extensions: [
@@ -89,6 +91,17 @@ export const LetterDetail = () => {
       toast({
         title: 'Letter deleted',
         description: `Letter for ${letter.patientName} has been deleted.`,
+      });
+    }
+  };
+
+  const handleUnsend = () => {
+    if (letter) {
+      unsendLetter(letter.id);
+      setShowUnsendDialog(false);
+      toast({
+        title: "Letter moved back to 'To be sent'",
+        description: `Letter for ${letter.patientName} is editable again.`,
       });
     }
   };
@@ -155,6 +168,17 @@ export const LetterDetail = () => {
                 onClick={() => setShowDeleteDialog(true)}
               >
                 <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
+            {canUndoSend && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-2 text-muted-foreground"
+                onClick={() => setShowUnsendDialog(true)}
+              >
+                <Undo2 className="h-4 w-4" />
+                Unsend
               </Button>
             )}
             <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground" onClick={handleCopy}>
@@ -240,6 +264,22 @@ export const LetterDetail = () => {
             >
               Delete
             </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Unsend Confirmation Dialog */}
+      <AlertDialog open={showUnsendDialog} onOpenChange={setShowUnsendDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unsend this letter?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The letter for {letter.patientName} will be moved back to "To be sent" and become editable again.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleUnsend}>Unsend</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

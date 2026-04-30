@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Letter } from '@/types/letter';
 import { format } from 'date-fns';
-import { MoreHorizontal, Trash2, MessageSquare } from 'lucide-react';
+import { MoreHorizontal, Trash2, MessageSquare, Undo2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { useLetters } from '@/contexts/LettersContext';
+import { useLetters, canUnsend } from '@/contexts/LettersContext';
 import { useToast } from '@/hooks/use-toast';
 
 interface LetterCardProps {
@@ -29,10 +29,13 @@ interface LetterCardProps {
 }
 
 export const LetterCard = ({ letter, isActive, onClick }: LetterCardProps) => {
-  const { deleteLetter } = useLetters();
+  const { deleteLetter, unsendLetter } = useLetters();
   const { toast } = useToast();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showUnsendDialog, setShowUnsendDialog] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const canUndoSend = canUnsend(letter);
+  const showMenu = letter.status === 'to_be_sent' || canUndoSend;
 
   const formatTime = (date: Date) => {
     return format(new Date(date), 'h:mma').toLowerCase();
@@ -45,6 +48,15 @@ export const LetterCard = ({ letter, isActive, onClick }: LetterCardProps) => {
     toast({
       title: 'Letter deleted',
       description: `Letter for ${letter.patientName} has been deleted.`,
+    });
+  };
+
+  const handleUnsend = () => {
+    unsendLetter(letter.id);
+    setShowUnsendDialog(false);
+    toast({
+      title: "Letter moved back to 'To be sent'",
+      description: `Letter for ${letter.patientName} is editable again.`,
     });
   };
 
@@ -66,8 +78,8 @@ export const LetterCard = ({ letter, isActive, onClick }: LetterCardProps) => {
             <MessageSquare className="h-3.5 w-3.5 text-[hsl(45_93%_47%)] shrink-0" />
           )}
           <span className="text-xs text-foreground/50 shrink-0">{formatTime(letter.sessionDate)}</span>
-          {/* Three-dot menu — only for to_be_sent letters; TODO: gate behind doctor/admin role */}
-          {letter.status === 'to_be_sent' && (
+          {/* Three-dot menu — to_be_sent: Delete; sent within 24h: Unsend */}
+          {showMenu && (
             <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -80,13 +92,20 @@ export const LetterCard = ({ letter, isActive, onClick }: LetterCardProps) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => setShowDeleteDialog(true)}
-                >
-                  <Trash2 className="h-3.5 w-3.5 mr-2" />
-                  Delete
-                </DropdownMenuItem>
+                {letter.status === 'to_be_sent' ? (
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => setShowDeleteDialog(true)}
+                  >
+                    <Trash2 className="h-3.5 w-3.5 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={() => setShowUnsendDialog(true)}>
+                    <Undo2 className="h-3.5 w-3.5 mr-2" />
+                    Unsend
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           )}
@@ -111,6 +130,22 @@ export const LetterCard = ({ letter, isActive, onClick }: LetterCardProps) => {
             >
               Delete
             </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Unsend Confirmation Dialog */}
+      <AlertDialog open={showUnsendDialog} onOpenChange={setShowUnsendDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unsend this letter?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The letter for {letter.patientName} will be moved back to "To be sent" and become editable again.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleUnsend}>Unsend</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -10,12 +10,20 @@ interface LettersContextType {
   createLetter: (data: LetterFormData) => Letter;
   updateLetterContent: (id: string, content: string) => void;
   markAsSent: (id: string) => void;
+  unsendLetter: (id: string) => void;
   deleteLetter: (id: string) => void;
   acknowledgeDoctorNote: (id: string) => void;
   getLetterBySessionId: (sessionId: string) => Letter | undefined;
 }
 
 const LettersContext = createContext<LettersContextType | undefined>(undefined);
+
+const UNSEND_WINDOW_MS = 24 * 60 * 60 * 1000;
+
+export const canUnsend = (letter: Letter | undefined | null): boolean => {
+  if (!letter || letter.status !== 'sent' || !letter.sentAt) return false;
+  return Date.now() - new Date(letter.sentAt).getTime() < UNSEND_WINDOW_MS;
+};
 
 // Demo data
 const demoLetters: Letter[] = [
@@ -182,6 +190,14 @@ export const LettersProvider = ({ children }: { children: ReactNode }) => {
     ));
   };
 
+  const unsendLetter = (id: string) => {
+    setLetters(prev => prev.map(letter =>
+      letter.id === id && canUnsend(letter)
+        ? { ...letter, status: 'to_be_sent' as LetterStatus, sentAt: undefined, updatedAt: new Date() }
+        : letter
+    ));
+  };
+
   const deleteLetter = (id: string) => {
     setLetters(prev => prev.filter(letter => letter.id !== id));
     if (selectedLetterId === id) setSelectedLetterId(null);
@@ -205,6 +221,7 @@ export const LettersProvider = ({ children }: { children: ReactNode }) => {
       createLetter,
       updateLetterContent,
       markAsSent,
+      unsendLetter,
       deleteLetter,
       acknowledgeDoctorNote,
       getLetterBySessionId,
