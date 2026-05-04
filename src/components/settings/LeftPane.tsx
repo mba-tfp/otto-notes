@@ -301,10 +301,15 @@ export const LeftPane = () => {
             
             {footerItems.map(item => {
             const Icon = item.icon;
+            const opensInNewTab = item.id === 'resource-center';
             const itemRoute = item.id === 'whats-new' ? '/whats-new' : '/resource-center';
-            const isActive = location.pathname === itemRoute;
+            const isActive = !opensInNewTab && location.pathname === itemRoute;
             const handleClick = () => {
               setIsMobileMenuOpen(false);
+              if (opensInNewTab) {
+                window.open(itemRoute, '_blank', 'noopener,noreferrer');
+                return;
+              }
               navigate(itemRoute);
             };
             const showBadge = item.id === 'whats-new' && hasUnseen;
