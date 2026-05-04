@@ -1,38 +1,23 @@
-## Add "Unsend" for letters
+# Open Help Center in a New Tab
 
-Lets a sender reverse a `sent` letter back to `to_be_sent` within 24 hours so they can fix mistakes (e.g. wrong patient ID). Available to anyone who can view the letter.
+The Help Center will become a shared mini-service across Otto products with its own admin panel. As a first step, the sidebar "Help Center" button should open the existing `/resource-center` route in a new browser tab instead of navigating in-app. Design and content updates will follow later.
 
-### Behavior
+## Note on placement
+The Help Center button is currently in the **left sidebar footer** (next to "What's New"), not a right-side panel. I'll update that button — let me know if you actually meant a different entry point.
 
-- A `sent` letter can be unsent within **24 hours** of its `sentAt` timestamp.
-- Unsending sets `status` back to `to_be_sent`, clears `sentAt`, and bumps `updatedAt`. The letter becomes editable again.
-- After 24 hours, the Unsend action is **hidden** (not just disabled) to keep the UI clean. Hover tooltip on the disabled state isn't needed since it's hidden.
-- Confirmation dialog before unsending, matching the Delete pattern.
-- Toast on success: *"Letter moved back to 'To be sent'"*.
+## Changes
 
-### Where it appears
+**`src/components/settings/LeftPane.tsx`** (footer items rendering, ~lines 302–335)
+- Special-case the `resource-center` item so its click handler does:
+  ```ts
+  window.open('/resource-center', '_blank', 'noopener,noreferrer');
+  ```
+  instead of `navigate(itemRoute)`.
+- Remove the `isActive` highlight for the Help Center item (since opening in a new tab means the current route never matches it — same reasoning as the Switch App fix).
+- Keep `What's New` behavior unchanged (still in-app navigation, badge logic untouched).
+- Apply to both collapsed (icon-only with tooltip) and expanded button variants.
 
-1. **Letter detail header** (`LetterDetail.tsx`) — for `sent` letters within the 24h window, show an `Undo2` icon button labeled **"Unsend"** in the action bar, placed before Copy/PDF.
-2. **Letter card three-dot menu** (`LetterCard.tsx`) — extend the `⋯` menu (currently only on `to_be_sent`) to also show on eligible `sent` cards, with a single **Unsend** item.
-
-### Technical changes
-
-- **`src/contexts/LettersContext.tsx`**
-  - Add `unsendLetter(id: string)` to the context type and provider. Implementation: set `status: 'to_be_sent'`, `sentAt: undefined`, `updatedAt: new Date()`.
-  - Add a small helper `canUnsend(letter)` exported from the context (or co-located in `src/types/letter.ts`) that returns `true` when `status === 'sent'` and `sentAt` is within the last 24 hours.
-
-- **`src/components/letters/LetterDetail.tsx`**
-  - Import `unsendLetter` and `canUnsend`.
-  - When `letter.status === 'sent' && canUnsend(letter)`, render an Unsend button in the action bar (icon: `Undo2` from lucide). Wire it to an `AlertDialog` with copy: *"Move this letter back to 'To be sent'? It will become editable again."* Confirm calls `unsendLetter` and shows a toast.
-
-- **`src/components/letters/LetterCard.tsx`**
-  - Change the menu visibility condition from `letter.status === 'to_be_sent'` to `letter.status === 'to_be_sent' || canUnsend(letter)`.
-  - When the letter is `sent`, the menu shows only an **Unsend** item (no Delete, matching the existing deletion policy). Reuses the same confirmation dialog pattern.
-
-- **No DB / RLS changes** — letters are still in-memory demo data via `LettersContext`. When letters move to Supabase later, the same logic applies via an UPDATE policy gated by `sentAt > now() - interval '24 hours'`.
-
-### Out of scope (flagged for later)
-
-- Audit log of who unsent / when (will matter once real transmission exists).
-- Role gating — current decision is "anyone who can view" per your answer; revisit if real send/transmit is added.
-- Actual email/fax retraction — today "sent" is just a status flag, so unsend is purely an internal state change.
+## Out of scope
+- No changes to the `/resource-center` route itself — it stays available so the new tab still loads the current page until the standalone Help Center is built.
+- No changes to `FeedbackNudgeBanner` (still navigates in-app to `/resource-center?category=feedback`); we can revisit when the external Help Center exists.
+- No design changes to the Help Center content yet.
