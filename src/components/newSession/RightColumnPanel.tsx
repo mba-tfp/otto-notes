@@ -590,8 +590,8 @@ export const RightColumnPanel = ({
           <div className="flex flex-col h-full p-4">
             {/* CNP Onboarding Documents Banner */}
             {selectedPatient && cnpDocs.length > 0 && cnpImportedFilenames.size === 0 && !cnpBannerDismissed && (
-              <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-muted/60 text-sm text-foreground">
-                <Paperclip className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-primary/30 border-l-4 border-l-primary bg-primary/10 text-sm text-primary">
+                <Paperclip className="h-4 w-4 text-primary shrink-0" />
                 <span className="flex-1">{cnpDocs.length} documents available from Onboarding</span>
                 <button
                   onClick={() => setCnpPickerOpen(true)}
@@ -601,7 +601,7 @@ export const RightColumnPanel = ({
                 </button>
                 <button
                   onClick={() => setCnpBannerDismissed(true)}
-                  className="p-1 rounded hover:bg-background text-muted-foreground"
+                  className="p-1 rounded text-primary hover:bg-primary/20"
                   aria-label="Dismiss"
                 >
                   <X className="h-3.5 w-3.5" />
