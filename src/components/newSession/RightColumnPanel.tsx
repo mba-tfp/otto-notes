@@ -731,6 +731,19 @@ export const RightColumnPanel = ({
         templateType={selectedTemplate?.name || 'Clinical Note'}
         onConfirm={handleApproveAndSendToLetters}
       />
+
+      {selectedPatient && cnpDocs.length > 0 && (
+        <CnpDocumentsPickerModal
+          open={cnpPickerOpen}
+          onOpenChange={setCnpPickerOpen}
+          patientName={selectedPatient.name}
+          partnerName={cnpPartnerName}
+          documents={cnpDocs}
+          importedFilenames={cnpImportedFilenames}
+          onImport={handleCnpImport}
+          onSkip={handleCnpSkip}
+        />
+      )}
     </div>
   );
 };
