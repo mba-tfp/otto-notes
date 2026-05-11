@@ -40,7 +40,7 @@ export const FileProcessingItem = ({ file, onRemove, onRetry }: FileProcessingIt
             </div>
 
             {/* Truncated filename */}
-            <span className="text-xs text-foreground truncate max-w-[240px] leading-tight">
+            <span className="text-xs text-foreground truncate max-w-[100px] leading-tight">
               {file.name}
             </span>
 
