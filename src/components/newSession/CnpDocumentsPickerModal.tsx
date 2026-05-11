@@ -87,8 +87,7 @@ export const CnpDocumentsPickerModal = ({
     const hasAvailable = sectionAvailableIds(docs).length > 0;
     return (
       <div className="space-y-2">
-        <div className="flex items-center justify-between pb-1">
-          <span className="text-sm font-bold text-secondary">{label}</span>
+        <div className="flex items-center justify-end gap-3 pb-1">
           <label className={cn("flex items-center gap-2 text-xs text-muted-foreground", !hasAvailable && "opacity-50")}>
             <Checkbox
               checked={allSelected}
@@ -97,6 +96,7 @@ export const CnpDocumentsPickerModal = ({
             />
             Select all
           </label>
+          <span className="text-sm font-bold text-secondary">{label}</span>
         </div>
         <div className="space-y-1">
           {docs.map(d => {
@@ -111,7 +111,12 @@ export const CnpDocumentsPickerModal = ({
                 )}
                 onClick={() => toggleDoc(d)}
               >
-                <Checkbox checked={checked} disabled={imported} onCheckedChange={() => toggleDoc(d)} />
+                <Checkbox
+                  checked={checked}
+                  disabled={imported}
+                  onCheckedChange={() => toggleDoc(d)}
+                  onClick={(e) => e.stopPropagation()}
+                />
                 <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
                 <span className="text-sm text-foreground truncate flex-1">{d.filename}</span>
                 <Badge variant="secondary" className="rounded-full font-normal text-[11px]">{d.category}</Badge>

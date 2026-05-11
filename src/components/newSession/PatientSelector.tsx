@@ -438,9 +438,9 @@ export const PatientSelector = ({
                   </div>
                   
                   {/* EMR ID and CNP ID */}
-                  <div className="flex-shrink-0 text-right text-xs text-muted-foreground">
-                    {patient.emrId && <div>EMR ID: {patient.emrId}</div>}
-                    {patient.cnpId && <div>CNP ID: {patient.cnpId}</div>}
+                  <div className="flex-shrink-0 w-[110px] text-right text-[11px] leading-tight text-muted-foreground">
+                    {patient.emrId && <div className="truncate">EMR: {patient.emrId}</div>}
+                    {patient.cnpId && <div className="truncate">CNP: {patient.cnpId}</div>}
                   </div>
                   
                   {/* Edit Button */}
