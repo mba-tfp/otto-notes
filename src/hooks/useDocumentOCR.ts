@@ -131,11 +131,35 @@ export const useDocumentOCR = () => {
     setFiles([]);
   }, []);
 
-  return { 
-    files, 
-    addFiles, 
-    removeFile, 
+  const addImportedDocuments = useCallback((docs: { name: string; extractedText?: string }[]) => {
+    setFiles(prev => {
+      const remaining = MAX_ATTACHMENTS - prev.length;
+      if (remaining <= 0) {
+        toast({ title: "You can add 15 attachments at most." });
+        return prev;
+      }
+      const docsToAdd = docs.slice(0, remaining);
+      if (docsToAdd.length < docs.length) {
+        toast({ title: "You can add 15 attachments at most." });
+      }
+      const entries: AttachedFile[] = docsToAdd.map(d => ({
+        id: crypto.randomUUID(),
+        name: d.name,
+        size: 0,
+        status: 'complete' as const,
+        progress: 100,
+        extractedText: d.extractedText,
+      }));
+      return [...prev, ...entries];
+    });
+  }, []);
+
+  return {
+    files,
+    addFiles,
+    removeFile,
     retryProcessing,
     clearAllFiles,
+    addImportedDocuments,
   };
 };

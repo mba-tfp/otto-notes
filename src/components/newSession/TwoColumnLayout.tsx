@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { cn } from '@/lib/utils';
-import { NoteTab as NoteTabType, RecordingMode } from '@/types/session';
+import { NoteTab as NoteTabType, RecordingMode, Patient } from '@/types/session';
 import { RightColumnPanel } from './RightColumnPanel';
 
 interface TwoColumnLayoutProps {
@@ -23,6 +23,7 @@ interface TwoColumnLayoutProps {
   sessionId?: string;
   patientName?: string;
   sessionDate?: Date;
+  selectedPatient?: Patient | null;
 }
 
 export const TwoColumnLayout = ({
@@ -43,6 +44,7 @@ export const TwoColumnLayout = ({
   sessionId,
   patientName,
   sessionDate,
+  selectedPatient,
 }: TwoColumnLayoutProps) => {
   const [rightView, setRightView] = useState<'context' | 'note'>('context');
   
@@ -102,6 +104,7 @@ export const TwoColumnLayout = ({
             sessionId={sessionId}
             patientName={patientName}
             sessionDate={sessionDate}
+            selectedPatient={selectedPatient}
           />
         </ResizablePanel>
       </ResizablePanelGroup>
