@@ -93,6 +93,7 @@ export const FileProcessingItem = ({ file, onRemove, onRetry }: FileProcessingIt
             style={{ width: `${file.progress}%` }}
           />
         </div>
+      )}
           </div>
         </TooltipTrigger>
         <TooltipContent side="top" className="text-xs max-w-[400px] break-all">
