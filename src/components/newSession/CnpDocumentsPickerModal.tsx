@@ -87,7 +87,8 @@ export const CnpDocumentsPickerModal = ({
     const hasAvailable = sectionAvailableIds(docs).length > 0;
     return (
       <div className="space-y-2">
-        <div className="flex items-center justify-end gap-3 pb-1">
+        <div className="flex items-center justify-between gap-3 pb-1">
+          <span className="text-sm font-bold text-secondary">{label}</span>
           <label className={cn("flex items-center gap-2 text-xs text-muted-foreground", !hasAvailable && "opacity-50")}>
             <Checkbox
               checked={allSelected}
@@ -96,7 +97,6 @@ export const CnpDocumentsPickerModal = ({
             />
             Select all
           </label>
-          <span className="text-sm font-bold text-secondary">{label}</span>
         </div>
         <div className="space-y-1">
           {docs.map(d => {
