@@ -75,6 +75,7 @@ interface RightColumnPanelProps {
   sessionId?: string;
   patientName?: string;
   sessionDate?: Date;
+  selectedPatient?: Patient | null;
 }
 
 export const RightColumnPanel = ({
