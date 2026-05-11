@@ -556,6 +556,35 @@ export const RightColumnPanel = ({
         {activeView === 'context' ? (
           // Context Panel
           <div className="flex flex-col h-full p-4">
+            {/* CNP Onboarding Documents Banner */}
+            {selectedPatient && cnpDocs.length > 0 && cnpImportedFilenames.size === 0 && !cnpBannerDismissed && (
+              <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-muted/60 text-sm text-foreground">
+                <Paperclip className="h-4 w-4 text-muted-foreground shrink-0" />
+                <span className="flex-1">{cnpDocs.length} documents available from Onboarding</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 px-3 text-secondary hover:bg-background"
+                  onClick={() => setCnpPickerOpen(true)}
+                >
+                  Import
+                </Button>
+                <button
+                  onClick={() => setCnpBannerDismissed(true)}
+                  className="p-1 rounded hover:bg-background text-muted-foreground"
+                  aria-label="Dismiss"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
+            {selectedPatient && cnpImportedFilenames.size > 0 && (
+              <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-muted/60 text-sm text-muted-foreground">
+                <Paperclip className="h-4 w-4 shrink-0" />
+                <span>{cnpImportedFilenames.size} documents imported from Onboarding</span>
+              </div>
+            )}
+
             {/* Toolbar */}
             <div className="flex items-center gap-1 mb-3 pb-3 border-b border-border">
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
