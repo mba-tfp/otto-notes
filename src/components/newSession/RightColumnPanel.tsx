@@ -561,14 +561,12 @@ export const RightColumnPanel = ({
               <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-muted/60 text-sm text-foreground">
                 <Paperclip className="h-4 w-4 text-muted-foreground shrink-0" />
                 <span className="flex-1">{cnpDocs.length} documents available from Onboarding</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 px-3 text-secondary hover:bg-background"
+                <button
                   onClick={() => setCnpPickerOpen(true)}
+                  className="text-sm font-semibold text-primary hover:text-primary/80 px-2"
                 >
                   Import
-                </Button>
+                </button>
                 <button
                   onClick={() => setCnpBannerDismissed(true)}
                   className="p-1 rounded hover:bg-background text-muted-foreground"
@@ -581,7 +579,15 @@ export const RightColumnPanel = ({
             {selectedPatient && cnpImportedFilenames.size > 0 && (
               <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-muted/60 text-sm text-muted-foreground">
                 <Paperclip className="h-4 w-4 shrink-0" />
-                <span>{cnpImportedFilenames.size} documents imported from Onboarding</span>
+                <span className="flex-1">{cnpImportedFilenames.size} documents imported from Onboarding</span>
+                {cnpImportedFilenames.size < cnpDocs.length && (
+                  <button
+                    onClick={() => setCnpPickerOpen(true)}
+                    className="text-sm font-semibold text-primary hover:text-primary/80 px-2"
+                  >
+                    Add more
+                  </button>
+                )}
               </div>
             )}
 
