@@ -672,6 +672,16 @@ export const RightColumnPanel = ({
                 </div>
               </div>
 
+              {selectedPatient && cnpDocs.length > 0 && cnpBannerDismissed && cnpImportedFilenames.size === 0 && (
+                <button
+                  onClick={() => setCnpPickerOpen(true)}
+                  className="mt-2 inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 hover:underline underline-offset-2"
+                >
+                  <Paperclip className="h-3 w-3" />
+                  {cnpDocs.length} documents available from Onboarding — Show
+                </button>
+              )}
+
               {/* Files list with processing status */}
               {attachedFiles.length > 0 && (
                 <div className="mt-3 space-y-2">
