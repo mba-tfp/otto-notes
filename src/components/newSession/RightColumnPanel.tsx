@@ -1,5 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, AlertTriangle, Bold, Italic, List, Paperclip, Printer, FileDown, Send, PenLine, CheckCircle, Globe } from 'lucide-react';
+import { Patient } from '@/types/session';
+import { getDemoCnpDocs, DemoCnpDocument } from '@/data/demoCnpDocuments';
+import { CnpDocumentsPickerModal } from './CnpDocumentsPickerModal';
 
 
 const ALLOWED_EXTENSIONS = ['.pdf', '.docx', '.doc', '.png', '.jpg', '.jpeg'];
