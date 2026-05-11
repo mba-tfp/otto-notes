@@ -111,7 +111,12 @@ export const CnpDocumentsPickerModal = ({
                 )}
                 onClick={() => toggleDoc(d)}
               >
-                <Checkbox checked={checked} disabled={imported} onClick={(e) => e.stopPropagation()} />
+                <Checkbox
+                  checked={checked}
+                  disabled={imported}
+                  onCheckedChange={() => toggleDoc(d)}
+                  onClick={(e) => e.stopPropagation()}
+                />
                 <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
                 <span className="text-sm text-foreground truncate flex-1">{d.filename}</span>
                 <Badge variant="secondary" className="rounded-full font-normal text-[11px]">{d.category}</Badge>
