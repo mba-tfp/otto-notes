@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, AlertTriangle, Bold, Italic, List, Paperclip, Printer, FileDown, Send, PenLine, CheckCircle, Globe } from 'lucide-react';
+import { toast as sonnerToast } from 'sonner';
 import { Patient } from '@/types/session';
 import { getDemoCnpDocs, DemoCnpDocument } from '@/data/demoCnpDocuments';
 import { CnpDocumentsPickerModal } from './CnpDocumentsPickerModal';
