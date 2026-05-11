@@ -13,9 +13,26 @@ const PatientsContext = createContext<PatientsContextType | undefined>(undefined
 
 const STORAGE_KEY = 'medical-scribe-patients';
 const STORAGE_VERSION_KEY = 'medical-scribe-patients-version';
-const CURRENT_VERSION = 2; // Increment when patient data structure changes
+const CURRENT_VERSION = 3; // Increment when patient data structure changes
 
 const defaultPatients: Patient[] = [
+  {
+    id: 'p-demo-ga',
+    name: 'Ghazanfar Ali',
+    firstName: 'Ghazanfar',
+    lastName: 'Ali',
+    email: 'ghazanfar.ali@mailinator.com',
+    emrId: 'GA-1985',
+    cnpId: 'CNP-DEMO-GA',
+    identifier: 'GA-DEMO',
+    dateOfBirth: new Date('1985-03-12'),
+    partnerFirstName: 'Nimra',
+    partnerLastName: 'Jafar',
+    partnerEmrId: 'NJ-1988',
+    partnerDateOfBirth: new Date('1988-07-24'),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
   { id: 'p1', name: 'John Smith', firstName: 'John', lastName: 'Smith', email: 'john.smith@mailinator.com', emrId: '11111', cnpId: 'CNP-001', identifier: 'JS-001', additionalContext: 'Type 2 Diabetes, Hypertension', createdAt: new Date(), updatedAt: new Date() },
   { id: 'p2', name: 'Sarah Johnson', firstName: 'Sarah', lastName: 'Johnson', email: 'sarah.johnson@mailinator.com', emrId: '12345', cnpId: 'CNP-002', identifier: 'SJ-002', createdAt: new Date(), updatedAt: new Date() },
   { id: 'p3', name: 'Michael Chen', firstName: 'Michael', lastName: 'Chen', email: 'michael.chen@gmail.com', emrId: '123455', cnpId: 'CNP-003', identifier: 'MC-003', additionalContext: 'Asthma, Allergies to penicillin', createdAt: new Date(), updatedAt: new Date() },
