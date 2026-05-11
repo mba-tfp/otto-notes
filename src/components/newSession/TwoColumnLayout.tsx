@@ -44,6 +44,7 @@ export const TwoColumnLayout = ({
   sessionId,
   patientName,
   sessionDate,
+  selectedPatient,
 }: TwoColumnLayoutProps) => {
   const [rightView, setRightView] = useState<'context' | 'note'>('context');
   
