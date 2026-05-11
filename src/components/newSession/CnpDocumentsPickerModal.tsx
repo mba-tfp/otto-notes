@@ -88,7 +88,7 @@ export const CnpDocumentsPickerModal = ({
     return (
       <div className="space-y-2">
         <div className="flex items-center justify-between pb-1">
-          <h4 className="text-sm font-semibold text-secondary">{label}</h4>
+          <span className="text-sm font-bold text-secondary">{label}</span>
           <label className={cn("flex items-center gap-2 text-xs text-muted-foreground", !hasAvailable && "opacity-50")}>
             <Checkbox
               checked={allSelected}
