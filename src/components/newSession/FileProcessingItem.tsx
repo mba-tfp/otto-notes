@@ -16,31 +16,33 @@ export const FileProcessingItem = ({ file, onRemove, onRetry }: FileProcessingIt
   const isComplete = file.status === 'complete';
 
   return (
-    <div
-      title={file.name}
-      className={cn(
-        "relative inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md border transition-all w-auto flex-shrink-0",
-        isError ? "border-destructive/40 bg-destructive/5" : "border-border bg-muted/50",
-        isProcessing && "border-primary/30 bg-primary/5"
-      )}
-    >
-      {/* Icon */}
-      <div className="flex-shrink-0">
-        {isProcessing ? (
-          <Loader2 className="h-4 w-4 text-primary animate-spin" />
-        ) : isError ? (
-          <AlertCircle className="h-4 w-4 text-destructive" />
-        ) : isComplete ? (
-          <Check className="h-4 w-4 text-green-500" />
-        ) : (
-          <FileText className="h-4 w-4 text-muted-foreground" />
-        )}
-      </div>
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            className={cn(
+              "relative inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md border transition-all w-auto flex-shrink-0",
+              isError ? "border-destructive/40 bg-destructive/5" : "border-border bg-muted/50",
+              isProcessing && "border-primary/30 bg-primary/5"
+            )}
+          >
+            {/* Icon */}
+            <div className="flex-shrink-0">
+              {isProcessing ? (
+                <Loader2 className="h-4 w-4 text-primary animate-spin" />
+              ) : isError ? (
+                <AlertCircle className="h-4 w-4 text-destructive" />
+              ) : isComplete ? (
+                <Check className="h-4 w-4 text-green-500" />
+              ) : (
+                <FileText className="h-4 w-4 text-muted-foreground" />
+              )}
+            </div>
 
-      {/* Truncated filename */}
-      <span className="text-xs text-foreground truncate max-w-[100px] leading-tight">
-        {file.name}
-      </span>
+            {/* Truncated filename */}
+            <span className="text-xs text-foreground truncate max-w-[240px] leading-tight">
+              {file.name}
+            </span>
 
       {/* Status label */}
       {isProcessing && (
@@ -92,6 +94,12 @@ export const FileProcessingItem = ({ file, onRemove, onRetry }: FileProcessingIt
           />
         </div>
       )}
-    </div>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="text-xs max-w-[400px] break-all">
+          {file.name}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
