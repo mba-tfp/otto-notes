@@ -116,14 +116,17 @@ export const RightColumnPanel = ({
     setCnpBannerDismissed(false);
     setCnpPickerOpen(false);
     setCnpImportedFilenames(new Set());
+    cnpToastFiredRef.current = null;
   }, [selectedPatient?.id]);
 
   useEffect(() => {
     if (!selectedPatient || cnpDocs.length === 0) return;
     if (cnpToastFiredRef.current === selectedPatient.id) return;
     if (cnpBannerDismissed || cnpImportedFilenames.size > 0) return;
+    // Don't double-up with the inline banner — only toast when user is on Note view
+    if (activeView === 'context') return;
     cnpToastFiredRef.current = selectedPatient.id;
-    const toastId = sonnerToast.custom(
+    sonnerToast.custom(
       (t) => (
         <div className="flex items-center gap-3 w-full bg-background rounded-md border border-border border-l-4 border-l-primary shadow-lg px-4 py-3 text-sm text-foreground">
           <span className="flex-1">
@@ -142,10 +145,7 @@ export const RightColumnPanel = ({
       ),
       { duration: 6000, position: 'top-right' }
     );
-    return () => {
-      sonnerToast.dismiss(toastId);
-    };
-  }, [selectedPatient?.id, cnpDocs.length, cnpBannerDismissed, cnpImportedFilenames.size]);
+  }, [selectedPatient?.id, cnpDocs.length, cnpBannerDismissed, cnpImportedFilenames.size, activeView]);
 
   const handleCnpImport = (docs: DemoCnpDocument[]) => {
     addImportedDocuments(docs.map(d => ({ name: d.filename })));
