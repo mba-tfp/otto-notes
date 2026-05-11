@@ -388,7 +388,7 @@ export const PatientSelector = ({
             <ChevronDown className={`h-4 w-4 stroke-[1.5] ${isHighlighted ? 'text-destructive' : 'text-foreground'}`} />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-72 bg-popover border border-border">
+        <DropdownMenuContent align="start" className="w-[420px] bg-popover border border-border">
           <div className="p-2">
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground stroke-[1.5]" />

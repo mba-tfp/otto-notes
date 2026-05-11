@@ -612,14 +612,12 @@ export const RightColumnPanel = ({
               <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-primary/30 border-l-4 border-l-primary bg-primary/10 text-sm text-primary">
                 <Paperclip className="h-4 w-4 shrink-0 text-primary" />
                 <span className="flex-1">{cnpImportedFilenames.size} documents imported from Onboarding</span>
-                {cnpImportedFilenames.size < cnpDocs.length && (
-                  <button
-                    onClick={() => setCnpPickerOpen(true)}
-                    className="text-sm font-semibold text-primary hover:text-primary/80 px-2"
-                  >
-                    Add more
-                  </button>
-                )}
+                <button
+                  onClick={() => setCnpPickerOpen(true)}
+                  className="text-sm font-semibold text-primary hover:text-primary/80 px-2"
+                >
+                  {cnpImportedFilenames.size < cnpDocs.length ? 'Add more' : 'View imported'}
+                </button>
               </div>
             )}
 
