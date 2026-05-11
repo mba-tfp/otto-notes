@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, AlertTriangle, Bold, Italic, List, Paperclip, Printer, FileDown, Send, PenLine, CheckCircle, Globe } from 'lucide-react';
+import { toast as sonnerToast } from 'sonner';
 import { Patient } from '@/types/session';
 import { getDemoCnpDocs, DemoCnpDocument } from '@/data/demoCnpDocuments';
 import { CnpDocumentsPickerModal } from './CnpDocumentsPickerModal';
@@ -109,11 +110,42 @@ export const RightColumnPanel = ({
     ? `${selectedPatient.partnerFirstName} ${selectedPatient.partnerLastName}`
     : undefined;
 
+  const cnpToastFiredRef = useRef<string | null>(null);
+
   useEffect(() => {
     setCnpBannerDismissed(false);
     setCnpPickerOpen(false);
     setCnpImportedFilenames(new Set());
   }, [selectedPatient?.id]);
+
+  useEffect(() => {
+    if (!selectedPatient || cnpDocs.length === 0) return;
+    if (cnpToastFiredRef.current === selectedPatient.id) return;
+    if (cnpBannerDismissed || cnpImportedFilenames.size > 0) return;
+    cnpToastFiredRef.current = selectedPatient.id;
+    const toastId = sonnerToast.custom(
+      (t) => (
+        <div className="flex items-center gap-3 w-full bg-background rounded-md border border-border border-l-4 border-l-primary shadow-lg px-4 py-3 text-sm text-foreground">
+          <span className="flex-1">
+            📎 {selectedPatient.name} has {cnpDocs.length} documents in Onboarding —{' '}
+            <button
+              onClick={() => {
+                sonnerToast.dismiss(t);
+                setCnpPickerOpen(true);
+              }}
+              className="font-semibold text-primary hover:text-primary/80 underline-offset-2 hover:underline"
+            >
+              Import now
+            </button>
+          </span>
+        </div>
+      ),
+      { duration: 6000, position: 'top-right' }
+    );
+    return () => {
+      sonnerToast.dismiss(toastId);
+    };
+  }, [selectedPatient?.id, cnpDocs.length, cnpBannerDismissed, cnpImportedFilenames.size]);
 
   const handleCnpImport = (docs: DemoCnpDocument[]) => {
     addImportedDocuments(docs.map(d => ({ name: d.filename })));
@@ -577,8 +609,8 @@ export const RightColumnPanel = ({
               </div>
             )}
             {selectedPatient && cnpImportedFilenames.size > 0 && (
-              <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-muted/60 text-sm text-muted-foreground">
-                <Paperclip className="h-4 w-4 shrink-0" />
+              <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-primary/30 border-l-4 border-l-primary bg-primary/10 text-sm text-primary">
+                <Paperclip className="h-4 w-4 shrink-0 text-primary" />
                 <span className="flex-1">{cnpImportedFilenames.size} documents imported from Onboarding</span>
                 {cnpImportedFilenames.size < cnpDocs.length && (
                   <button
