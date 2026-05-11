@@ -104,6 +104,7 @@ export const TwoColumnLayout = ({
             sessionId={sessionId}
             patientName={patientName}
             sessionDate={sessionDate}
+            selectedPatient={selectedPatient}
           />
         </ResizablePanel>
       </ResizablePanelGroup>
