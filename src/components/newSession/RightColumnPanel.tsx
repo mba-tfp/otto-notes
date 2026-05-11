@@ -93,11 +93,42 @@ export const RightColumnPanel = ({
   sessionId,
   patientName,
   sessionDate,
+  selectedPatient,
 }: RightColumnPanelProps) => {
   const { toast } = useToast();
   const { createLetter, getLetterBySessionId } = useLetters();
-  const { files: attachedFiles, addFiles, removeFile, retryProcessing } = useDocumentOCR();
+  const { files: attachedFiles, addFiles, removeFile, retryProcessing, addImportedDocuments } = useDocumentOCR();
   const [showNoContentWarning, setShowNoContentWarning] = useState(false);
+
+  // CNP demo document import state
+  const [cnpBannerDismissed, setCnpBannerDismissed] = useState(false);
+  const [cnpPickerOpen, setCnpPickerOpen] = useState(false);
+  const [cnpImportedFilenames, setCnpImportedFilenames] = useState<Set<string>>(new Set());
+  const cnpDocs = getDemoCnpDocs(selectedPatient?.cnpId);
+  const cnpPartnerName = selectedPatient?.partnerFirstName && selectedPatient?.partnerLastName
+    ? `${selectedPatient.partnerFirstName} ${selectedPatient.partnerLastName}`
+    : undefined;
+
+  useEffect(() => {
+    setCnpBannerDismissed(false);
+    setCnpPickerOpen(false);
+    setCnpImportedFilenames(new Set());
+  }, [selectedPatient?.id]);
+
+  const handleCnpImport = (docs: DemoCnpDocument[]) => {
+    addImportedDocuments(docs.map(d => ({ name: d.filename })));
+    setCnpImportedFilenames(prev => {
+      const next = new Set(prev);
+      docs.forEach(d => next.add(d.filename));
+      return next;
+    });
+    setCnpPickerOpen(false);
+  };
+
+  const handleCnpSkip = () => {
+    setCnpPickerOpen(false);
+    setCnpBannerDismissed(true);
+  };
   const [showSendDialog, setShowSendDialog] = useState(false);
   
   // Per-tab state for language and undo/redo history
