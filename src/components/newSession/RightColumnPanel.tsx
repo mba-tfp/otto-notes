@@ -130,7 +130,7 @@ export const RightColumnPanel = ({
       (t) => (
         <div className="flex items-center gap-3 w-full bg-background rounded-md border border-border border-l-4 border-l-primary shadow-lg px-4 py-3 text-sm text-foreground">
           <span className="flex-1">
-            📎 {selectedPatient.name} has {cnpDocs.length} documents in Onboarding —{' '}
+            📎 {selectedPatient.name} has {cnpDocs.length} documents in Otto Onboard —{' '}
             <button
               onClick={() => {
                 sonnerToast.dismiss(t);
@@ -592,7 +592,7 @@ export const RightColumnPanel = ({
             {selectedPatient && cnpDocs.length > 0 && cnpImportedFilenames.size === 0 && !cnpBannerDismissed && (
               <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-primary/30 border-l-4 border-l-primary bg-primary/10 text-sm text-primary">
                 <Paperclip className="h-4 w-4 text-primary shrink-0" />
-                <span className="flex-1">{cnpDocs.length} documents available from Onboarding</span>
+                <span className="flex-1">{cnpDocs.length} documents available from Otto Onboard</span>
                 <button
                   onClick={() => setCnpPickerOpen(true)}
                   className="text-sm font-semibold text-primary hover:text-primary/80 px-2"
@@ -611,7 +611,7 @@ export const RightColumnPanel = ({
             {selectedPatient && cnpImportedFilenames.size > 0 && (
               <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-md border border-primary/30 border-l-4 border-l-primary bg-primary/10 text-sm text-primary">
                 <Paperclip className="h-4 w-4 shrink-0 text-primary" />
-                <span className="flex-1">{cnpImportedFilenames.size} documents imported from Onboarding</span>
+                <span className="flex-1">{cnpImportedFilenames.size} documents imported from Otto Onboard</span>
                 <button
                   onClick={() => setCnpPickerOpen(true)}
                   className="text-sm font-semibold text-primary hover:text-primary/80 px-2"
@@ -676,7 +676,7 @@ export const RightColumnPanel = ({
                   className="mt-2 inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 hover:underline underline-offset-2"
                 >
                   <Paperclip className="h-3 w-3" />
-                  {cnpDocs.length} documents available from Onboarding — Show
+                  {cnpDocs.length} documents available from Otto Onboard — Show
                 </button>
               )}
 
