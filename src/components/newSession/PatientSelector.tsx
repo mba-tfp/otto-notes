@@ -429,32 +429,22 @@ export const PatientSelector = ({
                     </span>
                   </div>
                   
-                  {/* Name and Email */}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-foreground truncate">{patient.name}</div>
-                    {patient.email && (
-                      <div className="text-sm text-muted-foreground truncate">{patient.email}</div>
+                  {/* Name + CNP badge */}
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <span className="font-medium text-foreground truncate max-w-[110px]">{patient.name}</span>
+                    {patient.cnpId && (
+                      <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#F3E8FF] text-[#7C3AED] text-[11px] font-semibold">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2a4 4 0 0 0-4 4 4 4 0 0 0-4 4 4 4 0 0 0 2 3.5A4 4 0 0 0 8 20a4 4 0 0 0 4 2 4 4 0 0 0 4-2 4 4 0 0 0 2-6.5A4 4 0 0 0 20 10a4 4 0 0 0-4-4 4 4 0 0 0-4-4Z"/></svg>
+                        CNP
+                      </span>
                     )}
                   </div>
-                  
-                  {/* EMR ID and CNP ID */}
-                  <div className="flex-shrink-0 w-[110px] text-right text-[11px] leading-tight text-muted-foreground">
+
+                  {/* EMR + CNP IDs */}
+                  <div className="flex-shrink-0 text-right text-[11px] leading-tight text-muted-foreground">
                     {patient.emrId && <div className="truncate">EMR: {patient.emrId}</div>}
                     {patient.cnpId && <div className="truncate">CNP: {patient.cnpId}</div>}
                   </div>
-                  
-                  {/* Edit Button */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="flex-shrink-0 h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-background"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditPatient(patient);
-                    }}
-                  >
-                    Edit
-                  </Button>
                 </DropdownMenuItem>
               ))}
             </>
