@@ -154,8 +154,40 @@ export const CnpDocumentsPickerModal = ({
           <p className="text-sm text-muted-foreground">From Otto Onboard</p>
         </DialogHeader>
         <DialogBody className="space-y-5">
-          {renderSection(patientName, patientDocs)}
-          {renderSection(partnerName || 'Partner', partnerDocs)}
+          <div className="flex flex-wrap items-center gap-2">
+            {(['All', ...DEMO_CNP_CATEGORIES] as const).map(cat => {
+              const isActive = activeCategory === cat;
+              const count = cat === 'All' ? documents.length : categoryCount(cat);
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setActiveCategory(cat)}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-colors",
+                    isActive
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-background text-foreground border-border hover:bg-muted"
+                  )}
+                >
+                  {cat}
+                  <span className={cn("text-[10px]", isActive ? "opacity-80" : "text-muted-foreground")}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {filteredDocs.length === 0 ? (
+            <div className="py-10 text-center text-sm text-muted-foreground">
+              No documents in this category.
+            </div>
+          ) : (
+            <>
+              {renderSection(patientName, patientDocs)}
+              {renderSection(partnerName || 'Partner', partnerDocs)}
+            </>
+          )}
         </DialogBody>
         <DialogFooter className="flex items-center justify-between sm:justify-between">
           <Button variant="ghost" onClick={onSkip} className="text-muted-foreground">
