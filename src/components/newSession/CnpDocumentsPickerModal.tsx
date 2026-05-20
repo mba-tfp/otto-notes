@@ -36,13 +36,24 @@ export const CnpDocumentsPickerModal = ({
   onSkip,
 }: CnpDocumentsPickerModalProps) => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [activeCategory, setActiveCategory] = useState<DemoCnpCategory | 'All'>('All');
 
   useEffect(() => {
-    if (open) setSelected(new Set());
+    if (open) {
+      setSelected(new Set());
+      setActiveCategory('All');
+    }
   }, [open]);
 
-  const patientDocs = useMemo(() => documents.filter(d => d.owner === 'patient'), [documents]);
-  const partnerDocs = useMemo(() => documents.filter(d => d.owner === 'partner'), [documents]);
+  const filteredDocs = useMemo(
+    () => (activeCategory === 'All' ? documents : documents.filter(d => d.category === activeCategory)),
+    [documents, activeCategory]
+  );
+
+  const patientDocs = useMemo(() => filteredDocs.filter(d => d.owner === 'patient'), [filteredDocs]);
+  const partnerDocs = useMemo(() => filteredDocs.filter(d => d.owner === 'partner'), [filteredDocs]);
+
+  const categoryCount = (cat: DemoCnpCategory) => documents.filter(d => d.category === cat).length;
 
   const isImported = (d: DemoCnpDocument) => importedFilenames.has(d.filename);
 
