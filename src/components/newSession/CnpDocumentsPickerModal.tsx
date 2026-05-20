@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { DemoCnpDocument } from '@/data/demoCnpDocuments';
+import { DemoCnpDocument, DEMO_CNP_CATEGORIES, DemoCnpCategory } from '@/data/demoCnpDocuments';
 import { cn } from '@/lib/utils';
 
 interface CnpDocumentsPickerModalProps {
