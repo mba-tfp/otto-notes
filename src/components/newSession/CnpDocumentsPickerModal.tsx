@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DemoCnpDocument, DEMO_CNP_CATEGORIES, DemoCnpCategory } from '@/data/demoCnpDocuments';
 import { cn } from '@/lib/utils';
 
@@ -154,29 +155,21 @@ export const CnpDocumentsPickerModal = ({
           <p className="text-sm text-muted-foreground">From Otto Onboard</p>
         </DialogHeader>
         <DialogBody className="space-y-5">
-          <div className="flex flex-wrap items-center gap-2">
-            {(['All', ...DEMO_CNP_CATEGORIES] as const).map(cat => {
-              const isActive = activeCategory === cat;
-              const count = cat === 'All' ? documents.length : categoryCount(cat);
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setActiveCategory(cat)}
-                  className={cn(
-                    "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-colors",
-                    isActive
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-background text-foreground border-border hover:bg-muted"
-                  )}
-                >
-                  {cat}
-                  <span className={cn("text-[10px]", isActive ? "opacity-80" : "text-muted-foreground")}>
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
+          <div className="flex items-center justify-end">
+            <Select
+              value={activeCategory}
+              onValueChange={(v) => setActiveCategory(v as DemoCnpCategory | 'All')}
+            >
+              <SelectTrigger className="h-9 w-[220px]">
+                <SelectValue placeholder="All categories" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All categories</SelectItem>
+                {DEMO_CNP_CATEGORIES.map(cat => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           {filteredDocs.length === 0 ? (
             <div className="py-10 text-center text-sm text-muted-foreground">
