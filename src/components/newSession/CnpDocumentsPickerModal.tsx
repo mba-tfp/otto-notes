@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { DemoCnpDocument } from '@/data/demoCnpDocuments';
+import { DemoCnpDocument, DEMO_CNP_CATEGORIES, DemoCnpCategory } from '@/data/demoCnpDocuments';
 import { cn } from '@/lib/utils';
 
 interface CnpDocumentsPickerModalProps {
@@ -36,13 +36,24 @@ export const CnpDocumentsPickerModal = ({
   onSkip,
 }: CnpDocumentsPickerModalProps) => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [activeCategory, setActiveCategory] = useState<DemoCnpCategory | 'All'>('All');
 
   useEffect(() => {
-    if (open) setSelected(new Set());
+    if (open) {
+      setSelected(new Set());
+      setActiveCategory('All');
+    }
   }, [open]);
 
-  const patientDocs = useMemo(() => documents.filter(d => d.owner === 'patient'), [documents]);
-  const partnerDocs = useMemo(() => documents.filter(d => d.owner === 'partner'), [documents]);
+  const filteredDocs = useMemo(
+    () => (activeCategory === 'All' ? documents : documents.filter(d => d.category === activeCategory)),
+    [documents, activeCategory]
+  );
+
+  const patientDocs = useMemo(() => filteredDocs.filter(d => d.owner === 'patient'), [filteredDocs]);
+  const partnerDocs = useMemo(() => filteredDocs.filter(d => d.owner === 'partner'), [filteredDocs]);
+
+  const categoryCount = (cat: DemoCnpCategory) => documents.filter(d => d.category === cat).length;
 
   const isImported = (d: DemoCnpDocument) => importedFilenames.has(d.filename);
 
@@ -143,8 +154,40 @@ export const CnpDocumentsPickerModal = ({
           <p className="text-sm text-muted-foreground">From Otto Onboard</p>
         </DialogHeader>
         <DialogBody className="space-y-5">
-          {renderSection(patientName, patientDocs)}
-          {renderSection(partnerName || 'Partner', partnerDocs)}
+          <div className="flex flex-wrap items-center gap-2">
+            {(['All', ...DEMO_CNP_CATEGORIES] as const).map(cat => {
+              const isActive = activeCategory === cat;
+              const count = cat === 'All' ? documents.length : categoryCount(cat);
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setActiveCategory(cat)}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-colors",
+                    isActive
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-background text-foreground border-border hover:bg-muted"
+                  )}
+                >
+                  {cat}
+                  <span className={cn("text-[10px]", isActive ? "opacity-80" : "text-muted-foreground")}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {filteredDocs.length === 0 ? (
+            <div className="py-10 text-center text-sm text-muted-foreground">
+              No documents in this category.
+            </div>
+          ) : (
+            <>
+              {renderSection(patientName, patientDocs)}
+              {renderSection(partnerName || 'Partner', partnerDocs)}
+            </>
+          )}
         </DialogBody>
         <DialogFooter className="flex items-center justify-between sm:justify-between">
           <Button variant="ghost" onClick={onSkip} className="text-muted-foreground">
