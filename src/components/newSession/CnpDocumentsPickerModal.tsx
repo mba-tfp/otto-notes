@@ -140,7 +140,7 @@ export const CnpDocumentsPickerModal = ({
       <DialogContent className="sm:max-w-2xl bg-background">
         <DialogHeader>
           <DialogTitle className="text-foreground">{title}</DialogTitle>
-          <p className="text-sm text-muted-foreground">From Otto Onboarding</p>
+          <p className="text-sm text-muted-foreground">From Otto Onboard</p>
         </DialogHeader>
         <DialogBody className="space-y-5">
           {renderSection(patientName, patientDocs)}
