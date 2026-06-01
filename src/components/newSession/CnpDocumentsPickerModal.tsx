@@ -31,7 +31,6 @@ interface CnpDocumentsPickerModalProps {
   documents: DemoCnpDocument[];
   importedFilenames: Set<string>;
   onImport: (docs: DemoCnpDocument[]) => void;
-  onSkip: () => void;
 }
 
 export const CnpDocumentsPickerModal = ({
