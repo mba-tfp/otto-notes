@@ -177,10 +177,7 @@ export const CnpDocumentsPickerModal = ({
           {renderSection(patientName, patientDocs, patientCategory, setPatientCategory)}
           {renderSection(partnerName || 'Partner', partnerDocs, partnerCategory, setPartnerCategory)}
         </DialogBody>
-        <DialogFooter className="flex items-center justify-between sm:justify-between">
-          <Button variant="ghost" onClick={onSkip} className="text-muted-foreground">
-            Skip
-          </Button>
+        <DialogFooter className="flex items-center justify-end">
           <Button
             onClick={handleImport}
             disabled={selected.size === 0}
