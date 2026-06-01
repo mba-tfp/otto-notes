@@ -157,10 +157,6 @@ export const RightColumnPanel = ({
     setCnpPickerOpen(false);
   };
 
-  const handleCnpSkip = () => {
-    setCnpPickerOpen(false);
-    setCnpBannerDismissed(true);
-  };
   const [showSendDialog, setShowSendDialog] = useState(false);
   
   // Per-tab state for language and undo/redo history
