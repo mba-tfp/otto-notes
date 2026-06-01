@@ -41,7 +41,6 @@ export const CnpDocumentsPickerModal = ({
   documents,
   importedFilenames,
   onImport,
-  onSkip,
 }: CnpDocumentsPickerModalProps) => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [patientCategory, setPatientCategory] = useState<CategoryFilter>('All');
