@@ -783,7 +783,6 @@ export const RightColumnPanel = ({
           documents={cnpDocs}
           importedFilenames={cnpImportedFilenames}
           onImport={handleCnpImport}
-          onSkip={handleCnpSkip}
         />
       )}
     </div>
