@@ -31,7 +31,6 @@ interface CnpDocumentsPickerModalProps {
   documents: DemoCnpDocument[];
   importedFilenames: Set<string>;
   onImport: (docs: DemoCnpDocument[]) => void;
-  onSkip: () => void;
 }
 
 export const CnpDocumentsPickerModal = ({
@@ -42,7 +41,6 @@ export const CnpDocumentsPickerModal = ({
   documents,
   importedFilenames,
   onImport,
-  onSkip,
 }: CnpDocumentsPickerModalProps) => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [patientCategory, setPatientCategory] = useState<CategoryFilter>('All');
@@ -179,10 +177,7 @@ export const CnpDocumentsPickerModal = ({
           {renderSection(patientName, patientDocs, patientCategory, setPatientCategory)}
           {renderSection(partnerName || 'Partner', partnerDocs, partnerCategory, setPartnerCategory)}
         </DialogBody>
-        <DialogFooter className="flex items-center justify-between sm:justify-between">
-          <Button variant="ghost" onClick={onSkip} className="text-muted-foreground">
-            Skip
-          </Button>
+        <DialogFooter className="flex items-center justify-end">
           <Button
             onClick={handleImport}
             disabled={selected.size === 0}
