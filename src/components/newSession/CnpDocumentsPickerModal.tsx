@@ -128,7 +128,7 @@ export const CnpDocumentsPickerModal = ({
             No documents in this category.
           </div>
         ) : (
-          <div className="space-y-1">
+          <div className="space-y-1 max-h-[240px] overflow-y-auto pr-1">
             {visibleDocs.map(d => {
               const imported = isImported(d);
               const checked = selected.has(d.id);
