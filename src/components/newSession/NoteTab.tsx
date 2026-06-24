@@ -550,8 +550,6 @@ export const NoteTab = ({
         </div>
 
 
-          </div>
-        </div>
 
         {/* Loading State */}
         {isGenerating && (
