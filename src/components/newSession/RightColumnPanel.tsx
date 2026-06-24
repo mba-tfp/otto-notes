@@ -634,30 +634,8 @@ export const RightColumnPanel = ({
               </>
             )}
 
-            {currentMode === 'edit' && (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={handleUndo}
-                  disabled={!canUndo}
-                  title="Undo"
-                >
-                  <Undo className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={handleRedo}
-                  disabled={!canRedo}
-                  title="Redo"
-                >
-                  <Redo className="h-4 w-4" />
-                </Button>
-              </>
-            )}
+
+
 
             <Button
               variant="ghost"
