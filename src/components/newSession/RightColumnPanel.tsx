@@ -846,8 +846,8 @@ export const RightColumnPanel = ({
                   )}
                 </div>
 
-                {/* Review disclaimer + Letter Actions — pinned to bottom of the scroll viewport */}
-                <div className="sticky bottom-0 z-10 shrink-0 border-t border-border bg-background px-4 py-3 flex items-center gap-3">
+                {/* Review disclaimer + Letter Actions */}
+                <div className="shrink-0 border-t border-border bg-background px-4 py-3 flex items-center gap-3">
                   <div className="flex items-center gap-2 text-xs text-amber-800 dark:text-amber-200">
                     <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0" />
                     <span>Review your note before use to ensure it accurately represents the visit</span>
