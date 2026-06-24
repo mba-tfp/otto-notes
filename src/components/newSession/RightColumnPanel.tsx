@@ -833,18 +833,24 @@ export const RightColumnPanel = ({
             {!isGenerating && (!showNoContentWarning || activeTab?.content) && (
               <>
                 {currentMode === 'edit' || !hasGeneratedContent ? (
-                  <Textarea
-                    ref={editorRef}
-                    value={activeTab?.content || ''}
-                    onChange={(e) => updateTabContent(e.target.value)}
-                    placeholder="Select a template above to generate a note"
-                    className="flex-1 min-h-[300px] resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-base leading-relaxed whitespace-pre-wrap"
-                  />
-                ) : (
-                  <div className="flex-1 min-h-[300px] text-base leading-relaxed whitespace-pre-wrap text-foreground">
-                    {activeTab?.content}
+                  <div className="flex-1 flex flex-col min-h-[300px]">
+                    {richEditor && (
+                      <div className="mb-2 pb-2 border-b border-border">
+                        <RichTextToolbar editor={richEditor} />
+                      </div>
+                    )}
+                    <EditorContent
+                      editor={richEditor}
+                      className="flex-1 min-h-[260px] [&_.ProseMirror]:min-h-[260px] [&_.ProseMirror]:outline-none"
+                    />
                   </div>
+                ) : (
+                  <div
+                    className="flex-1 min-h-[300px] text-base leading-relaxed text-foreground prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: activeTab?.content || '' }}
+                  />
                 )}
+
 
                 {/* Review disclaimer + Letter Actions */}
                 <div className="mt-4 pt-4 border-t border-border flex items-center gap-3">
