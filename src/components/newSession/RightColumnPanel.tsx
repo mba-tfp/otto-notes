@@ -548,6 +548,41 @@ export const RightColumnPanel = ({
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {hasGeneratedContent && currentMode === 'preview' && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1.5 px-2"
+              onClick={() => setMode('edit')}
+              title="Edit note"
+            >
+              <Pencil className="h-4 w-4" />
+              Edit
+            </Button>
+          )}
+          {hasGeneratedContent && currentMode === 'edit' && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5 px-2"
+                onClick={() => setMode('preview')}
+                title="Preview"
+              >
+                <Eye className="h-4 w-4" />
+                Preview
+              </Button>
+              <Button
+                size="sm"
+                className="h-8 gap-1.5"
+                onClick={handleSaveNote}
+              >
+                <Save className="h-4 w-4" />
+                Save
+              </Button>
+            </>
+          )}
+
           <div className="ml-auto flex items-center gap-1">
             {/* Language Selector */}
             <Select value={currentTabState.language} onValueChange={handleLanguageChange}>
@@ -602,40 +637,7 @@ export const RightColumnPanel = ({
               </>
             )}
           </div>
-          {hasGeneratedContent && currentMode === 'preview' && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 gap-1.5 px-2"
-              onClick={() => setMode('edit')}
-              title="Edit note"
-            >
-              <Pencil className="h-4 w-4" />
-              Edit
-            </Button>
-          )}
-          {hasGeneratedContent && currentMode === 'edit' && (
-            <>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 gap-1.5 px-2"
-                onClick={() => setMode('preview')}
-                title="Preview"
-              >
-                <Eye className="h-4 w-4" />
-                Preview
-              </Button>
-              <Button
-                size="sm"
-                className="h-8 gap-1.5"
-                onClick={handleSaveNote}
-              >
-                <Save className="h-4 w-4" />
-                Save
-              </Button>
-            </>
-          )}
+
         </div>
       )}
 
