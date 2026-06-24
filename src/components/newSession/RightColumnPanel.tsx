@@ -202,6 +202,7 @@ export const RightColumnPanel = ({
 
   // Tiptap rich-text editor (used in edit mode)
   const isSyncingFromTabRef = useRef(false);
+  const updateTabContentRef = useRef<(content: string) => void>(() => {});
   const richEditor = useEditor({
     extensions: [
       StarterKit,
@@ -217,9 +218,10 @@ export const RightColumnPanel = ({
     onUpdate: ({ editor }) => {
       if (isSyncingFromTabRef.current) return;
       const html = editor.getHTML();
-      updateTabContent(html === '<p></p>' ? '' : html);
+      updateTabContentRef.current(html === '<p></p>' ? '' : html);
     },
   });
+
 
   // Sync editor content when the active tab changes or content changes externally (e.g., generation)
   useEffect(() => {
