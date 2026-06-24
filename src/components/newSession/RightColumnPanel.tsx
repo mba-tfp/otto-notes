@@ -778,12 +778,19 @@ export const RightColumnPanel = ({
             {/* Note textarea - show when not generating and either has content or no warning */}
             {!isGenerating && (!showNoContentWarning || activeTab?.content) && (
               <>
-                <Textarea
-                  value={activeTab?.content || ''}
-                  onChange={(e) => updateTabContent(e.target.value)}
-                  placeholder="Select a template above to generate a note"
-                  className="flex-1 min-h-[300px] resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-base leading-relaxed whitespace-pre-wrap"
-                />
+                {currentMode === 'edit' || !hasGeneratedContent ? (
+                  <Textarea
+                    ref={editorRef}
+                    value={activeTab?.content || ''}
+                    onChange={(e) => updateTabContent(e.target.value)}
+                    placeholder="Select a template above to generate a note"
+                    className="flex-1 min-h-[300px] resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-base leading-relaxed whitespace-pre-wrap"
+                  />
+                ) : (
+                  <div className="flex-1 min-h-[300px] text-base leading-relaxed whitespace-pre-wrap text-foreground">
+                    {activeTab?.content}
+                  </div>
+                )}
 
                 {/* Review disclaimer + Letter Actions */}
                 <div className="mt-4 pt-4 border-t border-border flex items-center gap-3">
