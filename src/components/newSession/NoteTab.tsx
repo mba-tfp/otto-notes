@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, Send, Download, CheckCircle, Globe, AlertTriangle } from 'lucide-react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, Send, Download, CheckCircle, Globe, AlertTriangle, Pencil, Save, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -87,6 +87,33 @@ export const NoteTab = ({
     });
     return initial;
   });
+
+  // Per-tab edit/preview mode
+  const [tabModes, setTabModes] = useState<Record<string, 'preview' | 'edit'>>({});
+  const currentMode: 'preview' | 'edit' = tabModes[activeTabId] || 'preview';
+  const editorRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const setMode = (mode: 'preview' | 'edit') => {
+    setTabModes(prev => ({ ...prev, [activeTabId]: mode }));
+  };
+
+  // When generating starts, force preview mode for the resulting content
+  useEffect(() => {
+    if (isGenerating) {
+      setTabModes(prev => ({ ...prev, [activeTabId]: 'preview' }));
+    }
+  }, [isGenerating, activeTabId]);
+
+  useEffect(() => {
+    if (currentMode === 'edit' && editorRef.current) {
+      editorRef.current.focus();
+    }
+  }, [currentMode, activeTabId]);
+
+  const handleSaveNote = () => {
+    setMode('preview');
+    toast({ title: 'Note saved', description: 'Your changes have been saved.' });
+  };
 
   // Get the current tab's template ID
   const currentTemplateId = activeTab?.templateId || '';
@@ -454,37 +481,75 @@ export const NoteTab = ({
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="text-xs">Copy</TooltipContent>
               </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-8 w-8 p-0" 
-                    onClick={handleUndo}
-                    disabled={!canUndo}
+              {currentMode === 'edit' && (
+                <>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={handleUndo}
+                        disabled={!canUndo}
+                      >
+                        <Undo className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-xs">Undo</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={handleRedo}
+                        disabled={!canRedo}
+                      >
+                        <Redo className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-xs">Redo</TooltipContent>
+                  </Tooltip>
+                </>
+              )}
+              {hasGeneratedContent && currentMode === 'preview' && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 gap-1.5 px-2"
+                  onClick={() => setMode('edit')}
+                >
+                  <Pencil className="h-4 w-4" />
+                  Edit
+                </Button>
+              )}
+              {hasGeneratedContent && currentMode === 'edit' && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 gap-1.5 px-2"
+                    onClick={() => setMode('preview')}
                   >
-                    <Undo className="h-4 w-4" />
+                    <Eye className="h-4 w-4" />
+                    Preview
                   </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">Undo</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-8 w-8 p-0" 
-                    onClick={handleRedo}
-                    disabled={!canRedo}
+                  <Button
+                    size="sm"
+                    className="h-8 gap-1.5"
+                    onClick={handleSaveNote}
                   >
-                    <Redo className="h-4 w-4" />
+                    <Save className="h-4 w-4" />
+                    Save
                   </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">Redo</TooltipContent>
-              </Tooltip>
+                </>
+              )}
             </TooltipProvider>
           </div>
         </div>
+
+
 
         {/* Loading State */}
         {isGenerating && (
@@ -507,14 +572,21 @@ export const NoteTab = ({
           </div>
         )}
 
-        {/* Note textarea - show when not generating and either has content or no warning */}
+        {/* Note content - preview (read-only) or edit (textarea) */}
         {!isGenerating && (!showNoContentWarning || activeTab?.content) && (
-          <Textarea
-            value={activeTab?.content || ''}
-            onChange={(e) => updateTabContent(e.target.value)}
-            placeholder="Select a template above to generate a note"
-            className="flex-1 min-h-[300px] resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-base leading-relaxed"
-          />
+          currentMode === 'edit' || !hasGeneratedContent ? (
+            <Textarea
+              ref={editorRef}
+              value={activeTab?.content || ''}
+              onChange={(e) => updateTabContent(e.target.value)}
+              placeholder="Select a template above to generate a note"
+              className="flex-1 min-h-[300px] resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-base leading-relaxed"
+            />
+          ) : (
+            <div className="flex-1 min-h-[300px] text-base leading-relaxed whitespace-pre-wrap text-foreground">
+              {activeTab?.content}
+            </div>
+          )
         )}
 
         {/* Review disclaimer - always visible */}
