@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, AlertTriangle, Bold, Italic, List, Paperclip, Printer, FileDown, Send, PenLine, CheckCircle, Globe } from 'lucide-react';
+import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, AlertTriangle, Bold, Italic, List, Paperclip, Printer, FileDown, Send, PenLine, CheckCircle, Globe, Pencil, Save, Eye } from 'lucide-react';
 import { toast as sonnerToast } from 'sonner';
 import { Patient } from '@/types/session';
 import { getDemoCnpDocs, DemoCnpDocument } from '@/data/demoCnpDocuments';
@@ -180,6 +180,28 @@ export const RightColumnPanel = ({
   // Letter workflow
   const existingLetter = sessionId ? getLetterBySessionId(sessionId) : undefined;
   const hasGeneratedContent = activeTab?.content && activeTab.content.trim().length > 0;
+
+  // Per-tab preview/edit mode (default preview)
+  const [tabModes, setTabModes] = useState<Record<string, 'preview' | 'edit'>>({});
+  const currentMode: 'preview' | 'edit' = tabModes[activeNoteTabId] || 'preview';
+  const editorRef = useRef<HTMLTextAreaElement | null>(null);
+  const setMode = (mode: 'preview' | 'edit') => {
+    setTabModes(prev => ({ ...prev, [activeNoteTabId]: mode }));
+  };
+  useEffect(() => {
+    if (isGenerating) {
+      setTabModes(prev => ({ ...prev, [activeNoteTabId]: 'preview' }));
+    }
+  }, [isGenerating, activeNoteTabId]);
+  useEffect(() => {
+    if (currentMode === 'edit' && editorRef.current) {
+      editorRef.current.focus();
+    }
+  }, [currentMode, activeNoteTabId]);
+  const handleSaveNote = () => {
+    setMode('preview');
+    toast({ title: 'Note saved', description: 'Your changes have been saved.' });
+  };
 
   const handleMarkReviewed = () => {
     toast({
@@ -545,36 +567,74 @@ export const RightColumnPanel = ({
               </SelectContent>
             </Select>
 
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-8 w-8 p-0" 
-              onClick={handleCopyAll} 
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={handleCopyAll}
               disabled={!activeTab?.content}
               title="Copy note"
             >
               <Copy className="h-4 w-4" />
             </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-8 w-8 p-0"
-              onClick={handleUndo}
-              disabled={!canUndo}
-              title="Undo"
-            >
-              <Undo className="h-4 w-4" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-8 w-8 p-0"
-              onClick={handleRedo}
-              disabled={!canRedo}
-              title="Redo"
-            >
-              <Redo className="h-4 w-4" />
-            </Button>
+            {currentMode === 'edit' && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={handleUndo}
+                  disabled={!canUndo}
+                  title="Undo"
+                >
+                  <Undo className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={handleRedo}
+                  disabled={!canRedo}
+                  title="Redo"
+                >
+                  <Redo className="h-4 w-4" />
+                </Button>
+              </>
+            )}
+            {hasGeneratedContent && currentMode === 'preview' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5 px-2"
+                onClick={() => setMode('edit')}
+                title="Edit note"
+              >
+                <Pencil className="h-4 w-4" />
+                Edit
+              </Button>
+            )}
+            {hasGeneratedContent && currentMode === 'edit' && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 gap-1.5 px-2"
+                  onClick={() => setMode('preview')}
+                  title="Preview"
+                >
+                  <Eye className="h-4 w-4" />
+                  Preview
+                </Button>
+                <Button
+                  size="sm"
+                  className="h-8 gap-1.5"
+                  onClick={handleSaveNote}
+                >
+                  <Save className="h-4 w-4" />
+                  Save
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -718,12 +778,19 @@ export const RightColumnPanel = ({
             {/* Note textarea - show when not generating and either has content or no warning */}
             {!isGenerating && (!showNoContentWarning || activeTab?.content) && (
               <>
-                <Textarea
-                  value={activeTab?.content || ''}
-                  onChange={(e) => updateTabContent(e.target.value)}
-                  placeholder="Select a template above to generate a note"
-                  className="flex-1 min-h-[300px] resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-base leading-relaxed whitespace-pre-wrap"
-                />
+                {currentMode === 'edit' || !hasGeneratedContent ? (
+                  <Textarea
+                    ref={editorRef}
+                    value={activeTab?.content || ''}
+                    onChange={(e) => updateTabContent(e.target.value)}
+                    placeholder="Select a template above to generate a note"
+                    className="flex-1 min-h-[300px] resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-base leading-relaxed whitespace-pre-wrap"
+                  />
+                ) : (
+                  <div className="flex-1 min-h-[300px] text-base leading-relaxed whitespace-pre-wrap text-foreground">
+                    {activeTab?.content}
+                  </div>
+                )}
 
                 {/* Review disclaimer + Letter Actions */}
                 <div className="mt-4 pt-4 border-t border-border flex items-center gap-3">
