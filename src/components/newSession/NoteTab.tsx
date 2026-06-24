@@ -572,14 +572,21 @@ export const NoteTab = ({
           </div>
         )}
 
-        {/* Note textarea - show when not generating and either has content or no warning */}
+        {/* Note content - preview (read-only) or edit (textarea) */}
         {!isGenerating && (!showNoContentWarning || activeTab?.content) && (
-          <Textarea
-            value={activeTab?.content || ''}
-            onChange={(e) => updateTabContent(e.target.value)}
-            placeholder="Select a template above to generate a note"
-            className="flex-1 min-h-[300px] resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-base leading-relaxed"
-          />
+          currentMode === 'edit' || !hasGeneratedContent ? (
+            <Textarea
+              ref={editorRef}
+              value={activeTab?.content || ''}
+              onChange={(e) => updateTabContent(e.target.value)}
+              placeholder="Select a template above to generate a note"
+              className="flex-1 min-h-[300px] resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-base leading-relaxed"
+            />
+          ) : (
+            <div className="flex-1 min-h-[300px] text-base leading-relaxed whitespace-pre-wrap text-foreground">
+              {activeTab?.content}
+            </div>
+          )
         )}
 
         {/* Review disclaimer - always visible */}
