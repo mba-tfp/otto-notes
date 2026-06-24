@@ -355,6 +355,12 @@ export const RightColumnPanel = ({
     onNoteTabsChange(newTabs);
   }, [activeNoteTabId, activeTab?.content, noteTabs, onNoteTabsChange]);
 
+  // Keep the editor's onUpdate callback pointing at the latest updateTabContent
+  useEffect(() => {
+    updateTabContentRef.current = updateTabContent;
+  }, [updateTabContent]);
+
+
   const handleUndo = useCallback(() => {
     const { undoStack } = currentTabState;
     if (undoStack.length === 0) return;
