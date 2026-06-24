@@ -88,6 +88,33 @@ export const NoteTab = ({
     return initial;
   });
 
+  // Per-tab edit/preview mode
+  const [tabModes, setTabModes] = useState<Record<string, 'preview' | 'edit'>>({});
+  const currentMode: 'preview' | 'edit' = tabModes[activeTabId] || 'preview';
+  const editorRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const setMode = (mode: 'preview' | 'edit') => {
+    setTabModes(prev => ({ ...prev, [activeTabId]: mode }));
+  };
+
+  // When generating starts, force preview mode for the resulting content
+  useEffect(() => {
+    if (isGenerating) {
+      setTabModes(prev => ({ ...prev, [activeTabId]: 'preview' }));
+    }
+  }, [isGenerating, activeTabId]);
+
+  useEffect(() => {
+    if (currentMode === 'edit' && editorRef.current) {
+      editorRef.current.focus();
+    }
+  }, [currentMode, activeTabId]);
+
+  const handleSaveNote = () => {
+    setMode('preview');
+    toast({ title: 'Note saved', description: 'Your changes have been saved.' });
+  };
+
   // Get the current tab's template ID
   const currentTemplateId = activeTab?.templateId || '';
   
