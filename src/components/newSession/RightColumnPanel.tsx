@@ -181,6 +181,28 @@ export const RightColumnPanel = ({
   const existingLetter = sessionId ? getLetterBySessionId(sessionId) : undefined;
   const hasGeneratedContent = activeTab?.content && activeTab.content.trim().length > 0;
 
+  // Per-tab preview/edit mode (default preview)
+  const [tabModes, setTabModes] = useState<Record<string, 'preview' | 'edit'>>({});
+  const currentMode: 'preview' | 'edit' = tabModes[activeNoteTabId] || 'preview';
+  const editorRef = useRef<HTMLTextAreaElement | null>(null);
+  const setMode = (mode: 'preview' | 'edit') => {
+    setTabModes(prev => ({ ...prev, [activeNoteTabId]: mode }));
+  };
+  useEffect(() => {
+    if (isGenerating) {
+      setTabModes(prev => ({ ...prev, [activeNoteTabId]: 'preview' }));
+    }
+  }, [isGenerating, activeNoteTabId]);
+  useEffect(() => {
+    if (currentMode === 'edit' && editorRef.current) {
+      editorRef.current.focus();
+    }
+  }, [currentMode, activeNoteTabId]);
+  const handleSaveNote = () => {
+    setMode('preview');
+    toast({ title: 'Note saved', description: 'Your changes have been saved.' });
+  };
+
   const handleMarkReviewed = () => {
     toast({
       title: "Note reviewed",
