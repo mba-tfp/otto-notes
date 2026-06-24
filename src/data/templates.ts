@@ -279,7 +279,8 @@ export const availableTemplates: TemplateListItem[] = [
   { id: "progress-note", name: "Progress Note", type: "Note", icon: "📝" },
   { id: "h-and-p", name: "H & P", type: "Note", icon: "🏥" },
   { id: "procedure-note", name: "Procedure Note", type: "Note", icon: "⚕️" },
-  { id: "referral-letter", name: "Referral Letter", type: "Letter", icon: "📨" }
+  { id: "referral-letter", name: "Referral Letter", type: "Letter", icon: "📨" },
+  { id: "gp-letter", name: "GP Letter", type: "Letter", icon: "📬" }
 ];
 
 // Template map for easy lookup
@@ -291,15 +292,18 @@ export const templateDefinitions: Record<string, TemplateDefinition> = {
   "progress-note": progressNoteTemplate,
   "h-and-p": hAndPTemplate,
   "procedure-note": procedureNoteTemplate,
-  "referral-letter": referralLetterTemplate
+  "referral-letter": referralLetterTemplate,
+  "gp-letter": gpLetterTemplate
 };
 
 // Template content examples for generation
 export const templateContentExamples: Record<string, TemplateDefinition> = {
   "soap-standard": soapNoteWithContent,
   "my-dictation": dictationWithContent,
-  "letter-to-gp": letterToGPWithContent
+  "letter-to-gp": letterToGPWithContent,
+  "gp-letter": gpLetterWithContent
 };
+
 
 // Helper function to format template sections as string
 export function formatTemplateSections(template: TemplateDefinition): string {
