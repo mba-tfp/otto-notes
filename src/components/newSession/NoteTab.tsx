@@ -481,35 +481,75 @@ export const NoteTab = ({
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="text-xs">Copy</TooltipContent>
               </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-8 w-8 p-0" 
-                    onClick={handleUndo}
-                    disabled={!canUndo}
+              {currentMode === 'edit' && (
+                <>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={handleUndo}
+                        disabled={!canUndo}
+                      >
+                        <Undo className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-xs">Undo</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={handleRedo}
+                        disabled={!canRedo}
+                      >
+                        <Redo className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-xs">Redo</TooltipContent>
+                  </Tooltip>
+                </>
+              )}
+              {hasGeneratedContent && currentMode === 'preview' && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 gap-1.5 px-2"
+                  onClick={() => setMode('edit')}
+                >
+                  <Pencil className="h-4 w-4" />
+                  Edit
+                </Button>
+              )}
+              {hasGeneratedContent && currentMode === 'edit' && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 gap-1.5 px-2"
+                    onClick={() => setMode('preview')}
                   >
-                    <Undo className="h-4 w-4" />
+                    <Eye className="h-4 w-4" />
+                    Preview
                   </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">Undo</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-8 w-8 p-0" 
-                    onClick={handleRedo}
-                    disabled={!canRedo}
+                  <Button
+                    size="sm"
+                    className="h-8 gap-1.5"
+                    onClick={handleSaveNote}
                   >
-                    <Redo className="h-4 w-4" />
+                    <Save className="h-4 w-4" />
+                    Save
                   </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">Redo</TooltipContent>
-              </Tooltip>
+                </>
+              )}
             </TooltipProvider>
+          </div>
+        </div>
+
+
           </div>
         </div>
 
