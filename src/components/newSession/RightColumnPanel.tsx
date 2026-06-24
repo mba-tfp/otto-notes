@@ -199,11 +199,45 @@ export const RightColumnPanel = ({
       setTabModes(prev => ({ ...prev, [activeNoteTabId]: 'preview' }));
     }
   }, [isGenerating, activeNoteTabId]);
+
+  // Tiptap rich-text editor (used in edit mode)
+  const isSyncingFromTabRef = useRef(false);
+  const richEditor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+    ],
+    content: activeTab?.content || '',
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm max-w-none focus:outline-none min-h-[300px] text-base leading-relaxed text-foreground',
+      },
+    },
+    onUpdate: ({ editor }) => {
+      if (isSyncingFromTabRef.current) return;
+      const html = editor.getHTML();
+      updateTabContent(html === '<p></p>' ? '' : html);
+    },
+  });
+
+  // Sync editor content when the active tab changes or content changes externally (e.g., generation)
   useEffect(() => {
-    if (currentMode === 'edit' && editorRef.current) {
-      editorRef.current.focus();
+    if (!richEditor) return;
+    const next = activeTab?.content || '';
+    if (richEditor.getHTML() !== next) {
+      isSyncingFromTabRef.current = true;
+      richEditor.commands.setContent(next, { emitUpdate: false });
+      isSyncingFromTabRef.current = false;
     }
-  }, [currentMode, activeNoteTabId]);
+  }, [activeNoteTabId, activeTab?.content, richEditor]);
+
+  useEffect(() => {
+    if (currentMode === 'edit' && richEditor) {
+      richEditor.commands.focus();
+    }
+  }, [currentMode, activeNoteTabId, richEditor]);
+
   const handleSaveNote = () => {
     setMode('preview');
     toast({ title: 'Note saved', description: 'Your changes have been saved.' });
