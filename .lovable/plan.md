@@ -1,31 +1,55 @@
-## Note tab: read-only preview by default with Edit → Save toggle
+# Fix GP Letter preview formatting and footer overlap
 
-Mirror the existing Otto Notes pattern (per screenshots): the Note tab opens in a read-only preview; an **Edit** button switches to a rich editing mode; a **Save** button commits changes and returns to preview.
+Two distinct bugs in the Note panel (`src/components/newSession/RightColumnPanel.tsx`).
 
-### Scope
-Single file: `src/components/newSession/NoteTab.tsx`. No backend or business-logic changes. No new types.
+## Bug 1 — Letter formatting collapses
 
-### Behavior
-- **Default mode = Preview** whenever an active tab has content. Switching tabs or generating a new note returns the tab to Preview.
-- **Preview mode**
-  - Renders `activeTab.content` as read-only formatted text (same typography as today's textarea, but non-editable — a `div` with `whitespace-pre-wrap`).
-  - Toolbar shows: template dropdown, More menu, language selector, **Edit** button (pencil icon + "Edit"), refresh/regenerate, Copy, language globe (matches screenshot 1).
-  - Undo/Redo hidden in preview mode.
-- **Edit mode**
-  - Renders the existing `<Textarea>` bound to `updateTabContent`, autofocused.
-  - Toolbar swaps the Edit button for a primary **Save** button (salmon/primary, save icon + "Save") plus a secondary **Preview** button (matches screenshot 2). Undo/Redo become visible in this mode.
-  - Save: persists current textarea content (already live via `updateTabContent`), shows a toast ("Note saved"), and returns the tab to Preview mode. Cancel/Preview button returns to Preview without extra confirmation (changes are already in state — matches existing auto-persist behavior; no destructive discard implied).
-- **Empty state** (no content yet): no Edit/Save buttons shown; template picker + warning behaves as today.
-- **Per-tab mode**: track `mode: 'preview' | 'edit'` per `activeTabId` in a `Record<string, 'preview' | 'edit'>` state (alongside existing `tabStates`). New tabs start in `preview`. When `onGenerate` completes and content arrives, the tab resets to `preview` (handled by defaulting unknown tab ids to `preview`).
+The GP Letter template seeds `activeTab.content` as **plain text** with blank-line paragraph separators (`\n\n`).
 
-### UI details
-- Edit button: `<Button variant="ghost" size="sm">` with `Pencil` icon + label "Edit", placed in the right-side action cluster before Copy.
-- Save button: `<Button size="sm" className="gap-2">` with `Save` icon + label "Save", primary styling (uses existing `bg-primary` salmon by default).
-- Preview button (visible only in edit mode): `<Button variant="ghost" size="sm">` with `Eye` icon + "Preview".
-- Read-only renderer: `<div className="flex-1 min-h-[300px] text-base leading-relaxed whitespace-pre-wrap text-foreground">{activeTab.content}</div>`.
-- Keep all existing letter actions, disclaimer banner, and SendToLettersDialog untouched.
+- In edit mode, Tiptap's `setContent(plainText)` treats it as HTML, so every `\n` is lost and the entire letter becomes one giant paragraph. When the user toggles back to Preview, the stored HTML is one `<p>` with the whole letter, which is what the screenshot shows.
+- In preview mode, we render via `dangerouslySetInnerHTML`, so plain-text content with `\n` also collapses.
+- The blue-ish tint comes from the `prose` class which restyles the text; not needed here.
 
-### Out of scope
-- No rich-text/Tiptap conversion (Letter detail uses Tiptap; Note tab stays plain text for now).
-- No keyboard shortcut for Edit/Save (Ctrl+S already mapped elsewhere — unchanged).
-- No autosave-on-blur. No dirty-state confirmation prompts.
+**Fix:**
+- Add a small helper `toEditorHtml(content)` that, if `content` contains no HTML tags, splits on blank lines and wraps each block in `<p>` (single `\n` becomes `<br/>`). Otherwise return as-is.
+- Use that helper when seeding/syncing Tiptap content (`setContent`) so paragraph structure is preserved on first load and on tab switches.
+- Use the same helper when rendering preview via `dangerouslySetInnerHTML`.
+- Drop the `prose prose-sm` class on the preview wrapper; keep `text-foreground` + `whitespace-normal` so the body uses the app's normal typography.
+
+## Bug 2 — Reviewed / Send to Letters footer overlaps content
+
+Current structure inside the Note panel:
+
+```text
+<div className="flex-1 overflow-auto">       ← scroll container
+  <div className="flex flex-col h-full p-4">  ← forced to parent height
+    <editor flex-1 min-h-[300px] />            ← content overflows the box
+    <footer mt-4 pt-4 border-t />              ← gets covered by overflow
+  </div>
+</div>
+```
+
+Because the inner column is `h-full`, the editor is a fixed-height flex child but its ProseMirror text grows past it. The overflow visually paints on top of the footer, producing the overlap in the screenshot.
+
+**Fix:** lift the footer out of the scroll area and pin it to the bottom of the Note panel.
+
+- Restructure the Note panel as:
+  ```text
+  <div className="flex flex-col h-full">
+    <div className="flex-1 overflow-auto p-4">   ← only the content scrolls
+      <editor / preview>
+    </div>
+    <div className="shrink-0 border-t border-border bg-background px-4 py-3 flex items-center gap-3">
+      Review disclaimer + Reviewed / Send to Letters buttons
+    </div>
+  </div>
+  ```
+- Remove `h-full` from the inner column and the `mt-4 pt-4 border-t` from the footer (replaced by the pinned container's `border-t`).
+- Keep the existing conditional that hides the action buttons until `hasGeneratedContent`, and keep the existing `existingLetter` Sent badge branch.
+- Keep the disclaimer visible at all times (matches today's behaviour).
+
+## Files touched
+
+- `src/components/newSession/RightColumnPanel.tsx` — add `toEditorHtml` helper, use it in the Tiptap sync `useEffect` and in the preview render, restructure the Note panel JSX to pin the footer.
+
+No other files, no schema, no new dependencies.
