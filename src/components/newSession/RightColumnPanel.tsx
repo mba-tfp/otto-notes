@@ -548,70 +548,42 @@ export const RightColumnPanel = ({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {hasGeneratedContent && currentMode === 'preview' && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 gap-1.5 px-2"
-              onClick={() => setMode('edit')}
-              title="Edit note"
-            >
-              <Pencil className="h-4 w-4" />
-              Edit
-            </Button>
-          )}
-          {hasGeneratedContent && currentMode === 'edit' && (
-            <>
+          <div className="ml-auto flex items-center gap-1">
+            {hasGeneratedContent && currentMode === 'preview' && (
               <Button
                 variant="ghost"
                 size="sm"
                 className="h-8 gap-1.5 px-2"
-                onClick={() => setMode('preview')}
-                title="Preview"
+                onClick={() => setMode('edit')}
+                title="Edit note"
               >
-                <Eye className="h-4 w-4" />
-                Preview
+                <Pencil className="h-4 w-4" />
+                Edit
               </Button>
-              <Button
-                size="sm"
-                className="h-8 gap-1.5"
-                onClick={handleSaveNote}
-              >
-                <Save className="h-4 w-4" />
-                Save
-              </Button>
-            </>
-          )}
+            )}
+            {hasGeneratedContent && currentMode === 'edit' && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 gap-1.5 px-2"
+                  onClick={() => setMode('preview')}
+                  title="Preview"
+                >
+                  <Eye className="h-4 w-4" />
+                  Preview
+                </Button>
+                <Button
+                  size="sm"
+                  className="h-8 gap-1.5"
+                  onClick={handleSaveNote}
+                >
+                  <Save className="h-4 w-4" />
+                  Save
+                </Button>
+              </>
+            )}
 
-          <div className="ml-auto flex items-center gap-1">
-            {/* Language Selector */}
-            <Select value={currentTabState.language} onValueChange={handleLanguageChange}>
-              <SelectTrigger className="w-auto h-8 gap-1 border-0 bg-transparent hover:bg-muted px-2">
-                <Globe className="h-4 w-4 text-muted-foreground" />
-                <span>{languages.find(l => l.code === currentTabState.language)?.flag}</span>
-              </SelectTrigger>
-              <SelectContent>
-                {languages.map(lang => (
-                  <SelectItem key={lang.code} value={lang.code}>
-                    <span className="flex items-center gap-2">
-                      <span>{lang.flag}</span>
-                      <span>{lang.name}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={handleCopyAll}
-              disabled={!activeTab?.content}
-              title="Copy note"
-            >
-              <Copy className="h-4 w-4" />
-            </Button>
             {currentMode === 'edit' && (
               <>
                 <Button
@@ -636,7 +608,37 @@ export const RightColumnPanel = ({
                 </Button>
               </>
             )}
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={handleCopyAll}
+              disabled={!activeTab?.content}
+              title="Copy note"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+
+            {/* Language Selector */}
+            <Select value={currentTabState.language} onValueChange={handleLanguageChange}>
+              <SelectTrigger className="w-auto h-8 gap-1 border-0 bg-transparent hover:bg-muted px-2">
+                <Globe className="h-4 w-4 text-muted-foreground" />
+                <span>{languages.find(l => l.code === currentTabState.language)?.flag}</span>
+              </SelectTrigger>
+              <SelectContent>
+                {languages.map(lang => (
+                  <SelectItem key={lang.code} value={lang.code}>
+                    <span className="flex items-center gap-2">
+                      <span>{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+
 
         </div>
       )}
