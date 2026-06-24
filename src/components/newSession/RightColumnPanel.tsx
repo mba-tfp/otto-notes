@@ -200,6 +200,19 @@ export const RightColumnPanel = ({
     }
   }, [isGenerating, activeNoteTabId]);
 
+  // Convert stored content (which may be plain text) to HTML paragraphs so
+  // line breaks survive both Tiptap setContent and preview rendering.
+  const toEditorHtml = useCallback((content: string): string => {
+    if (!content) return '';
+    if (/<[a-z][\s\S]*>/i.test(content)) return content;
+    const esc = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return content
+      .split(/\n\s*\n/)
+      .map(block => `<p>${esc(block).replace(/\n/g, '<br/>')}</p>`)
+      .join('');
+  }, []);
+
   // Tiptap rich-text editor (used in edit mode)
   const isSyncingFromTabRef = useRef(false);
   const updateTabContentRef = useRef<(content: string) => void>(() => {});
@@ -209,10 +222,10 @@ export const RightColumnPanel = ({
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
     ],
-    content: activeTab?.content || '',
+    content: toEditorHtml(activeTab?.content || ''),
     editorProps: {
       attributes: {
-        class: 'prose prose-sm max-w-none focus:outline-none min-h-[300px] text-base leading-relaxed text-foreground',
+        class: 'focus:outline-none min-h-[300px] text-base leading-relaxed text-foreground',
       },
     },
     onUpdate: ({ editor }) => {
@@ -226,13 +239,15 @@ export const RightColumnPanel = ({
   // Sync editor content when the active tab changes or content changes externally (e.g., generation)
   useEffect(() => {
     if (!richEditor) return;
-    const next = activeTab?.content || '';
-    if (richEditor.getHTML() !== next) {
+    if (richEditor.isFocused) return;
+    const nextHtml = toEditorHtml(activeTab?.content || '');
+    if (richEditor.getHTML() !== nextHtml) {
       isSyncingFromTabRef.current = true;
-      richEditor.commands.setContent(next, { emitUpdate: false });
+      richEditor.commands.setContent(nextHtml, { emitUpdate: false });
       isSyncingFromTabRef.current = false;
     }
-  }, [activeNoteTabId, activeTab?.content, richEditor]);
+  }, [activeNoteTabId, activeTab?.content, richEditor, toEditorHtml]);
+
 
   useEffect(() => {
     if (currentMode === 'edit' && richEditor) {
@@ -785,10 +800,10 @@ export const RightColumnPanel = ({
           </div>
         ) : (
           // Note Panel
-          <div className="flex flex-col h-full p-4">
+          <div className="flex flex-col min-h-full">
             {/* Loading State */}
             {isGenerating && (
-              <div className="flex-1 flex flex-col items-center justify-center gap-3">
+              <div className="flex-1 flex flex-col items-center justify-center gap-3 p-4">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 <span className="text-muted-foreground">Generating note...</span>
               </div>
@@ -796,7 +811,7 @@ export const RightColumnPanel = ({
 
             {/* No Content Warning */}
             {!isGenerating && showNoContentWarning && !activeTab?.content && (
-              <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center px-8">
+              <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center px-8 py-4">
                 <AlertCircle className="h-10 w-10 text-amber-500" />
                 <div>
                   <p className="font-medium text-foreground">No content to generate from</p>
@@ -807,31 +822,32 @@ export const RightColumnPanel = ({
               </div>
             )}
 
-            {/* Note textarea - show when not generating and either has content or no warning */}
+            {/* Note editor / preview */}
             {!isGenerating && (!showNoContentWarning || activeTab?.content) && (
               <>
-                {currentMode === 'edit' || !hasGeneratedContent ? (
-                  <div className="flex-1 flex flex-col min-h-[300px]">
-                    {richEditor && (
-                      <div className="mb-2 pb-2 border-b border-border">
-                        <RichTextToolbar editor={richEditor} />
-                      </div>
-                    )}
-                    <EditorContent
-                      editor={richEditor}
-                      className="flex-1 min-h-[260px] [&_.ProseMirror]:min-h-[260px] [&_.ProseMirror]:outline-none"
+                <div className="flex-1 p-4">
+                  {currentMode === 'edit' || !hasGeneratedContent ? (
+                    <div className="flex flex-col">
+                      {richEditor && (
+                        <div className="mb-2 pb-2 border-b border-border">
+                          <RichTextToolbar editor={richEditor} />
+                        </div>
+                      )}
+                      <EditorContent
+                        editor={richEditor}
+                        className="[&_.ProseMirror]:min-h-[260px] [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-3"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className="text-base leading-relaxed text-foreground [&_p]:my-3 [&_h1]:text-xl [&_h1]:font-semibold [&_h1]:mt-4 [&_h1]:mb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-4 [&_h2]:mb-2 [&_h3]:font-semibold [&_h3]:mt-3 [&_h3]:mb-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6"
+                      dangerouslySetInnerHTML={{ __html: toEditorHtml(activeTab?.content || '') }}
                     />
-                  </div>
-                ) : (
-                  <div
-                    className="flex-1 min-h-[300px] text-base leading-relaxed text-foreground prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ __html: activeTab?.content || '' }}
-                  />
-                )}
+                  )}
+                </div>
 
-
-                {/* Review disclaimer + Letter Actions */}
-                <div className="mt-4 pt-4 border-t border-border flex items-center gap-3">
+                {/* Review disclaimer + Letter Actions — pinned to bottom of the scroll viewport */}
+                <div className="sticky bottom-0 z-10 shrink-0 border-t border-border bg-background px-4 py-3 flex items-center gap-3">
                   <div className="flex items-center gap-2 text-xs text-amber-800 dark:text-amber-200">
                     <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0" />
                     <span>Review your note before use to ensure it accurately represents the visit</span>
@@ -868,6 +884,7 @@ export const RightColumnPanel = ({
               </>
             )}
           </div>
+
         )}
       </div>
 
