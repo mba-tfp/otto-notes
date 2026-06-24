@@ -200,6 +200,19 @@ export const RightColumnPanel = ({
     }
   }, [isGenerating, activeNoteTabId]);
 
+  // Convert stored content (which may be plain text) to HTML paragraphs so
+  // line breaks survive both Tiptap setContent and preview rendering.
+  const toEditorHtml = useCallback((content: string): string => {
+    if (!content) return '';
+    if (/<[a-z][\s\S]*>/i.test(content)) return content;
+    const esc = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return content
+      .split(/\n\s*\n/)
+      .map(block => `<p>${esc(block).replace(/\n/g, '<br/>')}</p>`)
+      .join('');
+  }, []);
+
   // Tiptap rich-text editor (used in edit mode)
   const isSyncingFromTabRef = useRef(false);
   const updateTabContentRef = useRef<(content: string) => void>(() => {});
@@ -209,10 +222,10 @@ export const RightColumnPanel = ({
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
     ],
-    content: activeTab?.content || '',
+    content: toEditorHtml(activeTab?.content || ''),
     editorProps: {
       attributes: {
-        class: 'prose prose-sm max-w-none focus:outline-none min-h-[300px] text-base leading-relaxed text-foreground',
+        class: 'focus:outline-none min-h-[300px] text-base leading-relaxed text-foreground',
       },
     },
     onUpdate: ({ editor }) => {
@@ -226,13 +239,15 @@ export const RightColumnPanel = ({
   // Sync editor content when the active tab changes or content changes externally (e.g., generation)
   useEffect(() => {
     if (!richEditor) return;
-    const next = activeTab?.content || '';
-    if (richEditor.getHTML() !== next) {
+    if (richEditor.isFocused) return;
+    const nextHtml = toEditorHtml(activeTab?.content || '');
+    if (richEditor.getHTML() !== nextHtml) {
       isSyncingFromTabRef.current = true;
-      richEditor.commands.setContent(next, { emitUpdate: false });
+      richEditor.commands.setContent(nextHtml, { emitUpdate: false });
       isSyncingFromTabRef.current = false;
     }
-  }, [activeNoteTabId, activeTab?.content, richEditor]);
+  }, [activeNoteTabId, activeTab?.content, richEditor, toEditorHtml]);
+
 
   useEffect(() => {
     if (currentMode === 'edit' && richEditor) {
