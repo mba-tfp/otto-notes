@@ -1,9 +1,15 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, AlertTriangle, Bold, Italic, List, Paperclip, Printer, FileDown, Send, PenLine, CheckCircle, Globe, Pencil, Save, Eye } from 'lucide-react';
 import { toast as sonnerToast } from 'sonner';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import TextAlign from '@tiptap/extension-text-align';
+import { RichTextToolbar } from '@/components/letters/RichTextToolbar';
 import { Patient } from '@/types/session';
 import { getDemoCnpDocs, DemoCnpDocument } from '@/data/demoCnpDocuments';
 import { CnpDocumentsPickerModal } from './CnpDocumentsPickerModal';
+
 
 
 const ALLOWED_EXTENSIONS = ['.pdf', '.docx', '.doc', '.png', '.jpg', '.jpeg'];
@@ -193,11 +199,47 @@ export const RightColumnPanel = ({
       setTabModes(prev => ({ ...prev, [activeNoteTabId]: 'preview' }));
     }
   }, [isGenerating, activeNoteTabId]);
+
+  // Tiptap rich-text editor (used in edit mode)
+  const isSyncingFromTabRef = useRef(false);
+  const updateTabContentRef = useRef<(content: string) => void>(() => {});
+  const richEditor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+    ],
+    content: activeTab?.content || '',
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm max-w-none focus:outline-none min-h-[300px] text-base leading-relaxed text-foreground',
+      },
+    },
+    onUpdate: ({ editor }) => {
+      if (isSyncingFromTabRef.current) return;
+      const html = editor.getHTML();
+      updateTabContentRef.current(html === '<p></p>' ? '' : html);
+    },
+  });
+
+
+  // Sync editor content when the active tab changes or content changes externally (e.g., generation)
   useEffect(() => {
-    if (currentMode === 'edit' && editorRef.current) {
-      editorRef.current.focus();
+    if (!richEditor) return;
+    const next = activeTab?.content || '';
+    if (richEditor.getHTML() !== next) {
+      isSyncingFromTabRef.current = true;
+      richEditor.commands.setContent(next, { emitUpdate: false });
+      isSyncingFromTabRef.current = false;
     }
-  }, [currentMode, activeNoteTabId]);
+  }, [activeNoteTabId, activeTab?.content, richEditor]);
+
+  useEffect(() => {
+    if (currentMode === 'edit' && richEditor) {
+      richEditor.commands.focus();
+    }
+  }, [currentMode, activeNoteTabId, richEditor]);
+
   const handleSaveNote = () => {
     setMode('preview');
     toast({ title: 'Note saved', description: 'Your changes have been saved.' });
@@ -313,6 +355,12 @@ export const RightColumnPanel = ({
     onNoteTabsChange(newTabs);
   }, [activeNoteTabId, activeTab?.content, noteTabs, onNoteTabsChange]);
 
+  // Keep the editor's onUpdate callback pointing at the latest updateTabContent
+  useEffect(() => {
+    updateTabContentRef.current = updateTabContent;
+  }, [updateTabContent]);
+
+
   const handleUndo = useCallback(() => {
     const { undoStack } = currentTabState;
     if (undoStack.length === 0) return;
@@ -376,7 +424,9 @@ export const RightColumnPanel = ({
 
   const handleCopyAll = () => {
     if (activeTab?.content) {
-      navigator.clipboard.writeText(activeTab.content);
+      const plain = richEditor?.getText() || activeTab.content.replace(/<[^>]+>/g, '');
+      navigator.clipboard.writeText(plain);
+
       toast({
         title: "Note copied to clipboard",
         description: "The full note content has been copied.",
@@ -584,30 +634,8 @@ export const RightColumnPanel = ({
               </>
             )}
 
-            {currentMode === 'edit' && (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={handleUndo}
-                  disabled={!canUndo}
-                  title="Undo"
-                >
-                  <Undo className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={handleRedo}
-                  disabled={!canRedo}
-                  title="Redo"
-                >
-                  <Redo className="h-4 w-4" />
-                </Button>
-              </>
-            )}
+
+
 
             <Button
               variant="ghost"
@@ -783,18 +811,24 @@ export const RightColumnPanel = ({
             {!isGenerating && (!showNoContentWarning || activeTab?.content) && (
               <>
                 {currentMode === 'edit' || !hasGeneratedContent ? (
-                  <Textarea
-                    ref={editorRef}
-                    value={activeTab?.content || ''}
-                    onChange={(e) => updateTabContent(e.target.value)}
-                    placeholder="Select a template above to generate a note"
-                    className="flex-1 min-h-[300px] resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-base leading-relaxed whitespace-pre-wrap"
-                  />
-                ) : (
-                  <div className="flex-1 min-h-[300px] text-base leading-relaxed whitespace-pre-wrap text-foreground">
-                    {activeTab?.content}
+                  <div className="flex-1 flex flex-col min-h-[300px]">
+                    {richEditor && (
+                      <div className="mb-2 pb-2 border-b border-border">
+                        <RichTextToolbar editor={richEditor} />
+                      </div>
+                    )}
+                    <EditorContent
+                      editor={richEditor}
+                      className="flex-1 min-h-[260px] [&_.ProseMirror]:min-h-[260px] [&_.ProseMirror]:outline-none"
+                    />
                   </div>
+                ) : (
+                  <div
+                    className="flex-1 min-h-[300px] text-base leading-relaxed text-foreground prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: activeTab?.content || '' }}
+                  />
                 )}
+
 
                 {/* Review disclaimer + Letter Actions */}
                 <div className="mt-4 pt-4 border-t border-border flex items-center gap-3">
