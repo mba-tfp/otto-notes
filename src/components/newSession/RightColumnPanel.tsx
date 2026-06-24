@@ -424,7 +424,9 @@ export const RightColumnPanel = ({
 
   const handleCopyAll = () => {
     if (activeTab?.content) {
-      navigator.clipboard.writeText(activeTab.content);
+      const plain = richEditor?.getText() || activeTab.content.replace(/<[^>]+>/g, '');
+      navigator.clipboard.writeText(plain);
+
       toast({
         title: "Note copied to clipboard",
         description: "The full note content has been copied.",
