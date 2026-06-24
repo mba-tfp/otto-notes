@@ -1,9 +1,15 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, AlertTriangle, Bold, Italic, List, Paperclip, Printer, FileDown, Send, PenLine, CheckCircle, Globe, Pencil, Save, Eye } from 'lucide-react';
 import { toast as sonnerToast } from 'sonner';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import TextAlign from '@tiptap/extension-text-align';
+import { RichTextToolbar } from '@/components/letters/RichTextToolbar';
 import { Patient } from '@/types/session';
 import { getDemoCnpDocs, DemoCnpDocument } from '@/data/demoCnpDocuments';
 import { CnpDocumentsPickerModal } from './CnpDocumentsPickerModal';
+
 
 
 const ALLOWED_EXTENSIONS = ['.pdf', '.docx', '.doc', '.png', '.jpg', '.jpeg'];
