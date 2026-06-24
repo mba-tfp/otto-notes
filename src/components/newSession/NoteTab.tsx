@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, Send, Download, CheckCircle, Globe, AlertTriangle } from 'lucide-react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { Plus, X, FileText, ChevronDown, Copy, Undo, Redo, MoreHorizontal, Loader2, AlertCircle, Send, Download, CheckCircle, Globe, AlertTriangle, Pencil, Save, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
