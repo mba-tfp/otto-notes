@@ -235,6 +235,41 @@ export const referralLetterTemplate: TemplateDefinition = {
   ]
 };
 
+// 9. GP Letter Template
+const GP_LETTER_BODY = `[Current Date]
+
+Dr. [Referring Physician's Name]
+[Referring Physician's Address]
+
+Dear Dr. [Referring Physician's Last Name],
+
+Re: Quynn King (DOB Jan, 01, 2014) & Quynn King (DOB Jan, 01, 2014)
+
+I hope this letter finds you well. I recently had a new consultation with Quynn and Quynn to discuss fertility consultation in the context of a same-sex couple referral, with referral documentation noting Low AMH.
+
+The available intake documentation was reviewed for both partners. Quynn King submitted a health form on April 17, 2024 with referral date listed as Apr, 17, 2024, and Quynn King submitted a health form on April 17, 2024 with referral date listed as Apr, 17, 2024. For both individuals, the submitted forms contain limited clinical detail. No prior pregnancy history, semen analysis, hormonal testing, scrotal ultrasound, genetic testing, or prior urology assessment was documented. No medical conditions, medications, supplements, allergies, surgical history, substance use history, or relevant family history were provided in the intake material. As such, there is currently insufficient diagnostic information available to draw conclusions regarding fertility potential or to interpret the referral concern in detail. The accompanying transcript and additional medical context provided only limited non-clinical text and did not add substantive medical information.
+
+We discussed that, given the absence of prior fertility testing and the incomplete medical history currently available, the next step will be to obtain a more comprehensive reproductive and medical history from both partners and clarify their family-building goals, including intended use of donor gametes, fertility preservation considerations, and preferred treatment pathway. Depending on these goals, an initial fertility workup may include baseline laboratory investigations, genetic screening as appropriate, infectious disease screening, and any additional assessment relevant to treatment planning. I would also recommend review of ovarian reserve information and clarification of the Low AMH referral concern, as this appears discordant with the demographic information in the submitted forms and may reflect incomplete intake data or referral administrative error.
+
+At this stage, no definitive treatment recommendation can be made until the history is clarified and appropriate investigations are completed. We will proceed with further consultation and individualized planning once the outstanding information has been gathered. If indicated after this review, referral for donor sperm counselling, genetic counselling, or other third-party reproduction supports may be considered.
+
+Thank you for entrusting us with the care of your patient. We will continue to keep you updated on her progress and any further developments in her treatment plan. Please do not hesitate to reach out if you have any questions or require additional information.
+
+Sincerely,
+
+DICTATED BUT NOT READ`;
+
+export const gpLetterTemplate: TemplateDefinition = {
+  id: "gp-letter",
+  name: "GP Letter",
+  type: "Letter",
+  sections: [{ name: "Body", content: GP_LETTER_BODY }],
+  content: GP_LETTER_BODY
+};
+
+export const gpLetterWithContent: TemplateDefinition = gpLetterTemplate;
+
+
 // List of available templates for the dropdown
 export const availableTemplates: TemplateListItem[] = [
   { id: "soap-standard", name: "SOAP Note (Standard)", type: "Note", icon: "📋" },
