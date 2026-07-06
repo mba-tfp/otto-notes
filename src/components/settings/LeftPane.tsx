@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
-import { Mail, FileText, MessageSquare, Store, Settings, BookOpen, Plus, ChevronDown, LogOut, ChevronRight, ChevronLeft, Menu, X, Sparkles } from 'lucide-react';
+import { useSidebarMobile } from '@/contexts/SidebarMobileContext';
+import { Mail, FileText, MessageSquare, Store, Settings, BookOpen, Plus, ChevronDown, LogOut, ChevronRight, ChevronLeft, X, Sparkles } from 'lucide-react';
 
 import { useSessionsPanel } from '@/contexts/SessionsPanelContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -26,14 +27,20 @@ export const LeftPane = () => {
   const user = mockUser;
   
   const { data: hasUnseen } = useUnseenReleases();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isOpen: isMobileMenuOpen, close: closeMobileMenu } = useSidebarMobile();
   const bp = useBreakpoint();
   const [isCollapsedPref, setIsCollapsedPref] = useState(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
     return saved === 'true';
   });
-  // Force collapse at tablet widths regardless of user preference
-  const isCollapsed = bp === 'tablet' ? true : isCollapsedPref;
+  // On first visit at tablet width, default to collapsed. User can still toggle.
+  useEffect(() => {
+    if (bp === 'tablet' && localStorage.getItem('sidebar-collapsed') === null) {
+      setIsCollapsedPref(true);
+      localStorage.setItem('sidebar-collapsed', 'true');
+    }
+  }, [bp]);
+  const isCollapsed = isCollapsedPref;
 
 
   // Get global sessions panel context
@@ -110,13 +117,8 @@ export const LeftPane = () => {
     id: 'resource-center'
   }];
   return <>
-      {/* Mobile Hamburger Button */}
-      <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden fixed top-4 left-4 z-40 p-2.5 rounded-xl bg-sidebar text-foreground hover:bg-muted shadow-subtle transition-all" aria-label="Open menu">
-        <Menu className="h-5 w-5" />
-      </button>
-
       {/* Mobile Backdrop */}
-      {isMobileMenuOpen && <div className="md:hidden fixed inset-0 bg-foreground/40 backdrop-blur-sm z-40 transition-opacity duration-300" onClick={() => setIsMobileMenuOpen(false)} />}
+      {isMobileMenuOpen && <div className="md:hidden fixed inset-0 bg-foreground/40 backdrop-blur-sm z-40 transition-opacity duration-300" onClick={() => closeMobileMenu()} />}
 
       {/* Sidebar */}
       <div className={`
@@ -127,7 +129,7 @@ export const LeftPane = () => {
         ${isMobileMenuOpen ? '!flex fixed inset-y-0 left-0 z-50 w-64 m-2 rounded-2xl' : ''}
       `}>
         {/* Mobile Close Button */}
-        <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden absolute top-5 right-4 z-10 p-2 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-all" aria-label="Close menu">
+        <button onClick={() => closeMobileMenu()} className="md:hidden absolute top-5 right-4 z-10 p-2 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-all" aria-label="Close menu">
           <X className="h-5 w-5" />
         </button>
 
@@ -239,7 +241,7 @@ export const LeftPane = () => {
             }
             const handleClick = () => {
               // Close mobile menu when navigating
-              setIsMobileMenuOpen(false);
+              closeMobileMenu();
               if (item.id === 'sessions') {
                 // If we're on /sessions page, navigate there
                 // If we're on another allowed page, toggle the sessions panel
@@ -312,7 +314,7 @@ export const LeftPane = () => {
             const itemRoute = item.id === 'whats-new' ? '/whats-new' : '/resource-center';
             const isActive = !opensInNewTab && location.pathname === itemRoute;
             const handleClick = () => {
-              setIsMobileMenuOpen(false);
+              closeMobileMenu();
               if (opensInNewTab) {
                 window.open(itemRoute, '_blank', 'noopener,noreferrer');
                 return;

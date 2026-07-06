@@ -8,6 +8,7 @@ import { TrainingBanner } from '@/components/onboarding/TrainingBanner';
 import { FeedbackNudgeBanner } from '@/components/onboarding/FeedbackNudgeBanner';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { MobileTopBar } from './MobileTopBar';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -42,7 +43,8 @@ export const AppLayout = ({ children, hideGlobalSessionsPanel = false }: AppLayo
         {showInlinePanel && <GlobalSessionsPanel />}
       </div>
       <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-hidden">{children}</div>
+        <MobileTopBar />
+        <div className="flex-1 overflow-hidden min-h-0">{children}</div>
         <AppFooter />
       </div>
 
