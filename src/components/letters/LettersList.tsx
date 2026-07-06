@@ -195,7 +195,7 @@ export const LettersList = ({ onSelectLetter }: { onSelectLetter?: (id: string) 
                       key={letter.id}
                       letter={letter}
                       isActive={selectedLetterId === letter.id}
-                      onClick={() => setSelectedLetterId(letter.id)}
+                      onClick={() => (onSelectLetter ? onSelectLetter(letter.id) : setSelectedLetterId(letter.id))}
                     />
                   ))}
                 </div>
@@ -222,7 +222,7 @@ export const LettersList = ({ onSelectLetter }: { onSelectLetter?: (id: string) 
                       key={letter.id}
                       letter={letter}
                       isActive={selectedLetterId === letter.id}
-                      onClick={() => setSelectedLetterId(letter.id)}
+                      onClick={() => (onSelectLetter ? onSelectLetter(letter.id) : setSelectedLetterId(letter.id))}
                     />
                   ))}
                 </div>

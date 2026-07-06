@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-export const LetterDetail = () => {
+export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
   const { selectedLetterId, getLetter, updateLetterContent, markAsSent, unsendLetter, deleteLetter, acknowledgeDoctorNote } = useLetters();
   const { toast } = useToast();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
