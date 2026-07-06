@@ -33,11 +33,10 @@ export const LeftPane = () => {
     const saved = localStorage.getItem('sidebar-collapsed');
     return saved === 'true';
   });
-  // On first visit at tablet width, default to collapsed. User can still toggle.
+  // Auto-collapse when entering tablet width. User can still expand after.
   useEffect(() => {
-    if (bp === 'tablet' && localStorage.getItem('sidebar-collapsed') === null) {
+    if (bp === 'tablet') {
       setIsCollapsedPref(true);
-      localStorage.setItem('sidebar-collapsed', 'true');
     }
   }, [bp]);
   const isCollapsed = isCollapsedPref;
