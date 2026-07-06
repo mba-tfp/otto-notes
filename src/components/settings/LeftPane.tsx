@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
-import { Mail, FileText, MessageSquare, Store, Settings, BookOpen, Plus, ChevronDown, LogOut, ChevronRight, ChevronLeft, Menu, X, Sparkles } from 'lucide-react';
+import { useSidebarMobile } from '@/contexts/SidebarMobileContext';
+import { Mail, FileText, MessageSquare, Store, Settings, BookOpen, Plus, ChevronDown, LogOut, ChevronRight, ChevronLeft, X, Sparkles } from 'lucide-react';
 
 import { useSessionsPanel } from '@/contexts/SessionsPanelContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -26,14 +27,20 @@ export const LeftPane = () => {
   const user = mockUser;
   
   const { data: hasUnseen } = useUnseenReleases();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isOpen: isMobileMenuOpen, close: closeMobileMenu } = useSidebarMobile();
   const bp = useBreakpoint();
   const [isCollapsedPref, setIsCollapsedPref] = useState(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
     return saved === 'true';
   });
-  // Force collapse at tablet widths regardless of user preference
-  const isCollapsed = bp === 'tablet' ? true : isCollapsedPref;
+  // On first visit at tablet width, default to collapsed. User can still toggle.
+  useEffect(() => {
+    if (bp === 'tablet' && localStorage.getItem('sidebar-collapsed') === null) {
+      setIsCollapsedPref(true);
+      localStorage.setItem('sidebar-collapsed', 'true');
+    }
+  }, [bp]);
+  const isCollapsed = isCollapsedPref;
 
 
   // Get global sessions panel context
