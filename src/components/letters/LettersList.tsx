@@ -50,7 +50,7 @@ export const LettersList = ({ onSelectLetter }: { onSelectLetter?: (id: string) 
   };
 
   return (
-    <div className="h-full flex flex-col bg-white border-r border-border w-80 relative">
+    <div className="h-full flex flex-col bg-white border-r border-border w-full relative">
       {/* Controls - matching View Sessions */}
       <div className="p-4 space-y-3">
         <TooltipProvider delayDuration={300}>
