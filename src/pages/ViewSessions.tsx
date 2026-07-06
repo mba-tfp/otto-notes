@@ -27,7 +27,7 @@ const ViewSessionsContent = () => {
     setSelectedSessionId(id);
   };
 
-  const bp = useBreakpoint();
+
 
   const isMobile = bp === 'mobile';
   const showDetailOnly = isMobile && !!selectedSessionId;
