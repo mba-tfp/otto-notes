@@ -158,7 +158,7 @@ export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
                 {letter.status === 'to_be_sent' ? 'To be sent' : 'Sent'}
               </Badge>
             </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
               <div className="flex items-center gap-1.5">
                 <Calendar className="h-3.5 w-3.5" />
                 <span>{formatDate(letter.sessionDate)}</span>
@@ -172,7 +172,7 @@ export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 flex-wrap">
             {/* Delete — only for to_be_sent letters; TODO: gate behind doctor/admin role */}
             {isEditable && (
               <Button
