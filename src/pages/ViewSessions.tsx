@@ -1,13 +1,32 @@
 import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { SessionList } from '@/components/sessions/SessionList';
 import { SessionDetail } from '@/components/sessions/SessionDetail';
 import { SessionsLayoutProvider, useSessionsLayout } from '@/contexts/SessionsLayoutContext';
+import { useSessions } from '@/contexts/SessionsContext';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { Button } from '@/components/ui/button';
 
 const ViewSessionsContent = () => {
   const { isSessionsListVisible, selectedSessionId, setSelectedSessionId } = useSessionsLayout();
+  const { getSession } = useSessions();
+  const navigate = useNavigate();
+  const bp = useBreakpoint();
+
+  const handleSelect = (id: string | null) => {
+    if (!id) {
+      setSelectedSessionId(null);
+      return;
+    }
+    const session = getSession(id);
+    if (session && (session.status === 'draft' || session.status === 'empty')) {
+      navigate(`/new-session?id=${id}`);
+      return;
+    }
+    setSelectedSessionId(id);
+  };
+
   const bp = useBreakpoint();
 
   const isMobile = bp === 'mobile';
@@ -26,7 +45,7 @@ const ViewSessionsContent = () => {
                 : 'w-80 h-full flex-shrink-0'
             }
           >
-            <SessionList onSessionSelect={setSelectedSessionId} />
+            <SessionList onSessionSelect={handleSelect} />
           </div>
         )}
 
