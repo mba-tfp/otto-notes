@@ -27,10 +27,14 @@ export const LeftPane = () => {
   
   const { data: hasUnseen } = useUnseenReleases();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(() => {
+  const bp = useBreakpoint();
+  const [isCollapsedPref, setIsCollapsedPref] = useState(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
     return saved === 'true';
   });
+  // Force collapse at tablet widths regardless of user preference
+  const isCollapsed = bp === 'tablet' ? true : isCollapsedPref;
+
 
   // Get global sessions panel context
   const {
@@ -40,10 +44,11 @@ export const LeftPane = () => {
   } = useSessionsPanel();
   const isSessionsPage = location.pathname === '/sessions';
   const toggleSidebar = () => {
-    const newState = !isCollapsed;
-    setIsCollapsed(newState);
+    const newState = !isCollapsedPref;
+    setIsCollapsedPref(newState);
     localStorage.setItem('sidebar-collapsed', String(newState));
   };
+
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
