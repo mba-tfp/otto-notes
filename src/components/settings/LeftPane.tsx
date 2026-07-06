@@ -117,11 +117,6 @@ export const LeftPane = () => {
     id: 'resource-center'
   }];
   return <>
-      {/* Mobile Hamburger Button */}
-      <button onClick={() => closeMobileMenu()} className="md:hidden fixed top-4 left-4 z-40 p-2.5 rounded-xl bg-sidebar text-foreground hover:bg-muted shadow-subtle transition-all" aria-label="Open menu">
-        <Menu className="h-5 w-5" />
-      </button>
-
       {/* Mobile Backdrop */}
       {isMobileMenuOpen && <div className="md:hidden fixed inset-0 bg-foreground/40 backdrop-blur-sm z-40 transition-opacity duration-300" onClick={() => closeMobileMenu()} />}
 
