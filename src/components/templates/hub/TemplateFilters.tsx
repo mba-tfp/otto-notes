@@ -146,7 +146,7 @@ export const TemplateFilters = ({
       {activeCount >= 2 && onClearAll && (
         <button
           onClick={onClearAll}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors px-2 py-1 shrink-0 whitespace-nowrap"
         >
           Clear all
         </button>
