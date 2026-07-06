@@ -1,98 +1,66 @@
 
-# Phase 2: Primary Flows Responsive Refactor
+# Fix: Tablet sidebar expansion + mobile hamburger overlap
 
-Make View Sessions, Letters, and their detail views work at mobile, tablet, and desktop widths — without breaking desktop behavior.
+Two small responsive-layout bugs from Phase 1/2.
 
-## 1. Routing changes
+## Issue 1 — Tablet sidebar can't expand
 
-Add detail routes so mobile can push instead of split-pane:
+`src/components/settings/LeftPane.tsx` line 36:
 
-- `/sessions` — list only (mobile), list + detail (desktop/tablet)
-- `/sessions/:id` — detail (mobile pushes here; desktop/tablet updates URL but keeps split view)
-- `/letters` — same pattern
-- `/letters/:id` — same pattern
+```ts
+const isCollapsed = bp === 'tablet' ? true : isCollapsedPref;
+```
 
-`SessionsLayoutContext` and `LettersContext` switch from local `selectedId` state to reading/writing the `:id` param via `useParams` + `useNavigate`. Selecting a card on mobile navigates; on desktop it just updates the URL and the detail pane re-renders.
+This hard-forces `isCollapsed = true` at tablet width, so clicking the chevron updates `isCollapsedPref` in localStorage but the sidebar never re-renders as expanded. The toggle button appears functional but does nothing on tablet.
 
-## 2. View Sessions (`src/pages/ViewSessions.tsx`)
+**Fix:** Remove the hard override. Instead, seed the default preference to collapsed on tablet only for users who haven't set one yet, and honor the user's click at every breakpoint.
 
-Behavior by breakpoint:
+```ts
+const isCollapsed = isCollapsedPref;
+// On first mount at tablet width, default to collapsed if user has no saved preference.
+useEffect(() => {
+  if (bp === 'tablet' && localStorage.getItem('sidebar-collapsed') === null) {
+    setIsCollapsedPref(true);
+  }
+}, [bp]);
+```
 
-- **Desktop (`xl+`)**: unchanged — 320px `SessionList` + `SessionDetail` side-by-side.
-- **Tablet (`md–xl`)**: same split, but list becomes `w-72` and detail gets `min-w-0` so it never overflows.
-- **Mobile (`< md`)**:
-  - `/sessions` renders `SessionList` full-width, no detail pane.
-  - `/sessions/:id` renders `SessionDetail` full-width with a back button in its header that navigates to `/sessions`.
-  - The Sessions Panel toggle in `AppLayout` still opens as a `Sheet` (already done in Phase 1).
+Result: tablet users open collapsed by default, can click to expand, preference persists.
 
-## 3. Letters (`src/pages/Letters.tsx`)
+## Issue 2 — Mobile hamburger overlaps page content
 
-Mirror the sessions pattern:
+Currently the hamburger button in `LeftPane.tsx` is `fixed top-4 left-4 z-40`. There's no top bar reserving space, so it floats on top of whatever route is rendered and covers headers/toolbars.
 
-- Desktop: current split view unchanged.
-- Tablet: list `w-72`, detail `min-w-0`.
-- Mobile: `/letters` = list, `/letters/:id` = detail with back button.
-- Same swap logic between `GlobalSessionsPanel` and `LettersList` still applies at desktop.
+**Fix:** Add a mobile top bar in `AppLayout` (visible only `<md`) that reserves ~56px of vertical space and contains the hamburger. Content sits below it, no overlap.
 
-## 4. Toolbar collapse (list panes)
+- New tiny component `MobileTopBar.tsx` (rendered in `AppLayout`):
+  - `h-14 flex items-center px-3 border-b border-border bg-background md:hidden`
+  - Left: hamburger button that toggles a Sheet-hosted sidebar
+  - Right: Otto logo mark (small)
+- `AppLayout`:
+  - Render `<MobileTopBar />` at the top of the main content column on mobile only
+  - Main content wrapped so it flows below the bar (`flex-col` already in place)
+- `LeftPane.tsx`:
+  - Remove the `fixed top-4 left-4` hamburger button (dead code once the top bar owns it)
+  - Wire the Sheet open state through a shared context OR lift `isMobileMenuOpen` up — simplest: keep sidebar rendered as today but expose an open handler via a small context (`SidebarMobileContext`) so `MobileTopBar` can trigger it. Alternatively, switch mobile sidebar to shadcn `Sheet` and let the top bar control it directly.
 
-`SessionList` and `LettersList` toolbars today expose Search / Filter / Sort / Refresh inline. Below `md`:
-
-- Keep Search icon (expands inline as today).
-- Collapse Filter + Sort into a single "Filters" button that opens a `Sheet` from the right containing both the filter pills and the sort toggle.
-- Refresh stays.
-
-Desktop and tablet behavior unchanged.
-
-## 5. Card layouts
-
-`SessionCard` and `LetterCard`:
-
-- Below `sm`: reduce internal padding from `p-3` to `p-2.5`, allow patient/template metadata rows to `flex-wrap`, hide the secondary status badge (keep only the primary one).
-- Desktop unchanged.
-
-No visual restyling — only wrap/hide rules.
-
-## 6. Detail views
-
-`SessionDetail` and `LetterDetail` header:
-
-- Add a back-chevron button visible only below `md` that navigates to the parent list route.
-- Ensure the header actions row uses `flex-wrap` so buttons stack instead of overflowing on narrow widths.
-- Body content: replace any `max-w-*` that assumes desktop with `w-full max-w-none` on mobile.
-
-The rich-text editor in `LetterDetail` gets `overflow-x-auto` on its content wrapper so long inline elements scroll rather than pushing layout.
-
-## 7. What is NOT changing in Phase 2
-
-- No changes to New Session (done in Phase 1).
-- No changes to Settings/Templates (Phase 3).
-- No modal audit yet (Phase 3).
-- No design tokens, colors, spacing scale, or card visuals.
-- Desktop three-pane rules remain intact.
+Preferred: convert mobile sidebar to `Sheet` (cleaner, matches what Phase 1 did for the sessions panel). The top bar's hamburger opens the `Sheet`; `LeftPane` renders inside `SheetContent` on mobile only.
 
 ## Files touched
 
 ```text
-src/pages/ViewSessions.tsx
-src/pages/Letters.tsx
-src/App.tsx                                    (add /sessions/:id, /letters/:id routes)
-src/contexts/SessionsLayoutContext.tsx         (URL-driven selection)
-src/contexts/LettersContext.tsx                (URL-driven selection)
-src/components/sessions/SessionList.tsx        (toolbar Sheet on mobile)
-src/components/sessions/SessionDetail.tsx      (back button, wrap actions)
-src/components/sessions/SessionCard.tsx        (wrap/hide rules)
-src/components/letters/LettersList.tsx         (toolbar Sheet on mobile)
-src/components/letters/LetterDetail.tsx        (back button, wrap actions, editor overflow)
-src/components/letters/LetterCard.tsx          (wrap/hide rules)
+src/components/settings/LeftPane.tsx          (tablet toggle fix + remove fixed hamburger + Sheet wrap on mobile)
+src/components/layout/AppLayout.tsx           (render MobileTopBar above children on mobile)
+src/components/layout/MobileTopBar.tsx        (new)
+src/contexts/SidebarMobileContext.tsx         (new — controls Sheet open state; only if not using Sheet directly inline)
 ```
+
+Zero visual changes at desktop. No new dependencies.
 
 ## Verification
 
-After implementation, resize the preview to 375 / 768 / 1024 / 1280 and confirm:
-- List → detail navigation works on mobile with back button.
-- Desktop split view is pixel-identical to current.
-- Toolbar filter Sheet opens/closes on mobile.
-- No horizontal scroll on the body at any width for these routes.
+- Resize to tablet (~1000px): sidebar starts collapsed, chevron click expands to 256px, click again collapses. Preference persists across reload.
+- Resize to mobile (~400px): top bar with hamburger visible; page content (e.g. session header) sits below it, no overlap. Hamburger opens sidebar Sheet.
+- Desktop (≥1280px): no top bar, sidebar behavior unchanged.
 
-Approve to proceed, or tell me to adjust (e.g. skip the URL routing and use a `showDetail` state toggle instead — simpler but no deep-linking).
+Approve and I'll implement.
