@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { MinWidthGuard } from '@/components/layout/MinWidthGuard';
+
 import { ReleaseNotesList } from '@/components/releaseNotes/ReleaseNotesList';
 import { ReleaseNoteDetail } from '@/components/releaseNotes/ReleaseNoteDetail';
 import { Separator } from '@/components/ui/separator';
@@ -22,29 +24,32 @@ const WhatsNewContent = () => {
 
   return (
     <AppLayout hideGlobalSessionsPanel>
-      <div className="flex h-screen overflow-hidden bg-background w-full">
-        {isSessionsPanelVisible ? (
-          <div className="w-80 flex-shrink-0 h-full">
-            <GlobalSessionsPanel />
-          </div>
-        ) : (
-          <div className="w-80 flex-shrink-0 h-full">
-            <ReleaseNotesList
-              selectedNoteId={selectedNote?.id ?? null}
-              onSelectNote={setSelectedNote}
-            />
-          </div>
-        )}
+      <MinWidthGuard>
+        <div className="flex h-screen overflow-hidden bg-background w-full">
+          {isSessionsPanelVisible ? (
+            <div className="w-80 flex-shrink-0 h-full">
+              <GlobalSessionsPanel />
+            </div>
+          ) : (
+            <div className="w-80 flex-shrink-0 h-full">
+              <ReleaseNotesList
+                selectedNoteId={selectedNote?.id ?? null}
+                onSelectNote={setSelectedNote}
+              />
+            </div>
+          )}
 
-        <Separator orientation="vertical" className="h-full" />
+          <Separator orientation="vertical" className="h-full" />
 
-        <div className="flex-1 min-w-0 overflow-hidden">
-          <ReleaseNoteDetail note={selectedNote} />
+          <div className="flex-1 min-w-0 overflow-hidden">
+            <ReleaseNoteDetail note={selectedNote} />
+          </div>
         </div>
-      </div>
+      </MinWidthGuard>
     </AppLayout>
   );
 };
+
 
 const WhatsNew = () => {
   return <WhatsNewContent />;
