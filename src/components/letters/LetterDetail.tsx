@@ -135,11 +135,16 @@ export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
   }
 
   return (
-    <div className="flex-1 h-screen overflow-hidden bg-background flex flex-col">
+    <div className="flex-1 h-full overflow-hidden bg-background flex flex-col">
       {/* Header */}
-      <div className="border-b border-border px-6 py-4">
-        <div className="flex items-start justify-between">
-          <div>
+      <div className="border-b border-border px-4 md:px-6 py-4">
+        {onBack && (
+          <Button variant="ghost" size="sm" onClick={onBack} className="gap-2 mb-2 -ml-2">
+            ← Back
+          </Button>
+        )}
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="min-w-0">
             <div className="flex items-center gap-3 mb-1">
               <h1 className="text-xl font-semibold text-foreground">{letter.patientName}</h1>
               <Badge
