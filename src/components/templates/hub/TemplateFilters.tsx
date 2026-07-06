@@ -42,7 +42,7 @@ const FilterPill = ({ icon, label, value, defaultValue, options, onChange, isAct
       <DropdownMenuTrigger asChild>
         <button
           className={cn(
-            "inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all",
+            "inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all shrink-0",
             "border",
             isDefault
               ? "bg-white text-foreground border-border hover:bg-muted"
@@ -65,6 +65,7 @@ const FilterPill = ({ icon, label, value, defaultValue, options, onChange, isAct
           <ChevronDown className="h-3.5 w-3.5 opacity-60" />
         </button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent 
         align="start" 
         className={cn("min-w-[160px] max-h-[252px] overflow-y-auto bg-white border border-border shadow-lg rounded-xl p-1.5 z-50", dropdownClassName)}
