@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, Copy, Calendar, Globe, Zap, Mic, ThumbsUp, ThumbsDown, X, Edit } from 'lucide-react';
+import { Plus, Trash2, Copy, Calendar, Globe, Zap, Mic, ThumbsUp, ThumbsDown, X, ArrowUpRight, Edit } from 'lucide-react';
 import { useSessionsLayout } from '@/contexts/SessionsLayoutContext';
 import { useSessions } from '@/contexts/SessionsContext';
 import { useToast } from '@/hooks/use-toast';
@@ -212,8 +212,24 @@ export const SessionDetail = () => {
           </TooltipProvider>
         </TabsList>
 
-
-
+        {/* Empty State */}
+        {!hasContent && (
+          <div className="flex-1 flex items-center justify-center p-6">
+            <div className="text-center space-y-6 max-w-md">
+              <ArrowUpRight className="h-12 w-12 mx-auto text-muted-foreground" />
+              <div className="space-y-2">
+                <p className="text-lg font-medium">This session is a draft</p>
+                <p className="text-sm text-muted-foreground">
+                  Click Edit to continue recording and add content to this session
+                </p>
+              </div>
+              <Button variant="outline" className="gap-2" onClick={handleEditSession}>
+                <Edit className="h-4 w-4" />
+                Continue editing
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Context Tab */}
         {selectedSession.contextContent && (

@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useLetters } from '@/contexts/LettersContext';
 import { LetterCard } from './LetterCard';
 
-export const LettersList = () => {
+export const LettersList = ({ onSelectLetter }: { onSelectLetter?: (id: string) => void } = {}) => {
   const { letters, selectedLetterId, setSelectedLetterId } = useLetters();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -50,7 +50,7 @@ export const LettersList = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-white border-r border-border w-80 relative">
+    <div className="h-full flex flex-col bg-white border-r border-border w-full relative">
       {/* Controls - matching View Sessions */}
       <div className="p-4 space-y-3">
         <TooltipProvider delayDuration={300}>
@@ -195,7 +195,7 @@ export const LettersList = () => {
                       key={letter.id}
                       letter={letter}
                       isActive={selectedLetterId === letter.id}
-                      onClick={() => setSelectedLetterId(letter.id)}
+                      onClick={() => (onSelectLetter ? onSelectLetter(letter.id) : setSelectedLetterId(letter.id))}
                     />
                   ))}
                 </div>
@@ -222,7 +222,7 @@ export const LettersList = () => {
                       key={letter.id}
                       letter={letter}
                       isActive={selectedLetterId === letter.id}
-                      onClick={() => setSelectedLetterId(letter.id)}
+                      onClick={() => (onSelectLetter ? onSelectLetter(letter.id) : setSelectedLetterId(letter.id))}
                     />
                   ))}
                 </div>

@@ -52,6 +52,7 @@ const App = () => (
                     <Route path="/template-hub" element={<TemplateHub />} />
                     
                     <Route path="/letters" element={<Letters />} />
+                    <Route path="/letters/:id" element={<Letters />} />
                     <Route path="/whats-new" element={<WhatsNew />} />
                     <Route path="/resource-center" element={<ResourceCenter />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
