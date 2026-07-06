@@ -1,55 +1,134 @@
-# Fix GP Letter preview formatting and footer overlap
 
-Two distinct bugs in the Note panel (`src/components/newSession/RightColumnPanel.tsx`).
+# Responsive Refactor for Desktop + Web
 
-## Bug 1 — Letter formatting collapses
+Goal: make Otto Notes work cleanly at every width from ~360px (mobile) up to large desktop, so packaging as an Electron desktop app (any window size) doesn't break the UI. This is a systematic refactor, not a redesign — visuals, tokens, and brand stay identical.
 
-The GP Letter template seeds `activeTab.content` as **plain text** with blank-line paragraph separators (`\n\n`).
+## Scope
 
-- In edit mode, Tiptap's `setContent(plainText)` treats it as HTML, so every `\n` is lost and the entire letter becomes one giant paragraph. When the user toggles back to Preview, the stored HTML is one `<p>` with the whole letter, which is what the screenshot shows.
-- In preview mode, we render via `dangerouslySetInnerHTML`, so plain-text content with `\n` also collapses.
-- The blue-ish tint comes from the `prose` class which restyles the text; not needed here.
+**In scope (must be responsive):**
+- New Session (`/new-session`)
+- View Sessions (`/sessions`)
+- Letters (`/letters`)
+- Settings (`/settings`)
+- Template Hub + My Templates
+- Sidebar / global layout / footer
+- Onboarding modals, consent dialog, all shared modals
+- Global toast, tooltips, popovers
 
-**Fix:**
-- Add a small helper `toEditorHtml(content)` that, if `content` contains no HTML tags, splits on blank lines and wraps each block in `<p>` (single `\n` becomes `<br/>`). Otherwise return as-is.
-- Use that helper when seeding/syncing Tiptap content (`setContent`) so paragraph structure is preserved on first load and on tab switches.
-- Use the same helper when rendering preview via `dangerouslySetInnerHTML`.
-- Drop the `prose prose-sm` class on the preview wrapper; keep `text-foreground` + `whitespace-normal` so the body uses the app's normal typography.
+**Out of scope (skipped per your call):**
+- AI Assistant
+- What's New (`/whats-new`)
+- Resource / Help Center
+- Team
 
-## Bug 2 — Reviewed / Send to Letters footer overlaps content
+Those routes keep their current desktop-only layout and get a min-width guard with a "best viewed on desktop" note.
 
-Current structure inside the Note panel:
+## Breakpoint System
+
+Adopt three canonical breakpoints (Tailwind defaults, no config change):
+
+| Name | Width | Layout |
+|---|---|---|
+| Mobile | `<768px` (`< md`) | Single pane, sidebar becomes drawer (Sheet), middle pane becomes route |
+| Tablet | `768–1279px` (`md → xl`) | Two panes: sidebar (collapsed to icons by default) + main. Middle pane opens as overlay/drawer |
+| Desktop | `≥1280px` (`xl+`) | Current three-pane layout unchanged |
+
+One rule everywhere: **no fixed pixel widths except the sidebar icon strip.** The 320px middle-pane rule stays *only* at desktop; below xl it collapses.
+
+## Architecture Changes
+
+### 1. AppLayout (`src/components/layout/AppLayout.tsx`)
+- Wrap in a `useIsMobile` + new `useBreakpoint` hook (`mobile | tablet | desktop`).
+- Desktop: current 3-pane behavior.
+- Tablet: sidebar auto-collapses to icon rail; GlobalSessionsPanel becomes a slide-in `Sheet` triggered from the header.
+- Mobile: sidebar becomes a `Sheet` (hamburger in a new top bar); GlobalSessionsPanel becomes a full route push, not a pane.
+
+### 2. Sidebar (`LeftPane.tsx`)
+- Below `md`, render inside a `Sheet` opened by a hamburger button in a new mobile top bar.
+- At `md–xl`, default to collapsed icon rail; expand on hover/click.
+- Keep desktop behavior identical at `xl+`.
+
+### 3. New Session (`NewSession.tsx` + `TwoColumnLayout.tsx`)
+Highest-risk screen. Changes:
+- `SessionHeaderRow`: wrap fields in `flex-wrap`, stack vertically below `md`.
+- `SessionInfoBar`: collapse secondary controls into an overflow menu below `md`.
+- `TwoColumnLayout`:
+  - Desktop (`xl+`): current resizable two-column.
+  - Tablet: two columns but non-resizable, 50/50, min-widths removed.
+  - Mobile: `Tabs` — "Transcript / Dictation" and "Context / Note" as two tabs, single column.
+- Editor footer (Reviewed / Send to Letters): already fixed to scroll with content; verify on narrow widths that buttons wrap instead of overflowing.
+- Bottom "Review your note" banner: allow wrap.
+
+### 4. View Sessions, Letters
+- Middle list pane → full width on mobile; detail pane opens as pushed route (`/sessions/:id`, `/letters/:id`).
+- Toolbar (search + filters + action): collapse filters into a "Filters" button that opens a `Sheet` below `md`.
+- Cards: reduce padding, allow metadata to wrap, hide non-critical badges below `sm`.
+
+### 5. Settings
+- Left tab list → horizontal scrolling tabs on mobile, vertical rail on tablet+, current layout on desktop.
+- Two-column grids in Profile → single column below `md`.
+
+### 6. Templates (Hub + My Templates)
+- Table → card grid below `md`.
+- Filter dropdowns → full-width in a `Sheet` below `md`.
+
+### 7. Modals & Dialogs
+Audit every `DialogContent` for:
+- `max-w-*` that exceeds viewport → add `w-[95vw]` fallback.
+- Fixed grids → `grid-cols-1 md:grid-cols-2`.
+- Footer buttons → `flex-wrap` + full-width on mobile.
+Includes: onboarding steps, consent dialog, restart dialog, patient create/edit, template create, send-to-letters, etc.
+
+### 8. Footer (`AppFooter.tsx`)
+- Hide non-essential items below `md`; keep only status + shortcut hint.
+
+### 9. Out-of-scope routes (AI Assistant, What's New, Help Center, Team)
+- Wrap page root in a min-width container (`min-w-[1024px] overflow-x-auto`) so they never visually break; they just require horizontal scroll on narrow windows. No layout work.
+
+## Desktop App Packaging (Electron)
+
+After responsive work lands:
+- Set Electron `BrowserWindow` `minWidth: 800`, `minHeight: 600`, default `1400x900`.
+- Set `base: './'` in `vite.config.ts` for `file://` loading.
+- Package with `@electron/packager` (per sandbox constraints).
+- Add a small `useIsElectron` helper in case any UI needs to hide web-only affordances.
+
+Electron packaging happens *after* the responsive refactor is verified, not before — otherwise we ship a broken desktop app.
+
+## Execution Order
 
 ```text
-<div className="flex-1 overflow-auto">       ← scroll container
-  <div className="flex flex-col h-full p-4">  ← forced to parent height
-    <editor flex-1 min-h-[300px] />            ← content overflows the box
-    <footer mt-4 pt-4 border-t />              ← gets covered by overflow
-  </div>
-</div>
+Phase 1  Foundation
+  - useBreakpoint hook, AppLayout responsive shell, sidebar Sheet mode
+  - Mobile top bar with hamburger
+
+Phase 2  Primary flows
+  - New Session responsive (highest risk)
+  - View Sessions list/detail routing
+  - Letters list/detail routing
+
+Phase 3  Secondary
+  - Settings, Templates, all modals audit
+  - Footer, tooltips, popovers on mobile
+
+Phase 4  Guardrails
+  - Min-width wrapper on out-of-scope routes
+  - QA pass at 375 / 768 / 1024 / 1280 / 1600 widths
+
+Phase 5  Electron
+  - Add Electron main process, packaging config, build script
 ```
 
-Because the inner column is `h-full`, the editor is a fixed-height flex child but its ProseMirror text grows past it. The overflow visually paints on top of the footer, producing the overlap in the screenshot.
+Each phase is independently shippable — you can approve/pause between phases.
 
-**Fix:** lift the footer out of the scroll area and pin it to the bottom of the Note panel.
+## Technical Notes
 
-- Restructure the Note panel as:
-  ```text
-  <div className="flex flex-col h-full">
-    <div className="flex-1 overflow-auto p-4">   ← only the content scrolls
-      <editor / preview>
-    </div>
-    <div className="shrink-0 border-t border-border bg-background px-4 py-3 flex items-center gap-3">
-      Review disclaimer + Reviewed / Send to Letters buttons
-    </div>
-  </div>
-  ```
-- Remove `h-full` from the inner column and the `mt-4 pt-4 border-t` from the footer (replaced by the pinned container's `border-t`).
-- Keep the existing conditional that hides the action buttons until `hasGeneratedContent`, and keep the existing `existingLetter` Sent badge branch.
-- Keep the disclaimer visible at all times (matches today's behaviour).
+- No new dependencies for the responsive work (Tailwind + existing shadcn Sheet/Tabs/Drawer cover everything).
+- Zero changes to design tokens, colors, fonts, or brand rules in memory.
+- Zero backend / schema changes.
+- Existing memory rules (320px middle pane, 3-pane layout, focus rings, etc.) remain **desktop-only** rules — I'll update memory to reflect that scoping when the refactor lands.
+- Routes for detail views (`/sessions/:id`, `/letters/:id`) will be added; existing in-pane detail continues to work at desktop widths.
 
-## Files touched
+## What I need from you
 
-- `src/components/newSession/RightColumnPanel.tsx` — add `toEditorHtml` helper, use it in the Tiptap sync `useEffect` and in the preview render, restructure the Note panel JSX to pin the footer.
-
-No other files, no schema, no new dependencies.
+Approve this plan, or tell me to reorder phases (e.g. "do Electron first with a min-window guard, refactor later" is a valid alternate path if you want a shippable desktop build this week).
