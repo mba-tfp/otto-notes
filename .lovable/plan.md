@@ -1,59 +1,50 @@
+## Goal
 
-# Settings responsive fix
+Fix responsive layout issues on `/my-templates` and `/template-hub` for tablet and mobile. Frontend/presentation only — no logic, data, or design-token changes.
 
-The Settings page renders a fixed `w-75` category nav (`MiddlePane`) permanently beside the content pane (`RightPane`). Below `xl` the two-pane layout crowds the form; below `md` the nav eats the screen and every form row uses `grid-cols-3` with no responsive variants, so fields overflow horizontally.
+## Issues observed
+
+- **My Templates toolbar** (`TemplatesFilters.tsx`) forces search + `Template Hub` + `Create template` buttons on one row. On mobile they cram/wrap awkwardly, and "Create template" loses prominence.
+- **Template Hub toolbar** (`TemplateCommunity.tsx`) puts the search bar next to 4 pill filters in a single flex row with `flex-wrap`, which on mobile produces a messy stack where pills sit beside a shrunken search.
+- Both pages use `px-10 lg:px-14 py-10` — too much horizontal padding on small screens.
+- The Template Hub grid already handles `md:grid-cols-2 lg:grid-cols-3`, so that stays.
 
 ## Changes
 
-### 1. `MiddlePane.tsx` — responsive nav
+### 1. `src/pages/MyTemplates.tsx` & `src/pages/TemplateHub.tsx` (container padding)
+- Wrapper container: `px-10 lg:px-14 py-10` → `px-4 sm:px-6 lg:px-14 py-6 sm:py-8 lg:py-10`.
 
-- **Desktop (`xl+`)**: unchanged — vertical rail, `w-75`.
-- **Tablet (`md–xl`)**: narrow vertical rail, `w-56`, icons + labels.
-- **Mobile (`<md`)**: turn into a horizontal scrolling pill bar at the top of the content area instead of a side column.
-- Drop `h-screen` → `h-full` (fixes overflow inside AppLayout's mobile top bar).
+### 2. `src/components/templates/TemplatesFilters.tsx`
+- Outer row: `flex items-center justify-between gap-4 mb-8` → `flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-6 sm:mb-8`.
+- Search wrapper: keep `flex-1`, drop `max-w-md` on mobile → `w-full sm:max-w-md`.
+- Buttons row: `flex gap-3` → `flex gap-2 sm:gap-3 w-full sm:w-auto`.
+  - `Template Hub` button: `flex-1 sm:flex-none` so it shares row with Create on mobile.
+  - `Create template` button: `flex-1 sm:flex-none` and keep primary styling.
+- Both buttons get `whitespace-nowrap` and `justify-center` so labels don't wrap.
 
-### 2. `Settings.tsx` layout
+### 3. `src/components/templates/TemplateCommunity.tsx` (Search + Filters row)
+- Change the search-and-filters row from a single horizontal flex into a two-row stack on mobile/tablet:
+  - Wrapper: `flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 lg:gap-4 mb-6 lg:mb-8`.
+  - Search: `w-full lg:max-w-md` (full width on tablet/mobile).
+  - Filters container: wraps to its own row, horizontally scrollable on very narrow screens.
 
-- Desktop/tablet: `flex-row` — MiddlePane beside RightPane (current).
-- Mobile: `flex-col` — MiddlePane (horizontal pill bar) stacked above RightPane.
-- Sessions-panel swap logic (when `isSessionsPanelVisible`) still applies at desktop only; on mobile/tablet the sessions panel already opens as a Sheet from AppLayout, so Settings just renders its own middle pane.
+### 4. `src/components/templates/hub/TemplateFilters.tsx`
+- Outer container: `flex items-center gap-3 flex-wrap` → `flex items-center gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:gap-3 -mx-4 px-4 sm:mx-0 sm:px-0`.
+  - Enables horizontal scroll on mobile so pills stay on one clean line instead of stacking messily; wraps normally from `sm` up.
+- Add `shrink-0` to each `FilterPill` `<button>` so pills keep their intrinsic size while scrolling.
+- `Clear all` button gets `shrink-0 whitespace-nowrap`.
 
-### 3. `RightPane.tsx` — responsive padding
+### 5. Optional: `TemplatesHeader.tsx` and Hub header
+- Title `text-[32px]` → `text-2xl sm:text-[32px]` in both headers so titles don't dominate small screens. Subtitle keeps `ml-10`.
 
-- `px-8 py-8` → `px-4 py-6 md:px-6 md:py-8`
-- Keep `max-w-[1100px] mx-auto` centering intact.
+## Out of scope
 
-### 4. `ProfileSettings.tsx` — grid responsiveness
-
-- Row 1 (Title / First / Last): `grid-cols-1 sm:grid-cols-[120px_1fr_1fr]`
-- Row 2 (Phone / Specialty / Role): `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
-- Row 3 (Clinic / Location / Language): same as Row 2
-- Save/Cancel row: add `flex-wrap`
-
-### 5. Other settings tabs (`SecuritySettings`, `AISettings`, `PrivacySettings`, `SignatureSettings`, `UserManagement`)
-
-Quick audit — I'll open each and apply the same rule: any `grid-cols-2`/`grid-cols-3` without a responsive prefix becomes `grid-cols-1 md:grid-cols-N`. Any fixed `max-w-*` that exceeds mobile width gets a `w-full` fallback. No visual/token changes.
-
-## Files touched
-
-```text
-src/pages/Settings.tsx
-src/components/settings/MiddlePane.tsx
-src/components/settings/RightPane.tsx
-src/components/settings/ProfileSettings.tsx
-src/components/settings/SecuritySettings.tsx        (audit + fix if needed)
-src/components/settings/AISettings.tsx              (audit + fix if needed)
-src/components/settings/PrivacySettings.tsx         (audit + fix if needed)
-src/components/settings/SignatureSettings.tsx       (audit + fix if needed)
-src/components/settings/UserManagement/index.tsx    (audit + fix if needed)
-```
-
-Zero design-token / color changes. Zero backend changes.
+- Design tokens, colors, spacing scale.
+- Table responsiveness inside `TemplatesTable` (not called out by user).
+- Any data / hook / backend changes.
 
 ## Verification
 
-- 375px: horizontal pill bar of categories at top, form fields stack vertically, no horizontal scroll.
-- 900px (tablet): narrow left rail (~224px), form fields in 2 columns.
-- 1440px (desktop): unchanged from current.
-
-Approve and I'll implement.
+- 375px (mobile): My Templates shows search full width above a 2-button row (Hub + Create side-by-side, both full-width halves). Template Hub shows search full width, then a single horizontally scrollable filter pill row.
+- 900px (tablet): My Templates stays single row (search left, buttons right). Template Hub filters stacked below the full-width search, wrapping as needed.
+- 1440px (desktop): unchanged from today.
