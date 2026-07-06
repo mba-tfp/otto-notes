@@ -108,7 +108,7 @@ export const TemplateFilters = ({
   ].filter(Boolean).length;
 
   return (
-    <div className="flex items-center gap-3 flex-wrap">
+    <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:gap-3 -mx-4 px-4 sm:mx-0 sm:px-0">
       <FilterPill
         icon={<ArrowUpDown className="h-4 w-4" />}
         label="Sort"
