@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useLetters } from '@/contexts/LettersContext';
 import { LetterCard } from './LetterCard';
 
-export const LettersList = () => {
+export const LettersList = ({ onSelectLetter }: { onSelectLetter?: (id: string) => void } = {}) => {
   const { letters, selectedLetterId, setSelectedLetterId } = useLetters();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
