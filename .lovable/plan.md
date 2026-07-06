@@ -1,134 +1,98 @@
 
-# Responsive Refactor for Desktop + Web
+# Phase 2: Primary Flows Responsive Refactor
 
-Goal: make Otto Notes work cleanly at every width from ~360px (mobile) up to large desktop, so packaging as an Electron desktop app (any window size) doesn't break the UI. This is a systematic refactor, not a redesign — visuals, tokens, and brand stay identical.
+Make View Sessions, Letters, and their detail views work at mobile, tablet, and desktop widths — without breaking desktop behavior.
 
-## Scope
+## 1. Routing changes
 
-**In scope (must be responsive):**
-- New Session (`/new-session`)
-- View Sessions (`/sessions`)
-- Letters (`/letters`)
-- Settings (`/settings`)
-- Template Hub + My Templates
-- Sidebar / global layout / footer
-- Onboarding modals, consent dialog, all shared modals
-- Global toast, tooltips, popovers
+Add detail routes so mobile can push instead of split-pane:
 
-**Out of scope (skipped per your call):**
-- AI Assistant
-- What's New (`/whats-new`)
-- Resource / Help Center
-- Team
+- `/sessions` — list only (mobile), list + detail (desktop/tablet)
+- `/sessions/:id` — detail (mobile pushes here; desktop/tablet updates URL but keeps split view)
+- `/letters` — same pattern
+- `/letters/:id` — same pattern
 
-Those routes keep their current desktop-only layout and get a min-width guard with a "best viewed on desktop" note.
+`SessionsLayoutContext` and `LettersContext` switch from local `selectedId` state to reading/writing the `:id` param via `useParams` + `useNavigate`. Selecting a card on mobile navigates; on desktop it just updates the URL and the detail pane re-renders.
 
-## Breakpoint System
+## 2. View Sessions (`src/pages/ViewSessions.tsx`)
 
-Adopt three canonical breakpoints (Tailwind defaults, no config change):
+Behavior by breakpoint:
 
-| Name | Width | Layout |
-|---|---|---|
-| Mobile | `<768px` (`< md`) | Single pane, sidebar becomes drawer (Sheet), middle pane becomes route |
-| Tablet | `768–1279px` (`md → xl`) | Two panes: sidebar (collapsed to icons by default) + main. Middle pane opens as overlay/drawer |
-| Desktop | `≥1280px` (`xl+`) | Current three-pane layout unchanged |
+- **Desktop (`xl+`)**: unchanged — 320px `SessionList` + `SessionDetail` side-by-side.
+- **Tablet (`md–xl`)**: same split, but list becomes `w-72` and detail gets `min-w-0` so it never overflows.
+- **Mobile (`< md`)**:
+  - `/sessions` renders `SessionList` full-width, no detail pane.
+  - `/sessions/:id` renders `SessionDetail` full-width with a back button in its header that navigates to `/sessions`.
+  - The Sessions Panel toggle in `AppLayout` still opens as a `Sheet` (already done in Phase 1).
 
-One rule everywhere: **no fixed pixel widths except the sidebar icon strip.** The 320px middle-pane rule stays *only* at desktop; below xl it collapses.
+## 3. Letters (`src/pages/Letters.tsx`)
 
-## Architecture Changes
+Mirror the sessions pattern:
 
-### 1. AppLayout (`src/components/layout/AppLayout.tsx`)
-- Wrap in a `useIsMobile` + new `useBreakpoint` hook (`mobile | tablet | desktop`).
-- Desktop: current 3-pane behavior.
-- Tablet: sidebar auto-collapses to icon rail; GlobalSessionsPanel becomes a slide-in `Sheet` triggered from the header.
-- Mobile: sidebar becomes a `Sheet` (hamburger in a new top bar); GlobalSessionsPanel becomes a full route push, not a pane.
+- Desktop: current split view unchanged.
+- Tablet: list `w-72`, detail `min-w-0`.
+- Mobile: `/letters` = list, `/letters/:id` = detail with back button.
+- Same swap logic between `GlobalSessionsPanel` and `LettersList` still applies at desktop.
 
-### 2. Sidebar (`LeftPane.tsx`)
-- Below `md`, render inside a `Sheet` opened by a hamburger button in a new mobile top bar.
-- At `md–xl`, default to collapsed icon rail; expand on hover/click.
-- Keep desktop behavior identical at `xl+`.
+## 4. Toolbar collapse (list panes)
 
-### 3. New Session (`NewSession.tsx` + `TwoColumnLayout.tsx`)
-Highest-risk screen. Changes:
-- `SessionHeaderRow`: wrap fields in `flex-wrap`, stack vertically below `md`.
-- `SessionInfoBar`: collapse secondary controls into an overflow menu below `md`.
-- `TwoColumnLayout`:
-  - Desktop (`xl+`): current resizable two-column.
-  - Tablet: two columns but non-resizable, 50/50, min-widths removed.
-  - Mobile: `Tabs` — "Transcript / Dictation" and "Context / Note" as two tabs, single column.
-- Editor footer (Reviewed / Send to Letters): already fixed to scroll with content; verify on narrow widths that buttons wrap instead of overflowing.
-- Bottom "Review your note" banner: allow wrap.
+`SessionList` and `LettersList` toolbars today expose Search / Filter / Sort / Refresh inline. Below `md`:
 
-### 4. View Sessions, Letters
-- Middle list pane → full width on mobile; detail pane opens as pushed route (`/sessions/:id`, `/letters/:id`).
-- Toolbar (search + filters + action): collapse filters into a "Filters" button that opens a `Sheet` below `md`.
-- Cards: reduce padding, allow metadata to wrap, hide non-critical badges below `sm`.
+- Keep Search icon (expands inline as today).
+- Collapse Filter + Sort into a single "Filters" button that opens a `Sheet` from the right containing both the filter pills and the sort toggle.
+- Refresh stays.
 
-### 5. Settings
-- Left tab list → horizontal scrolling tabs on mobile, vertical rail on tablet+, current layout on desktop.
-- Two-column grids in Profile → single column below `md`.
+Desktop and tablet behavior unchanged.
 
-### 6. Templates (Hub + My Templates)
-- Table → card grid below `md`.
-- Filter dropdowns → full-width in a `Sheet` below `md`.
+## 5. Card layouts
 
-### 7. Modals & Dialogs
-Audit every `DialogContent` for:
-- `max-w-*` that exceeds viewport → add `w-[95vw]` fallback.
-- Fixed grids → `grid-cols-1 md:grid-cols-2`.
-- Footer buttons → `flex-wrap` + full-width on mobile.
-Includes: onboarding steps, consent dialog, restart dialog, patient create/edit, template create, send-to-letters, etc.
+`SessionCard` and `LetterCard`:
 
-### 8. Footer (`AppFooter.tsx`)
-- Hide non-essential items below `md`; keep only status + shortcut hint.
+- Below `sm`: reduce internal padding from `p-3` to `p-2.5`, allow patient/template metadata rows to `flex-wrap`, hide the secondary status badge (keep only the primary one).
+- Desktop unchanged.
 
-### 9. Out-of-scope routes (AI Assistant, What's New, Help Center, Team)
-- Wrap page root in a min-width container (`min-w-[1024px] overflow-x-auto`) so they never visually break; they just require horizontal scroll on narrow windows. No layout work.
+No visual restyling — only wrap/hide rules.
 
-## Desktop App Packaging (Electron)
+## 6. Detail views
 
-After responsive work lands:
-- Set Electron `BrowserWindow` `minWidth: 800`, `minHeight: 600`, default `1400x900`.
-- Set `base: './'` in `vite.config.ts` for `file://` loading.
-- Package with `@electron/packager` (per sandbox constraints).
-- Add a small `useIsElectron` helper in case any UI needs to hide web-only affordances.
+`SessionDetail` and `LetterDetail` header:
 
-Electron packaging happens *after* the responsive refactor is verified, not before — otherwise we ship a broken desktop app.
+- Add a back-chevron button visible only below `md` that navigates to the parent list route.
+- Ensure the header actions row uses `flex-wrap` so buttons stack instead of overflowing on narrow widths.
+- Body content: replace any `max-w-*` that assumes desktop with `w-full max-w-none` on mobile.
 
-## Execution Order
+The rich-text editor in `LetterDetail` gets `overflow-x-auto` on its content wrapper so long inline elements scroll rather than pushing layout.
+
+## 7. What is NOT changing in Phase 2
+
+- No changes to New Session (done in Phase 1).
+- No changes to Settings/Templates (Phase 3).
+- No modal audit yet (Phase 3).
+- No design tokens, colors, spacing scale, or card visuals.
+- Desktop three-pane rules remain intact.
+
+## Files touched
 
 ```text
-Phase 1  Foundation
-  - useBreakpoint hook, AppLayout responsive shell, sidebar Sheet mode
-  - Mobile top bar with hamburger
-
-Phase 2  Primary flows
-  - New Session responsive (highest risk)
-  - View Sessions list/detail routing
-  - Letters list/detail routing
-
-Phase 3  Secondary
-  - Settings, Templates, all modals audit
-  - Footer, tooltips, popovers on mobile
-
-Phase 4  Guardrails
-  - Min-width wrapper on out-of-scope routes
-  - QA pass at 375 / 768 / 1024 / 1280 / 1600 widths
-
-Phase 5  Electron
-  - Add Electron main process, packaging config, build script
+src/pages/ViewSessions.tsx
+src/pages/Letters.tsx
+src/App.tsx                                    (add /sessions/:id, /letters/:id routes)
+src/contexts/SessionsLayoutContext.tsx         (URL-driven selection)
+src/contexts/LettersContext.tsx                (URL-driven selection)
+src/components/sessions/SessionList.tsx        (toolbar Sheet on mobile)
+src/components/sessions/SessionDetail.tsx      (back button, wrap actions)
+src/components/sessions/SessionCard.tsx        (wrap/hide rules)
+src/components/letters/LettersList.tsx         (toolbar Sheet on mobile)
+src/components/letters/LetterDetail.tsx        (back button, wrap actions, editor overflow)
+src/components/letters/LetterCard.tsx          (wrap/hide rules)
 ```
 
-Each phase is independently shippable — you can approve/pause between phases.
+## Verification
 
-## Technical Notes
+After implementation, resize the preview to 375 / 768 / 1024 / 1280 and confirm:
+- List → detail navigation works on mobile with back button.
+- Desktop split view is pixel-identical to current.
+- Toolbar filter Sheet opens/closes on mobile.
+- No horizontal scroll on the body at any width for these routes.
 
-- No new dependencies for the responsive work (Tailwind + existing shadcn Sheet/Tabs/Drawer cover everything).
-- Zero changes to design tokens, colors, fonts, or brand rules in memory.
-- Zero backend / schema changes.
-- Existing memory rules (320px middle pane, 3-pane layout, focus rings, etc.) remain **desktop-only** rules — I'll update memory to reflect that scoping when the refactor lands.
-- Routes for detail views (`/sessions/:id`, `/letters/:id`) will be added; existing in-pane detail continues to work at desktop widths.
-
-## What I need from you
-
-Approve this plan, or tell me to reorder phases (e.g. "do Electron first with a min-window guard, refactor later" is a valid alternate path if you want a shippable desktop build this week).
+Approve to proceed, or tell me to adjust (e.g. skip the URL routing and use a `showDetail` state toggle instead — simpler but no deep-linking).
