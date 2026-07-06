@@ -116,10 +116,19 @@ export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
 
   if (!letter) {
     return (
-      <div className="flex-1 h-screen overflow-hidden bg-background flex items-center justify-center">
-        <div className="text-center text-muted-foreground space-y-2">
-          <FileText className="h-12 w-12 mx-auto opacity-50" />
-          <p>Select a letter to view details</p>
+      <div className="flex-1 h-full overflow-hidden bg-background flex flex-col">
+        {onBack && (
+          <div className="border-b border-border px-4 py-3">
+            <Button variant="ghost" size="sm" onClick={onBack} className="gap-2">
+              ← Back to letters
+            </Button>
+          </div>
+        )}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center text-muted-foreground space-y-2">
+            <FileText className="h-12 w-12 mx-auto opacity-50" />
+            <p>Select a letter to view details</p>
+          </div>
         </div>
       </div>
     );
