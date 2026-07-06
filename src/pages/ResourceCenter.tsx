@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { MinWidthGuard } from '@/components/layout/MinWidthGuard';
+
 import { CategoryNav } from '@/components/resourceCenter/CategoryNav';
 import { ArticleDetail } from '@/components/resourceCenter/ArticleDetail';
 import { ResourceTopic } from '@/data/resourceCenter';
@@ -26,19 +28,22 @@ const ResourceCenter = () => {
 
   return (
     <AppLayout hideGlobalSessionsPanel>
-      <div className="flex h-full">
-        <CategoryNav
-          selectedCategoryId={selectedCategoryId}
-          selectedTopicId={selectedTopic?.id ?? null}
-          onSelectCategory={handleSelectCategory}
-          onSelectTopic={setSelectedTopic}
-        />
-        <div className="flex-1 h-full overflow-hidden">
-          <ArticleDetail topic={selectedTopic} />
+      <MinWidthGuard>
+        <div className="flex h-full">
+          <CategoryNav
+            selectedCategoryId={selectedCategoryId}
+            selectedTopicId={selectedTopic?.id ?? null}
+            onSelectCategory={handleSelectCategory}
+            onSelectTopic={setSelectedTopic}
+          />
+          <div className="flex-1 h-full overflow-hidden">
+            <ArticleDetail topic={selectedTopic} />
+          </div>
         </div>
-      </div>
+      </MinWidthGuard>
     </AppLayout>
   );
 };
+
 
 export default ResourceCenter;

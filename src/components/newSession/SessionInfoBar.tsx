@@ -41,7 +41,7 @@ export const SessionInfoBar = ({
   };
 
   return (
-    <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-background">
+    <div className="flex flex-wrap items-center justify-between gap-y-2 px-4 md:px-6 py-3 border-b border-border bg-background">
       {/* Left side: Date chip only - language moved to NoteTab */}
       <div className="flex items-center gap-3">
         {/* Date chip */}
@@ -52,7 +52,8 @@ export const SessionInfoBar = ({
       </div>
 
       {/* Right side: Timer, Mic, Record button with mode selector */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3 md:gap-4">
+
         {/* Timer with paused indicator */}
         <span className={cn(
           "font-medium text-[13px] tabular-nums",
