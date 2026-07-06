@@ -29,8 +29,8 @@ export const RightPane = () => {
   };
 
   return (
-    <div className="flex-1 h-full overflow-y-auto bg-background">
-      <div className="w-full max-w-[1100px] mx-auto px-8 py-8">
+    <div className="flex-1 min-w-0 h-full overflow-y-auto bg-background">
+      <div className="w-full max-w-[1100px] mx-auto px-4 py-6 md:px-6 md:py-8 lg:px-8">
         {renderContent()}
       </div>
     </div>

@@ -1,66 +1,59 @@
 
-# Fix: Tablet sidebar expansion + mobile hamburger overlap
+# Settings responsive fix
 
-Two small responsive-layout bugs from Phase 1/2.
+The Settings page renders a fixed `w-75` category nav (`MiddlePane`) permanently beside the content pane (`RightPane`). Below `xl` the two-pane layout crowds the form; below `md` the nav eats the screen and every form row uses `grid-cols-3` with no responsive variants, so fields overflow horizontally.
 
-## Issue 1 — Tablet sidebar can't expand
+## Changes
 
-`src/components/settings/LeftPane.tsx` line 36:
+### 1. `MiddlePane.tsx` — responsive nav
 
-```ts
-const isCollapsed = bp === 'tablet' ? true : isCollapsedPref;
-```
+- **Desktop (`xl+`)**: unchanged — vertical rail, `w-75`.
+- **Tablet (`md–xl`)**: narrow vertical rail, `w-56`, icons + labels.
+- **Mobile (`<md`)**: turn into a horizontal scrolling pill bar at the top of the content area instead of a side column.
+- Drop `h-screen` → `h-full` (fixes overflow inside AppLayout's mobile top bar).
 
-This hard-forces `isCollapsed = true` at tablet width, so clicking the chevron updates `isCollapsedPref` in localStorage but the sidebar never re-renders as expanded. The toggle button appears functional but does nothing on tablet.
+### 2. `Settings.tsx` layout
 
-**Fix:** Remove the hard override. Instead, seed the default preference to collapsed on tablet only for users who haven't set one yet, and honor the user's click at every breakpoint.
+- Desktop/tablet: `flex-row` — MiddlePane beside RightPane (current).
+- Mobile: `flex-col` — MiddlePane (horizontal pill bar) stacked above RightPane.
+- Sessions-panel swap logic (when `isSessionsPanelVisible`) still applies at desktop only; on mobile/tablet the sessions panel already opens as a Sheet from AppLayout, so Settings just renders its own middle pane.
 
-```ts
-const isCollapsed = isCollapsedPref;
-// On first mount at tablet width, default to collapsed if user has no saved preference.
-useEffect(() => {
-  if (bp === 'tablet' && localStorage.getItem('sidebar-collapsed') === null) {
-    setIsCollapsedPref(true);
-  }
-}, [bp]);
-```
+### 3. `RightPane.tsx` — responsive padding
 
-Result: tablet users open collapsed by default, can click to expand, preference persists.
+- `px-8 py-8` → `px-4 py-6 md:px-6 md:py-8`
+- Keep `max-w-[1100px] mx-auto` centering intact.
 
-## Issue 2 — Mobile hamburger overlaps page content
+### 4. `ProfileSettings.tsx` — grid responsiveness
 
-Currently the hamburger button in `LeftPane.tsx` is `fixed top-4 left-4 z-40`. There's no top bar reserving space, so it floats on top of whatever route is rendered and covers headers/toolbars.
+- Row 1 (Title / First / Last): `grid-cols-1 sm:grid-cols-[120px_1fr_1fr]`
+- Row 2 (Phone / Specialty / Role): `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
+- Row 3 (Clinic / Location / Language): same as Row 2
+- Save/Cancel row: add `flex-wrap`
 
-**Fix:** Add a mobile top bar in `AppLayout` (visible only `<md`) that reserves ~56px of vertical space and contains the hamburger. Content sits below it, no overlap.
+### 5. Other settings tabs (`SecuritySettings`, `AISettings`, `PrivacySettings`, `SignatureSettings`, `UserManagement`)
 
-- New tiny component `MobileTopBar.tsx` (rendered in `AppLayout`):
-  - `h-14 flex items-center px-3 border-b border-border bg-background md:hidden`
-  - Left: hamburger button that toggles a Sheet-hosted sidebar
-  - Right: Otto logo mark (small)
-- `AppLayout`:
-  - Render `<MobileTopBar />` at the top of the main content column on mobile only
-  - Main content wrapped so it flows below the bar (`flex-col` already in place)
-- `LeftPane.tsx`:
-  - Remove the `fixed top-4 left-4` hamburger button (dead code once the top bar owns it)
-  - Wire the Sheet open state through a shared context OR lift `isMobileMenuOpen` up — simplest: keep sidebar rendered as today but expose an open handler via a small context (`SidebarMobileContext`) so `MobileTopBar` can trigger it. Alternatively, switch mobile sidebar to shadcn `Sheet` and let the top bar control it directly.
-
-Preferred: convert mobile sidebar to `Sheet` (cleaner, matches what Phase 1 did for the sessions panel). The top bar's hamburger opens the `Sheet`; `LeftPane` renders inside `SheetContent` on mobile only.
+Quick audit — I'll open each and apply the same rule: any `grid-cols-2`/`grid-cols-3` without a responsive prefix becomes `grid-cols-1 md:grid-cols-N`. Any fixed `max-w-*` that exceeds mobile width gets a `w-full` fallback. No visual/token changes.
 
 ## Files touched
 
 ```text
-src/components/settings/LeftPane.tsx          (tablet toggle fix + remove fixed hamburger + Sheet wrap on mobile)
-src/components/layout/AppLayout.tsx           (render MobileTopBar above children on mobile)
-src/components/layout/MobileTopBar.tsx        (new)
-src/contexts/SidebarMobileContext.tsx         (new — controls Sheet open state; only if not using Sheet directly inline)
+src/pages/Settings.tsx
+src/components/settings/MiddlePane.tsx
+src/components/settings/RightPane.tsx
+src/components/settings/ProfileSettings.tsx
+src/components/settings/SecuritySettings.tsx        (audit + fix if needed)
+src/components/settings/AISettings.tsx              (audit + fix if needed)
+src/components/settings/PrivacySettings.tsx         (audit + fix if needed)
+src/components/settings/SignatureSettings.tsx       (audit + fix if needed)
+src/components/settings/UserManagement/index.tsx    (audit + fix if needed)
 ```
 
-Zero visual changes at desktop. No new dependencies.
+Zero design-token / color changes. Zero backend changes.
 
 ## Verification
 
-- Resize to tablet (~1000px): sidebar starts collapsed, chevron click expands to 256px, click again collapses. Preference persists across reload.
-- Resize to mobile (~400px): top bar with hamburger visible; page content (e.g. session header) sits below it, no overlap. Hamburger opens sidebar Sheet.
-- Desktop (≥1280px): no top bar, sidebar behavior unchanged.
+- 375px: horizontal pill bar of categories at top, form fields stack vertically, no horizontal scroll.
+- 900px (tablet): narrow left rail (~224px), form fields in 2 columns.
+- 1440px (desktop): unchanged from current.
 
 Approve and I'll implement.
