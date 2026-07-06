@@ -141,7 +141,7 @@ export const ProfileSettings = () => {
           </div>
 
           {/* Row 1: Title, First name, Last name */}
-          <div className="grid grid-cols-[120px_1fr_1fr] gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr_1fr] gap-4 mb-4">
             <div>
               <Label htmlFor="title" className="text-sm font-medium mb-2 block">Title</Label>
               <Select value={formData.title} onValueChange={value => setFormData({ ...formData, title: value })}>
@@ -168,7 +168,7 @@ export const ProfileSettings = () => {
           </div>
 
           {/* Row 2: Phone number, Specialty, Your role */}
-          <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             <div>
               <Label className="text-sm font-medium mb-2 block">Phone number</Label>
               <PhoneInput
@@ -210,7 +210,7 @@ export const ProfileSettings = () => {
           </div>
 
           {/* Row 3: Clinic name (read-only), Primary location, Display language */}
-          <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             <div>
               <Label htmlFor="clinicName" className="text-sm font-medium mb-2 block">Clinic name</Label>
               <Input id="clinicName" value={clinicName} disabled readOnly />
@@ -245,7 +245,7 @@ export const ProfileSettings = () => {
         </div>
 
         {/* Save / Cancel Buttons */}
-        <div className="flex items-center gap-3 pt-6">
+        <div className="flex flex-wrap items-center gap-3 pt-6">
           <Button onClick={handleSave} disabled={!hasChanges || localSaving || isSaving}>
             {localSaving || isSaving ? 'Saving...' : 'Save Changes'}
           </Button>
