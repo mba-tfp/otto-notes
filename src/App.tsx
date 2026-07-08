@@ -8,7 +8,6 @@ import { PatientsProvider } from "./contexts/PatientsContext";
 import { SessionsPanelProvider } from "./contexts/SessionsPanelContext";
 import { LettersProvider } from "./contexts/LettersContext";
 import { OnboardingTourProvider } from "./contexts/OnboardingTourContext";
-import { SidebarMobileProvider } from "./contexts/SidebarMobileContext";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import { TourOverlay } from "./components/onboarding/TourOverlay";
 import { KeyboardShortcutsHandler } from "./components/KeyboardShortcutsHandler";
@@ -42,25 +41,22 @@ const App = () => (
               <BrowserRouter>
                 <KeyboardShortcutsHandler />
                 <SessionsPanelProvider>
-                  <SidebarMobileProvider>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/new-session" element={<NewSession />} />
-                      <Route path="/new-user-screen" element={<NewUserScreen />} />
-                      <Route path="/sessions" element={<ViewSessions />} />
-                      <Route path="/ai-assistant" element={<AIAssistant />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/my-templates" element={<MyTemplates />} />
-                      <Route path="/template-hub" element={<TemplateHub />} />
-                      
-                      <Route path="/letters" element={<Letters />} />
-                      <Route path="/letters/:id" element={<Letters />} />
-                      <Route path="/whats-new" element={<WhatsNew />} />
-                      <Route path="/resource-center" element={<ResourceCenter />} />
-                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </SidebarMobileProvider>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/new-session" element={<NewSession />} />
+                    <Route path="/new-user-screen" element={<NewUserScreen />} />
+                    <Route path="/sessions" element={<ViewSessions />} />
+                    <Route path="/ai-assistant" element={<AIAssistant />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/my-templates" element={<MyTemplates />} />
+                    <Route path="/template-hub" element={<TemplateHub />} />
+                    
+                    <Route path="/letters" element={<Letters />} />
+                    <Route path="/whats-new" element={<WhatsNew />} />
+                    <Route path="/resource-center" element={<ResourceCenter />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
                 </SessionsPanelProvider>
               </BrowserRouter>
               </TooltipProvider>

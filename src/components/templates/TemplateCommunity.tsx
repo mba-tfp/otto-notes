@@ -68,12 +68,12 @@ export const TemplateCommunity = () => {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="mx-auto px-4 sm:px-6 lg:px-14 py-6 sm:py-8 lg:py-10 max-w-7xl">
+      <div className="mx-auto px-10 lg:px-14 py-10 max-w-7xl">
         {/* Header */}
-        <div className="mb-6 sm:mb-8">
+        <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Globe className="h-7 w-7 text-foreground" />
-            <h1 className="font-sans text-2xl sm:text-[32px] font-semibold text-foreground tracking-tight">
+            <h1 className="font-sans text-[32px] font-semibold text-foreground tracking-tight">
               Template Hub
             </h1>
           </div>
@@ -81,8 +81,8 @@ export const TemplateCommunity = () => {
         </div>
 
         {/* Search and Filters Row */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 lg:gap-4 mb-6 lg:mb-8">
-          <div className="relative w-full lg:flex-1 lg:max-w-md">
+        <div className="flex items-center justify-between gap-4 mb-8">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground" />
             <Input
               type="text"
@@ -104,7 +104,6 @@ export const TemplateCommunity = () => {
             onClearAll={clearAllFilters}
           />
         </div>
-
 
         {/* Template Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">

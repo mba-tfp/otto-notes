@@ -1,6 +1,4 @@
 import { AppLayout } from '@/components/layout/AppLayout';
-import { MinWidthGuard } from '@/components/layout/MinWidthGuard';
-
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -41,8 +39,6 @@ const Team = () => {
 
   return (
     <AppLayout>
-      <MinWidthGuard>
-
       <div className="flex-1 flex flex-col h-screen overflow-hidden bg-background">
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-3xl mx-auto">
@@ -90,10 +86,8 @@ const Team = () => {
           </div>
         </div>
       </div>
-      </MinWidthGuard>
     </AppLayout>
   );
 };
-
 
 export default Team;

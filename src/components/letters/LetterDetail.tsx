@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
+export const LetterDetail = () => {
   const { selectedLetterId, getLetter, updateLetterContent, markAsSent, unsendLetter, deleteLetter, acknowledgeDoctorNote } = useLetters();
   const { toast } = useToast();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -116,35 +116,21 @@ export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
 
   if (!letter) {
     return (
-      <div className="flex-1 h-full overflow-hidden bg-background flex flex-col">
-        {onBack && (
-          <div className="border-b border-border px-4 py-3">
-            <Button variant="ghost" size="sm" onClick={onBack} className="gap-2">
-              ← Back to letters
-            </Button>
-          </div>
-        )}
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center text-muted-foreground space-y-2">
-            <FileText className="h-12 w-12 mx-auto opacity-50" />
-            <p>Select a letter to view details</p>
-          </div>
+      <div className="flex-1 h-screen overflow-hidden bg-background flex items-center justify-center">
+        <div className="text-center text-muted-foreground space-y-2">
+          <FileText className="h-12 w-12 mx-auto opacity-50" />
+          <p>Select a letter to view details</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 h-full overflow-hidden bg-background flex flex-col">
+    <div className="flex-1 h-screen overflow-hidden bg-background flex flex-col">
       {/* Header */}
-      <div className="border-b border-border px-4 md:px-6 py-4">
-        {onBack && (
-          <Button variant="ghost" size="sm" onClick={onBack} className="gap-2 mb-2 -ml-2">
-            ← Back
-          </Button>
-        )}
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div className="min-w-0">
+      <div className="border-b border-border px-6 py-4">
+        <div className="flex items-start justify-between">
+          <div>
             <div className="flex items-center gap-3 mb-1">
               <h1 className="text-xl font-semibold text-foreground">{letter.patientName}</h1>
               <Badge
@@ -158,7 +144,7 @@ export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
                 {letter.status === 'to_be_sent' ? 'To be sent' : 'Sent'}
               </Badge>
             </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <Calendar className="h-3.5 w-3.5" />
                 <span>{formatDate(letter.sessionDate)}</span>
@@ -172,7 +158,7 @@ export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center gap-1 flex-wrap">
+          <div className="flex items-center gap-1">
             {/* Delete — only for to_be_sent letters; TODO: gate behind doctor/admin role */}
             {isEditable && (
               <Button
@@ -221,7 +207,7 @@ export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
 
       {/* Doctor's Note Banner */}
       {letter.doctorNote && letter.status === 'to_be_sent' && (
-        <div className="border-b border-border px-4 md:px-6 py-0">
+        <div className="border-b border-border px-6 py-0">
           {letter.doctorNoteAcknowledgedAt ? (
             <div className="flex items-center gap-2 py-2 text-sm text-muted-foreground">
               <CheckCircle2 className="h-3.5 w-3.5 text-[hsl(142_71%_45%)]" />
@@ -249,13 +235,13 @@ export const LetterDetail = ({ onBack }: { onBack?: () => void } = {}) => {
 
       {/* Rich Text Toolbar */}
       {isEditable && editor && (
-        <div className="border-b border-border px-4 md:px-6 py-2">
+        <div className="border-b border-border px-6 py-2">
           <RichTextToolbar editor={editor} />
         </div>
       )}
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto overflow-x-auto px-4 md:px-6 py-6">
+      <div className="flex-1 overflow-y-auto px-6 py-6">
         <div className="prose prose-sm max-w-none text-foreground">
           <EditorContent editor={editor} />
         </div>

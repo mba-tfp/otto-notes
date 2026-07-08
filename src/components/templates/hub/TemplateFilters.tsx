@@ -42,7 +42,7 @@ const FilterPill = ({ icon, label, value, defaultValue, options, onChange, isAct
       <DropdownMenuTrigger asChild>
         <button
           className={cn(
-            "inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all shrink-0",
+            "inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all",
             "border",
             isDefault
               ? "bg-white text-foreground border-border hover:bg-muted"
@@ -65,7 +65,6 @@ const FilterPill = ({ icon, label, value, defaultValue, options, onChange, isAct
           <ChevronDown className="h-3.5 w-3.5 opacity-60" />
         </button>
       </DropdownMenuTrigger>
-
       <DropdownMenuContent 
         align="start" 
         className={cn("min-w-[160px] max-h-[252px] overflow-y-auto bg-white border border-border shadow-lg rounded-xl p-1.5 z-50", dropdownClassName)}
@@ -108,7 +107,7 @@ export const TemplateFilters = ({
   ].filter(Boolean).length;
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:gap-3 -mx-4 px-4 sm:mx-0 sm:px-0">
+    <div className="flex items-center gap-3 flex-wrap">
       <FilterPill
         icon={<ArrowUpDown className="h-4 w-4" />}
         label="Sort"
@@ -146,7 +145,7 @@ export const TemplateFilters = ({
       {activeCount >= 2 && onClearAll && (
         <button
           onClick={onClearAll}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors px-2 py-1 shrink-0 whitespace-nowrap"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
         >
           Clear all
         </button>
