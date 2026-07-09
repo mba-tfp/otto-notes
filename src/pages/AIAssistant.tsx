@@ -11,7 +11,7 @@ const AIAssistantContent = () => {
 
   return (
     <AppLayout hideGlobalSessionsPanel>
-      <div className="flex h-screen overflow-hidden bg-background w-full">
+      <div className="flex h-full overflow-hidden bg-background w-full min-w-0">
         {/* Middle Pane - Show either sessions panel or conversation list */}
         {isSessionsPanelVisible ? (
           <div className="w-80 flex-shrink-0 h-full">

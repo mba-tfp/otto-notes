@@ -28,8 +28,8 @@ const MyTemplates = () => {
 
   return (
     <AppLayout>
-      <div className="h-full overflow-y-auto">
-        <div className="mx-auto px-10 lg:px-14 py-10 max-w-7xl">
+      <div className="h-full overflow-y-auto min-w-0">
+        <div className="mx-auto px-6 xl:px-10 py-6 max-w-7xl">
           <TemplatesHeader />
           
           <TemplatesFilters

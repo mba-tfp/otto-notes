@@ -52,9 +52,9 @@ export const TwoColumnLayout = ({
   const leftPaneLabel = recordingMode === 'dictate' ? 'Dictation' : 'Transcript';
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-w-0 min-h-0">
       {/* Two Column Content */}
-      <ResizablePanelGroup direction="horizontal" className="h-full">
+      <ResizablePanelGroup direction="horizontal" className="h-full min-w-0">
         {/* Left Column - Transcript/Dictate */}
         <ResizablePanel defaultSize={40} minSize={25}>
           <div className="flex flex-col h-full border-r border-border">

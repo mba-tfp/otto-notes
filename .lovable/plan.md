@@ -1,55 +1,51 @@
-# Fix GP Letter preview formatting and footer overlap
+## Goal
+Make the Otto Notes web app render cleanly at a minimum viewport of **1320 × 800 px** without horizontal scroll, content clipping, or footer/toolbar overlap — while preserving the existing 3-pane layout and design system.
 
-Two distinct bugs in the Note panel (`src/components/newSession/RightColumnPanel.tsx`).
+## Approach
+Audit fixed-width and fixed-height assumptions across the shell (sidebar, middle pane, right pane, footer, modals) and tighten spacing / make secondary chrome flex so the primary content always fits.
 
-## Bug 1 — Letter formatting collapses
+## Scope of changes
 
-The GP Letter template seeds `activeTab.content` as **plain text** with blank-line paragraph separators (`\n\n`).
+### 1. Global shell fit (1320 wide)
+At 1320px, the horizontal budget is:
+- Sidebar (expanded ~240px) + Middle pane (320px fixed) + Right pane = 1320
+- Right pane ends up ~760px — too tight for current padding on some pages.
 
-- In edit mode, Tiptap's `setContent(plainText)` treats it as HTML, so every `\n` is lost and the entire letter becomes one giant paragraph. When the user toggles back to Preview, the stored HTML is one `<p>` with the whole letter, which is what the screenshot shows.
-- In preview mode, we render via `dangerouslySetInnerHTML`, so plain-text content with `\n` also collapses.
-- The blue-ish tint comes from the `prose` class which restyles the text; not needed here.
+Adjustments (frontend/presentation only):
+- `AppLayout` root: keep `overflow-hidden`; ensure right column uses `min-w-0` so flex children can shrink.
+- Right-pane page wrappers (`MyTemplates`, `TemplateHub`, `Settings`, etc.) currently use `px-10 lg:px-14 py-10 max-w-7xl` — reduce to `px-6 xl:px-10 py-6` so content breathes at 1320.
+- Pages that stack Global Sessions Panel (320) + secondary list (320) + detail (Letters, WhatsNew, AIAssistant): when both are visible at 1320, detail collapses. Add `min-w-0` on detail wrappers; verify secondary list only renders when sessions panel hidden (already the case) — no logic change.
 
-**Fix:**
-- Add a small helper `toEditorHtml(content)` that, if `content` contains no HTML tags, splits on blank lines and wraps each block in `<p>` (single `\n` becomes `<br/>`). Otherwise return as-is.
-- Use that helper when seeding/syncing Tiptap content (`setContent`) so paragraph structure is preserved on first load and on tab switches.
-- Use the same helper when rendering preview via `dangerouslySetInnerHTML`.
-- Drop the `prose prose-sm` class on the preview wrapper; keep `text-foreground` + `whitespace-normal` so the body uses the app's normal typography.
+### 2. Vertical fit (800 tall)
+- `AppFooter` height + `TrainingBanner` / `FeedbackNudgeBanner` must not eat into content. Confirm footer uses fixed compact height; if banners are absolute-positioned overlays, no change. If they push layout, cap their height and make dismissible content scroll inside.
+- Modals already use `max-h-[90vh]` (memory rule) → at 800px = 720px available; verify Create Template / Onboarding / Consent modals scroll their bodies (per Standardized Modal Layout memory).
+- New Session two-column layout: `TwoColumnLayout` uses `ResizablePanelGroup` filling `h-full` — fine. Recording controls bar + session header stack: measure combined height, ensure transcript/note panels get `flex-1 min-h-0`.
 
-## Bug 2 — Reviewed / Send to Letters footer overlaps content
+### 3. Sidebar behavior
+- `LeftPane` expanded width likely ~240–256px. At 1320px total, this is fine. No forced collapse. Verify collapse toggle still works; no change to sidebar collapse spec.
 
-Current structure inside the Note panel:
+### 4. Typography / spacing tuning
+- Reduce oversized `py-10` / `px-14` page paddings on right-pane routes to `py-6 px-6 xl:px-10`.
+- Toolbar rows (Templates, Sessions, Letters) already use standardized pattern — verify they wrap or truncate at 760px right-pane width; add `min-w-0` + `truncate` where filter pills currently cause horizontal overflow.
+- Session cards and Letter cards inside the 320px middle pane already tested; no change.
 
-```text
-<div className="flex-1 overflow-auto">       ← scroll container
-  <div className="flex flex-col h-full p-4">  ← forced to parent height
-    <editor flex-1 min-h-[300px] />            ← content overflows the box
-    <footer mt-4 pt-4 border-t />              ← gets covered by overflow
-  </div>
-</div>
-```
+### 5. Explicit minimum
+- Add a min-width safety net on `#root` / `body`: `min-w-[1320px]` is NOT desired (would create horizontal scroll below that). Instead, treat 1320 as the design floor and let layout gracefully degrade below via existing `overflow-hidden` — no viewport meta or media-query breakpoint added.
+- Do NOT introduce mobile/tablet responsive breakpoints — this app remains desktop-only per existing architecture.
 
-Because the inner column is `h-full`, the editor is a fixed-height flex child but its ProseMirror text grows past it. The overflow visually paints on top of the footer, producing the overlap in the screenshot.
+## Files to touch (presentation only)
+- `src/components/layout/AppLayout.tsx` — ensure `min-w-0` on right column
+- `src/pages/MyTemplates.tsx`, `src/pages/TemplateHub.tsx`, `src/pages/Settings.tsx`, `src/pages/Team.tsx`, `src/pages/ResourceCenter.tsx`, `src/pages/WhatsNew.tsx`, `src/pages/Letters.tsx`, `src/pages/AIAssistant.tsx`, `src/pages/ViewSessions.tsx`, `src/pages/NewSession.tsx` — tighten wrapper padding & add `min-w-0` on detail panes
+- `src/components/newSession/TwoColumnLayout.tsx` — ensure panels use `min-w-0 min-h-0`
+- Toolbar components under `src/components/templates/`, `src/components/sessions/`, `src/components/letters/` — add `flex-wrap` / `min-w-0` where filters overflow at ~760px
+- `src/components/layout/AppFooter.tsx` — verify compact height (no change unless tall)
 
-**Fix:** lift the footer out of the scroll area and pin it to the bottom of the Note panel.
+## Out of scope
+- No new breakpoints, no mobile support, no business logic changes, no schema, no new dependencies.
+- No changes to the 320px middle-pane rule, sidebar collapse spec, modal spec, or brand tokens.
 
-- Restructure the Note panel as:
-  ```text
-  <div className="flex flex-col h-full">
-    <div className="flex-1 overflow-auto p-4">   ← only the content scrolls
-      <editor / preview>
-    </div>
-    <div className="shrink-0 border-t border-border bg-background px-4 py-3 flex items-center gap-3">
-      Review disclaimer + Reviewed / Send to Letters buttons
-    </div>
-  </div>
-  ```
-- Remove `h-full` from the inner column and the `mt-4 pt-4 border-t` from the footer (replaced by the pinned container's `border-t`).
-- Keep the existing conditional that hides the action buttons until `hasGeneratedContent`, and keep the existing `existingLetter` Sent badge branch.
-- Keep the disclaimer visible at all times (matches today's behaviour).
-
-## Files touched
-
-- `src/components/newSession/RightColumnPanel.tsx` — add `toEditorHtml` helper, use it in the Tiptap sync `useEffect` and in the preview render, restructure the Note panel JSX to pin the footer.
-
-No other files, no schema, no new dependencies.
+## Verification
+1. Set preview viewport to 1320×800.
+2. Visit each route: New Session, View Sessions, Letters, Templates, Template Hub, Settings, Team, AI Assistant, Resource Center, What's New.
+3. Confirm: no horizontal scroll, footer visible, toolbars fit, right-pane content readable, modals scroll internally.
+4. Playwright screenshot pass at 1320×800 for the routes above.
