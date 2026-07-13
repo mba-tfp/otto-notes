@@ -1,0 +1,2 @@
+DROP POLICY IF EXISTS "Authenticated users can view team members" ON public.team_members;
+CREATE POLICY "Admins can view team members" ON public.team_members FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'::app_role));
