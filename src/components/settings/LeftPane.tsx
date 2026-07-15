@@ -305,8 +305,12 @@ export const LeftPane = () => {
             
             {footerItems.map(item => {
             const Icon = item.icon;
-            const opensInNewTab = item.id === 'resource-center';
-            const itemRoute = item.id === 'whats-new' ? '/whats-new' : '/resource-center';
+            const opensInNewTab = item.id === 'resource-center' || item.id === 'desktop-app';
+            const itemRoute = item.id === 'whats-new'
+              ? '/whats-new'
+              : item.id === 'desktop-app'
+                ? '#'
+                : '/resource-center';
             const isActive = !opensInNewTab && location.pathname === itemRoute;
             const handleClick = () => {
               setIsMobileMenuOpen(false);
