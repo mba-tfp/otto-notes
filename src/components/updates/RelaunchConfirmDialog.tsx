@@ -18,7 +18,7 @@ export const RelaunchConfirmDialog = ({ open, onOpenChange, onConfirm }: Relaunc
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
-        <DialogHeader>
+        <DialogHeader className="border-b-0">
           <DialogTitle>Relaunch to update?</DialogTitle>
           <DialogDescription className="pt-2">
             Otto Notes will close and reopen to install the latest version. Any unsaved work in the current session may be lost.
