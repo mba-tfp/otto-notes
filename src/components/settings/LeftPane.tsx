@@ -23,7 +23,7 @@ export const LeftPane = () => {
   const location = useLocation();
   const user = mockUser;
   
-  const { data: hasUnseen } = useUnseenReleases();
+  
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
