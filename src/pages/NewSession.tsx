@@ -424,6 +424,8 @@ const NewSession = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <DesktopAppPromoModal />
     </AppLayout>;
 };
 export default NewSession;
