@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { useSessionsPanel } from '@/contexts/SessionsPanelContext';
 import { TrainingBanner } from '@/components/onboarding/TrainingBanner';
 import { FeedbackNudgeBanner } from '@/components/onboarding/FeedbackNudgeBanner';
-import { UpdateAvailableBanner } from '@/components/updates/UpdateAvailableBanner';
+
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -36,7 +36,6 @@ export const AppLayout = ({ children, hideGlobalSessionsPanel = false }: AppLayo
         {shouldShowGlobalSessionsPanel && <GlobalSessionsPanel />}
       </div>
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <UpdateAvailableBanner />
         <div className="flex-1 overflow-hidden min-w-0">
           {children}
         </div>
