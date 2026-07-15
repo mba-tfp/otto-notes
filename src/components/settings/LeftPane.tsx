@@ -328,7 +328,7 @@ export const LeftPane = () => {
                     <div className="relative flex items-center justify-center w-[18px] h-[18px]">
                       <Sparkles className="h-[18px] w-[18px] text-primary" strokeWidth={1.75} />
                     </div>
-                    <span className="flex-1 text-left">Update available</span>
+                    <span className="flex-1 text-left">Relaunch to update</span>
                     <span className="h-2 w-2 rounded-full bg-emerald-500" />
                   </button>
                 )}
