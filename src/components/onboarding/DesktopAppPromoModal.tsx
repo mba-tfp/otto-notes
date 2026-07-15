@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Monitor, Zap, WifiOff, Mic, X } from 'lucide-react';
+import { Monitor, Zap, Mic } from 'lucide-react';
 import ottoLogo from '@/assets/otto-logo.png';
 
 const DISMISS_KEY = 'otto-desktop-promo-dismissed';
@@ -42,15 +42,14 @@ export const DesktopAppPromoModal = () => {
             Otto Notes is now on desktop
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            A faster, more focused way to document your day.
+            A faster, more focused way to document your consults.
           </p>
         </div>
 
         {/* Body */}
-        <div className="px-8 py-6 space-y-3 overflow-y-auto">
+        <div className="px-8 pt-2 pb-6 space-y-3 overflow-y-auto">
           <FeatureRow icon={Zap} title="Faster performance" description="Native app speed, no browser overhead." />
           <FeatureRow icon={Mic} title="Better microphone access" description="Reliable, low-latency dictation." />
-          <FeatureRow icon={WifiOff} title="Works offline" description="Keep drafting notes without a connection." />
         </div>
 
         {/* Footer */}
