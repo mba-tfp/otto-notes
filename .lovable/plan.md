@@ -1,50 +1,45 @@
 ## Goal
-Promote the new Otto Notes desktop app to logged-in users via a one-time, dismissible modal shown on first sight of the New Session screen, plus a permanent subtle entry point so users can find it again after dismissing.
+Add a UI-only "Relaunch to update" prompt that simulates the desktop app detecting a new version via version-endpoint polling. Shown in two places at once: a persistent top banner and a subtle sidebar footer pill. Clicking either opens a confirmation dialog before "relaunching".
 
-## UX rationale
-- New Session is the first screen after login → highest attention, ideal for a one-shot promo.
-- Modal is high-impact but interrupts, so it must be shown only once (remembered), be easy to dismiss, and include a clear primary CTA "Download desktop app".
-- After dismissal users still need discoverability → add a small, always-available "Download desktop app" entry in the sidebar footer (next to "What's New" / "Help Center"). This mirrors the existing footer pattern and doesn't add visual noise.
+## Behavior
+- A lightweight hook `useAppUpdateAvailable` polls a version manifest (e.g. `/version.json`) every N minutes and compares to the app's current version. For the UI-only phase, it returns a mockable boolean driven by:
+  - `localStorage.otto-mock-update-available === 'true'` (dev toggle), OR
+  - a hardcoded stub returning `true` so the UI is visible to design.
+- Only surfaces when running in the desktop app. Detected via `navigator.userAgent.includes('Electron')` OR `localStorage.otto-force-desktop === 'true'` for preview testing. In the browser preview the prompts stay hidden unless the force flag is set.
+- Dismissal: banner has a close (X) that hides it for the current session only (sessionStorage). Sidebar pill stays visible until the update is "applied".
 
-## Placement
+## UI
 
-1. **Primary — One-time modal on `/new-session`**
-   - Triggers on mount if `localStorage.otto-desktop-promo-dismissed !== 'true'`.
-   - Does NOT trigger during the new-user onboarding flow (waits until onboarding modal is closed) to avoid stacking modals.
-   - Contents:
-     - Otto logo + short headline: "Otto Notes is now on desktop"
-     - 2–3 line value prop (faster, offline-friendly, native mic access)
-     - Small product visual/illustration (placeholder allowed; user can swap later)
-     - Primary CTA: "Download desktop app" (Salmon `bg-primary`) → opens download URL in new tab
-     - Secondary: "Maybe later" (ghost) → dismisses & remembers
-     - Close (X) in the top-right → dismisses & remembers
-   - Style: reuses the standardized modal layout (Dialog, max-h-[90vh], flex-col header/body/footer) already used across the app.
+1. **Persistent top banner** (`src/components/updates/UpdateAvailableBanner.tsx`, new)
+   - Full-width strip above main content, mounted in `AppLayout`.
+   - Left: small sparkle/download icon + text: "A new version of Otto Notes is available."
+   - Right: primary button "Relaunch to update" (Salmon `bg-primary`) + ghost X to dismiss for session.
+   - Subtle salmon-tinted background (`bg-primary/10`, `border-b border-primary/20`), 40px tall, matches existing banner styling patterns (TrainingBanner / FeedbackNudgeBanner).
 
-2. **Secondary — Permanent sidebar footer entry**
-   - New item in `LeftPane.tsx` footer list, above "What's New":
-     - Icon: `Monitor` (or `Download`) from lucide-react
-     - Label: "Get desktop app"
-     - Behavior: opens download URL in new tab (same as Help Center pattern with `window.open(..., '_blank')`)
-   - Respects collapsed/expanded sidebar states and tooltips, following existing footer item styling.
-   - This is the fallback discovery point after users dismiss the modal.
+2. **Sidebar footer pill** (inside `LeftPane.tsx` footer list)
+   - New footer item "Update available" with a small green dot indicator.
+   - Sits above "Get desktop app" so it's the first thing users notice.
+   - Collapsed sidebar: shows just the icon with a green dot; tooltip reads "Update available — click to relaunch".
+   - Clicking opens the same confirmation dialog as the banner button.
 
-## Files to change
+3. **Confirmation dialog** (`src/components/updates/RelaunchConfirmDialog.tsx`, new)
+   - Standard shadcn Dialog following the app's modal layout spec.
+   - Title: "Relaunch to update?"
+   - Body: "Otto Notes will close and reopen to install the latest version. Any unsaved work in the current session may be lost."
+   - Footer: "Cancel" (ghost) + "Relaunch now" (Salmon primary).
+   - On confirm (UI-only): show success toast "Relaunching…", clear the update-available flag, close dialog. No actual quit call.
 
-- `src/components/onboarding/DesktopAppPromoModal.tsx` (new)
-  - Self-contained Dialog. Reads/writes `localStorage.otto-desktop-promo-dismissed`. Waits for `NewUserOnboardingModal` completion (checks the same localStorage key that gates onboarding) before opening.
-- `src/pages/NewSession.tsx`
-  - Mount `<DesktopAppPromoModal />` at the page root so it only appears on the New Session screen.
-- `src/components/settings/LeftPane.tsx`
-  - Add "Get desktop app" entry to `footerItems` with `Monitor` icon, opens download URL in a new tab.
-- (Optional) `src/assets/` — placeholder illustration for the modal; can be swapped later.
+## Files
 
-## Configuration
-- Download URL: single constant `DESKTOP_APP_DOWNLOAD_URL` in the modal file (placeholder `#` until the real URL exists — user can update).
-- Dismissal key: `otto-desktop-promo-dismissed` in `localStorage`. Once set to `'true'`, modal never re-opens.
+- `src/hooks/useAppUpdateAvailable.ts` (new) — polling stub + isDesktop detection + dismissal state.
+- `src/components/updates/UpdateAvailableBanner.tsx` (new)
+- `src/components/updates/RelaunchConfirmDialog.tsx` (new)
+- `src/components/layout/AppLayout.tsx` (edit) — mount banner above the main content region.
+- `src/components/settings/LeftPane.tsx` (edit) — add "Update available" footer item with green dot, wire click to open the dialog. Keep existing "Get desktop app" hover card untouched.
 
 ## Out of scope
-- Detecting whether the desktop app is already installed.
-- OS detection / per-platform buttons (single CTA opens a download page that handles platforms).
-- Role-based gating (all users see it, per your choice).
+- Real electron-updater / IPC wiring (deferred to Electron integration phase).
+- Actual version manifest endpoint (stubbed).
+- Deferring relaunch until session ends.
 
 Ready to build on approval.
