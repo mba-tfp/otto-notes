@@ -1,0 +1,111 @@
+import { useEffect, useState } from 'react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Monitor, Zap, WifiOff, Mic, X } from 'lucide-react';
+import ottoLogo from '@/assets/otto-logo.png';
+
+const DISMISS_KEY = 'otto-desktop-promo-dismissed';
+const ONBOARDING_KEY = 'otto-onboarding-completed';
+export const DESKTOP_APP_DOWNLOAD_URL = '#';
+
+export const DesktopAppPromoModal = () => {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const dismissed = localStorage.getItem(DISMISS_KEY) === 'true';
+    if (dismissed) return;
+
+    const check = () => {
+      const onboardingDone = localStorage.getItem(ONBOARDING_KEY) === 'true';
+      if (onboardingDone || localStorage.getItem(ONBOARDING_KEY) === null) {
+        // Show shortly after mount so it doesn't fight page paint
+        setTimeout(() => setOpen(true), 600);
+        return true;
+      }
+      return false;
+    };
+
+    if (!check()) {
+      const interval = setInterval(() => {
+        if (check()) clearInterval(interval);
+      }, 500);
+      return () => clearInterval(interval);
+    }
+  }, []);
+
+  const dismiss = () => {
+    localStorage.setItem(DISMISS_KEY, 'true');
+    setOpen(false);
+  };
+
+  const handleDownload = () => {
+    window.open(DESKTOP_APP_DOWNLOAD_URL, '_blank', 'noopener,noreferrer');
+    dismiss();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => { if (!v) dismiss(); }}>
+      <DialogContent className="max-w-md max-h-[90vh] p-0 overflow-hidden flex flex-col gap-0 border-0">
+        <button
+          onClick={dismiss}
+          className="absolute top-3 right-3 z-10 p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          aria-label="Close"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        {/* Header with brand bloom */}
+        <div className="relative px-8 pt-10 pb-6 bg-gradient-to-br from-primary/10 via-background to-background">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="h-12 w-12 rounded-2xl bg-session-action text-session-action-foreground flex items-center justify-center shadow-subtle">
+              <Monitor className="h-6 w-6" strokeWidth={2} />
+            </div>
+            <img src={ottoLogo} alt="Otto Notes" className="h-8" />
+          </div>
+          <h2 className="text-2xl font-semibold text-foreground leading-tight">
+            Otto Notes is now on desktop
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            A faster, more focused way to document your day.
+          </p>
+        </div>
+
+        {/* Body */}
+        <div className="px-8 py-6 space-y-3 overflow-y-auto">
+          <FeatureRow icon={Zap} title="Faster performance" description="Native app speed, no browser overhead." />
+          <FeatureRow icon={Mic} title="Better microphone access" description="Reliable, low-latency dictation." />
+          <FeatureRow icon={WifiOff} title="Works offline" description="Keep drafting notes without a connection." />
+        </div>
+
+        {/* Footer */}
+        <div className="px-8 pb-8 pt-2 flex flex-col gap-2">
+          <Button
+            onClick={handleDownload}
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 font-semibold"
+          >
+            Download desktop app
+          </Button>
+          <Button
+            onClick={dismiss}
+            variant="ghost"
+            className="w-full h-10 text-muted-foreground hover:text-foreground"
+          >
+            Maybe later
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const FeatureRow = ({ icon: Icon, title, description }: { icon: typeof Zap; title: string; description: string }) => (
+  <div className="flex items-start gap-3">
+    <div className="flex-shrink-0 h-9 w-9 rounded-xl bg-muted flex items-center justify-center text-foreground">
+      <Icon className="h-4 w-4" strokeWidth={2} />
+    </div>
+    <div className="min-w-0">
+      <div className="text-sm font-semibold text-foreground">{title}</div>
+      <div className="text-xs text-muted-foreground">{description}</div>
+    </div>
+  </div>
+);
