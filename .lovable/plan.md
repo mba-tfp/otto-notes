@@ -1,51 +1,50 @@
 ## Goal
-Make the Otto Notes web app render cleanly at a minimum viewport of **1320 × 800 px** without horizontal scroll, content clipping, or footer/toolbar overlap — while preserving the existing 3-pane layout and design system.
+Promote the new Otto Notes desktop app to logged-in users via a one-time, dismissible modal shown on first sight of the New Session screen, plus a permanent subtle entry point so users can find it again after dismissing.
 
-## Approach
-Audit fixed-width and fixed-height assumptions across the shell (sidebar, middle pane, right pane, footer, modals) and tighten spacing / make secondary chrome flex so the primary content always fits.
+## UX rationale
+- New Session is the first screen after login → highest attention, ideal for a one-shot promo.
+- Modal is high-impact but interrupts, so it must be shown only once (remembered), be easy to dismiss, and include a clear primary CTA "Download desktop app".
+- After dismissal users still need discoverability → add a small, always-available "Download desktop app" entry in the sidebar footer (next to "What's New" / "Help Center"). This mirrors the existing footer pattern and doesn't add visual noise.
 
-## Scope of changes
+## Placement
 
-### 1. Global shell fit (1320 wide)
-At 1320px, the horizontal budget is:
-- Sidebar (expanded ~240px) + Middle pane (320px fixed) + Right pane = 1320
-- Right pane ends up ~760px — too tight for current padding on some pages.
+1. **Primary — One-time modal on `/new-session`**
+   - Triggers on mount if `localStorage.otto-desktop-promo-dismissed !== 'true'`.
+   - Does NOT trigger during the new-user onboarding flow (waits until onboarding modal is closed) to avoid stacking modals.
+   - Contents:
+     - Otto logo + short headline: "Otto Notes is now on desktop"
+     - 2–3 line value prop (faster, offline-friendly, native mic access)
+     - Small product visual/illustration (placeholder allowed; user can swap later)
+     - Primary CTA: "Download desktop app" (Salmon `bg-primary`) → opens download URL in new tab
+     - Secondary: "Maybe later" (ghost) → dismisses & remembers
+     - Close (X) in the top-right → dismisses & remembers
+   - Style: reuses the standardized modal layout (Dialog, max-h-[90vh], flex-col header/body/footer) already used across the app.
 
-Adjustments (frontend/presentation only):
-- `AppLayout` root: keep `overflow-hidden`; ensure right column uses `min-w-0` so flex children can shrink.
-- Right-pane page wrappers (`MyTemplates`, `TemplateHub`, `Settings`, etc.) currently use `px-10 lg:px-14 py-10 max-w-7xl` — reduce to `px-6 xl:px-10 py-6` so content breathes at 1320.
-- Pages that stack Global Sessions Panel (320) + secondary list (320) + detail (Letters, WhatsNew, AIAssistant): when both are visible at 1320, detail collapses. Add `min-w-0` on detail wrappers; verify secondary list only renders when sessions panel hidden (already the case) — no logic change.
+2. **Secondary — Permanent sidebar footer entry**
+   - New item in `LeftPane.tsx` footer list, above "What's New":
+     - Icon: `Monitor` (or `Download`) from lucide-react
+     - Label: "Get desktop app"
+     - Behavior: opens download URL in new tab (same as Help Center pattern with `window.open(..., '_blank')`)
+   - Respects collapsed/expanded sidebar states and tooltips, following existing footer item styling.
+   - This is the fallback discovery point after users dismiss the modal.
 
-### 2. Vertical fit (800 tall)
-- `AppFooter` height + `TrainingBanner` / `FeedbackNudgeBanner` must not eat into content. Confirm footer uses fixed compact height; if banners are absolute-positioned overlays, no change. If they push layout, cap their height and make dismissible content scroll inside.
-- Modals already use `max-h-[90vh]` (memory rule) → at 800px = 720px available; verify Create Template / Onboarding / Consent modals scroll their bodies (per Standardized Modal Layout memory).
-- New Session two-column layout: `TwoColumnLayout` uses `ResizablePanelGroup` filling `h-full` — fine. Recording controls bar + session header stack: measure combined height, ensure transcript/note panels get `flex-1 min-h-0`.
+## Files to change
 
-### 3. Sidebar behavior
-- `LeftPane` expanded width likely ~240–256px. At 1320px total, this is fine. No forced collapse. Verify collapse toggle still works; no change to sidebar collapse spec.
+- `src/components/onboarding/DesktopAppPromoModal.tsx` (new)
+  - Self-contained Dialog. Reads/writes `localStorage.otto-desktop-promo-dismissed`. Waits for `NewUserOnboardingModal` completion (checks the same localStorage key that gates onboarding) before opening.
+- `src/pages/NewSession.tsx`
+  - Mount `<DesktopAppPromoModal />` at the page root so it only appears on the New Session screen.
+- `src/components/settings/LeftPane.tsx`
+  - Add "Get desktop app" entry to `footerItems` with `Monitor` icon, opens download URL in a new tab.
+- (Optional) `src/assets/` — placeholder illustration for the modal; can be swapped later.
 
-### 4. Typography / spacing tuning
-- Reduce oversized `py-10` / `px-14` page paddings on right-pane routes to `py-6 px-6 xl:px-10`.
-- Toolbar rows (Templates, Sessions, Letters) already use standardized pattern — verify they wrap or truncate at 760px right-pane width; add `min-w-0` + `truncate` where filter pills currently cause horizontal overflow.
-- Session cards and Letter cards inside the 320px middle pane already tested; no change.
-
-### 5. Explicit minimum
-- Add a min-width safety net on `#root` / `body`: `min-w-[1320px]` is NOT desired (would create horizontal scroll below that). Instead, treat 1320 as the design floor and let layout gracefully degrade below via existing `overflow-hidden` — no viewport meta or media-query breakpoint added.
-- Do NOT introduce mobile/tablet responsive breakpoints — this app remains desktop-only per existing architecture.
-
-## Files to touch (presentation only)
-- `src/components/layout/AppLayout.tsx` — ensure `min-w-0` on right column
-- `src/pages/MyTemplates.tsx`, `src/pages/TemplateHub.tsx`, `src/pages/Settings.tsx`, `src/pages/Team.tsx`, `src/pages/ResourceCenter.tsx`, `src/pages/WhatsNew.tsx`, `src/pages/Letters.tsx`, `src/pages/AIAssistant.tsx`, `src/pages/ViewSessions.tsx`, `src/pages/NewSession.tsx` — tighten wrapper padding & add `min-w-0` on detail panes
-- `src/components/newSession/TwoColumnLayout.tsx` — ensure panels use `min-w-0 min-h-0`
-- Toolbar components under `src/components/templates/`, `src/components/sessions/`, `src/components/letters/` — add `flex-wrap` / `min-w-0` where filters overflow at ~760px
-- `src/components/layout/AppFooter.tsx` — verify compact height (no change unless tall)
+## Configuration
+- Download URL: single constant `DESKTOP_APP_DOWNLOAD_URL` in the modal file (placeholder `#` until the real URL exists — user can update).
+- Dismissal key: `otto-desktop-promo-dismissed` in `localStorage`. Once set to `'true'`, modal never re-opens.
 
 ## Out of scope
-- No new breakpoints, no mobile support, no business logic changes, no schema, no new dependencies.
-- No changes to the 320px middle-pane rule, sidebar collapse spec, modal spec, or brand tokens.
+- Detecting whether the desktop app is already installed.
+- OS detection / per-platform buttons (single CTA opens a download page that handles platforms).
+- Role-based gating (all users see it, per your choice).
 
-## Verification
-1. Set preview viewport to 1320×800.
-2. Visit each route: New Session, View Sessions, Letters, Templates, Template Hub, Settings, Team, AI Assistant, Resource Center, What's New.
-3. Confirm: no horizontal scroll, footer visible, toolbars fit, right-pane content readable, modals scroll internally.
-4. Playwright screenshot pass at 1320×800 for the routes above.
+Ready to build on approval.
