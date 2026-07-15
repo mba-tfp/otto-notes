@@ -1,45 +1,41 @@
 ## Goal
-Add a UI-only "Relaunch to update" prompt that simulates the desktop app detecting a new version via version-endpoint polling. Shown in two places at once: a persistent top banner and a subtle sidebar footer pill. Clicking either opens a confirmation dialog before "relaunching".
+Replace the top banner and sidebar pill with two subtler surfaces: a launch-time corner toast and a chip in the existing AppFooter. Both open the same relaunch confirmation dialog we already built.
 
-## Behavior
-- A lightweight hook `useAppUpdateAvailable` polls a version manifest (e.g. `/version.json`) every N minutes and compares to the app's current version. For the UI-only phase, it returns a mockable boolean driven by:
-  - `localStorage.otto-mock-update-available === 'true'` (dev toggle), OR
-  - a hardcoded stub returning `true` so the UI is visible to design.
-- Only surfaces when running in the desktop app. Detected via `navigator.userAgent.includes('Electron')` OR `localStorage.otto-force-desktop === 'true'` for preview testing. In the browser preview the prompts stay hidden unless the force flag is set.
-- Dismissal: banner has a close (X) that hides it for the current session only (sessionStorage). Sidebar pill stays visible until the update is "applied".
+## Changes
 
-## UI
+### 1. Remove old surfaces
+- `src/components/layout/AppLayout.tsx` — remove `<UpdateAvailableBanner />` mount and its import.
+- `src/components/settings/LeftPane.tsx` — remove the "Update available" pill block, the `useAppUpdateAvailable` hook usage, the `RelaunchConfirmDialog` mount, `Sparkles` import, and the `relaunchDialogOpen` state.
+- `src/components/updates/UpdateAvailableBanner.tsx` — delete file.
 
-1. **Persistent top banner** (`src/components/updates/UpdateAvailableBanner.tsx`, new)
-   - Full-width strip above main content, mounted in `AppLayout`.
-   - Left: small sparkle/download icon + text: "A new version of Otto Notes is available."
-   - Right: primary button "Relaunch to update" (Salmon `bg-primary`) + ghost X to dismiss for session.
-   - Subtle salmon-tinted background (`bg-primary/10`, `border-b border-primary/20`), 40px tall, matches existing banner styling patterns (TrainingBanner / FeedbackNudgeBanner).
+### 2. Corner toast (reappears each session)
+- New component `src/components/updates/UpdateAvailableToast.tsx` mounted once in `AppLayout`.
+- On mount, if the hook reports `updateAvailable` AND `sessionStorage.otto-update-toast-shown !== 'true'`, fire a persistent sonner toast at bottom-right:
+  - Icon: `Sparkles`, title "New version ready", description "Relaunch Otto Notes to install the latest update."
+  - Action button: "Relaunch" (opens the RelaunchConfirmDialog).
+  - Cancel button: "Later" (dismisses the toast for the session).
+  - `duration: Infinity` so it stays until the user acts; `id: 'otto-update'` to avoid duplicates.
+- After showing, set `sessionStorage.otto-update-toast-shown = 'true'` so it doesn't re-fire on route changes. It reappears next session (new tab / relaunch) because sessionStorage is cleared.
+- Component owns the dialog state so the action button can open the confirm dialog.
 
-2. **Sidebar footer pill** (inside `LeftPane.tsx` footer list)
-   - New footer item "Update available" with a small green dot indicator.
-   - Sits above "Get desktop app" so it's the first thing users notice.
-   - Collapsed sidebar: shows just the icon with a green dot; tooltip reads "Update available — click to relaunch".
-   - Clicking opens the same confirmation dialog as the banner button.
+### 3. AppFooter chip (always visible, quiet)
+- Edit `src/components/layout/AppFooter.tsx`.
+- When `updateAvailable` is true, insert a chip between the left copyright block and the right language block (or at the far right of the left block):
+  - Style: small rounded-full pill, `bg-primary/10 text-primary` border `border-primary/20`, height ~22px.
+  - Content: small green pulse dot + text "Update ready \u00b7 Relaunch".
+  - Clicking opens the same `RelaunchConfirmDialog`.
+  - Hidden entirely when no update is available (no layout shift risk — footer already flex-justify-between).
+- Footer owns its own dialog state.
 
-3. **Confirmation dialog** (`src/components/updates/RelaunchConfirmDialog.tsx`, new)
-   - Standard shadcn Dialog following the app's modal layout spec.
-   - Title: "Relaunch to update?"
-   - Body: "Otto Notes will close and reopen to install the latest version. Any unsaved work in the current session may be lost."
-   - Footer: "Cancel" (ghost) + "Relaunch now" (Salmon primary).
-   - On confirm (UI-only): show success toast "Relaunching…", clear the update-available flag, close dialog. No actual quit call.
+### 4. Shared bits (already exist, unchanged)
+- `useAppUpdateAvailable` hook — reused as-is (still stubbed, still gated to Electron / `otto-force-desktop`).
+- `RelaunchConfirmDialog` — reused as-is by both new surfaces.
 
-## Files
-
-- `src/hooks/useAppUpdateAvailable.ts` (new) — polling stub + isDesktop detection + dismissal state.
-- `src/components/updates/UpdateAvailableBanner.tsx` (new)
-- `src/components/updates/RelaunchConfirmDialog.tsx` (new)
-- `src/components/layout/AppLayout.tsx` (edit) — mount banner above the main content region.
-- `src/components/settings/LeftPane.tsx` (edit) — add "Update available" footer item with green dot, wire click to open the dialog. Keep existing "Get desktop app" hover card untouched.
+## Behavior recap
+- Desktop app launch: subtle bottom-right toast appears once per session with a "Relaunch" action.
+- If dismissed, the footer chip remains as a permanent quiet reminder until relaunched.
+- On confirm, `applyUpdate()` clears the flag and both surfaces disappear.
 
 ## Out of scope
-- Real electron-updater / IPC wiring (deferred to Electron integration phase).
-- Actual version manifest endpoint (stubbed).
-- Deferring relaunch until session ends.
-
-Ready to build on approval.
+- Real electron-updater wiring (still UI-only).
+- Any other placements (avatar badge, settings entry).
