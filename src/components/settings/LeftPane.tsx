@@ -4,6 +4,7 @@ import { useSessionsPanel } from '@/contexts/SessionsPanelContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import ottoLogo from '@/assets/otto-logo.png';
