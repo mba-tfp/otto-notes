@@ -29,13 +29,6 @@ export const DesktopAppPromoModal = () => {
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) dismiss(); }}>
       <DialogContent className="max-w-md max-h-[90vh] p-0 overflow-hidden flex flex-col gap-0 border-0">
-        <button
-          onClick={dismiss}
-          className="absolute top-3 right-3 z-10 p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          aria-label="Close"
-        >
-          <X className="h-4 w-4" />
-        </button>
 
         {/* Header with brand bloom */}
         <div className="relative px-8 pt-10 pb-6 bg-gradient-to-br from-primary/10 via-background to-background">
