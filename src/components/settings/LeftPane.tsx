@@ -354,7 +354,7 @@ export const LeftPane = () => {
                   </p>
                   <button
                     onClick={handleClick}
-                    className="mt-3 inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:opacity-90 transition-opacity"
+                    className="mt-3 inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#FF887C] text-white hover:opacity-90 transition-opacity"
                   >
                     Download now
                   </button>
