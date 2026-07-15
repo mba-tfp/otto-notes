@@ -294,12 +294,26 @@ export const LeftPane = () => {
         {/* Footer Section */}
         <div className={`${isCollapsed ? 'px-2 py-4' : 'px-4 py-5'}`}>
           <ul className="space-y-1">
+            {footerItems.filter(i => i.id === 'desktop-app').map(item => renderFooterItem(item))}
+
             {/* Switch App button */}
             <li>
               <SwitchAppPopover isCollapsed={isCollapsed} />
             </li>
-            
-            {footerItems.map(item => {
+
+            {footerItems.filter(i => i.id !== 'desktop-app').map(item => renderFooterItem(item))}
+          </ul>
+        </div>
+      </div>
+    </>;
+
+  function renderFooterItem(item: typeof footerItems[number]) {
+    {
+            const Icon = item.icon;
+            const opensInNewTab = item.id === 'resource-center' || item.id === 'desktop-app';
+            const itemRoute = item.id === 'desktop-app'
+              ? '#'
+              : '/resource-center';
             const Icon = item.icon;
             const opensInNewTab = item.id === 'resource-center' || item.id === 'desktop-app';
             const itemRoute = item.id === 'whats-new'
