@@ -81,7 +81,7 @@ export const DesktopAppPromoModal = () => {
         <div className="px-8 pb-8 pt-2 flex flex-col gap-2">
           <Button
             onClick={handleDownload}
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 font-semibold"
+            className="w-full bg-brand hover:bg-[hsl(5_85%_68%)] text-brand-foreground h-11 font-semibold"
           >
             Download desktop app
           </Button>

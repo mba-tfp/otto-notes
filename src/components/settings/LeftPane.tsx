@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, FileText, MessageSquare, Store, Settings, BookOpen, Plus, ChevronDown, LogOut, ChevronRight, ChevronLeft, Menu, X, Sparkles, Monitor } from 'lucide-react';
+import { Mail, FileText, MessageSquare, Store, Settings, BookOpen, Plus, ChevronDown, LogOut, ChevronRight, ChevronLeft, Menu, X, Monitor } from 'lucide-react';
 import { useSessionsPanel } from '@/contexts/SessionsPanelContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -8,7 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import ottoLogo from '@/assets/otto-logo.png';
 import { SwitchAppPopover } from '@/components/sidebar/SwitchAppPopover';
-import { useUnseenReleases } from '@/hooks/useUnseenReleases';
+
 
 // Mock user - in production, this would come from auth context
 const mockUser = {
@@ -23,7 +23,7 @@ export const LeftPane = () => {
   const location = useLocation();
   const user = mockUser;
   
-  const { data: hasUnseen } = useUnseenReleases();
+  
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
@@ -97,10 +97,6 @@ export const LeftPane = () => {
     icon: Monitor,
     label: 'Get desktop app',
     id: 'desktop-app'
-  }, {
-    icon: Sparkles,
-    label: "What's New",
-    id: 'whats-new'
   }, {
     icon: BookOpen,
     label: 'Help Center',
@@ -298,56 +294,58 @@ export const LeftPane = () => {
         {/* Footer Section */}
         <div className={`${isCollapsed ? 'px-2 py-4' : 'px-4 py-5'}`}>
           <ul className="space-y-1">
+            {footerItems.filter(i => i.id === 'desktop-app').map(item => renderFooterItem(item))}
+
             {/* Switch App button */}
             <li>
               <SwitchAppPopover isCollapsed={isCollapsed} />
             </li>
-            
-            {footerItems.map(item => {
-            const Icon = item.icon;
-            const opensInNewTab = item.id === 'resource-center' || item.id === 'desktop-app';
-            const itemRoute = item.id === 'whats-new'
-              ? '/whats-new'
-              : item.id === 'desktop-app'
-                ? '#'
-                : '/resource-center';
-            const isActive = !opensInNewTab && location.pathname === itemRoute;
-            const handleClick = () => {
-              setIsMobileMenuOpen(false);
-              if (opensInNewTab) {
-                window.open(itemRoute, '_blank', 'noopener,noreferrer');
-                return;
-              }
-              navigate(itemRoute);
-            };
-            const showBadge = item.id === 'whats-new' && hasUnseen;
-            return <li key={item.id}>
-                  {isCollapsed ? <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button onClick={handleClick} className={`relative w-full flex items-center justify-center p-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
-                             {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
-                             <div className="flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 group-hover:scale-105">
-                               <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
-                             </div>
-                             {showBadge && <span className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-destructive ring-2 ring-sidebar" />}
-                           </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="right" className="bg-card border-border text-foreground shadow-lg font-medium">
-                          <p>{item.label}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider> : <button onClick={handleClick} className={`relative w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground font-semibold' : 'text-muted-foreground font-medium'}`}>
-                       {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
-                       <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
-                       <span className="flex-1 text-left">{item.label}</span>
-                       {showBadge && <span className="h-2.5 w-2.5 rounded-full bg-destructive ring-2 ring-sidebar" />}
-                     </button>}
-                </li>;
-          })}
+
+            {footerItems.filter(i => i.id !== 'desktop-app').map(item => renderFooterItem(item))}
           </ul>
         </div>
       </div>
-      
     </>;
+
+  function renderFooterItem(item: (typeof footerItems)[number]) {
+    const Icon = item.icon;
+    const opensInNewTab = item.id === 'resource-center' || item.id === 'desktop-app';
+    const itemRoute = item.id === 'desktop-app' ? '#' : '/resource-center';
+    const isActive = !opensInNewTab && location.pathname === itemRoute;
+    const handleClick = () => {
+      setIsMobileMenuOpen(false);
+      if (opensInNewTab) {
+        window.open(itemRoute, '_blank', 'noopener,noreferrer');
+        return;
+      }
+      navigate(itemRoute);
+    };
+    return (
+      <li key={item.id}>
+        {isCollapsed ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={handleClick} className={`relative w-full flex items-center justify-center p-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
+                  <div className="flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 group-hover:scale-105">
+                    <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
+                  </div>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="bg-card border-border text-foreground shadow-lg font-medium">
+                <p>{item.label}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <button onClick={handleClick} className={`relative w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground font-semibold' : 'text-muted-foreground font-medium'}`}>
+            {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
+            <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
+            <span className="flex-1 text-left">{item.label}</span>
+          </button>
+        )}
+      </li>
+    );
+  }
 };
