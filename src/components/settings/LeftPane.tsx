@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, FileText, MessageSquare, Store, Settings, BookOpen, Plus, ChevronDown, LogOut, ChevronRight, ChevronLeft, Menu, X, Sparkles } from 'lucide-react';
+import { Mail, FileText, MessageSquare, Store, Settings, BookOpen, Plus, ChevronDown, LogOut, ChevronRight, ChevronLeft, Menu, X, Sparkles, Monitor } from 'lucide-react';
 import { useSessionsPanel } from '@/contexts/SessionsPanelContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -94,6 +94,10 @@ export const LeftPane = () => {
     route: '/settings'
   }];
   const footerItems = [{
+    icon: Monitor,
+    label: 'Get desktop app',
+    id: 'desktop-app'
+  }, {
     icon: Sparkles,
     label: "What's New",
     id: 'whats-new'
@@ -301,8 +305,12 @@ export const LeftPane = () => {
             
             {footerItems.map(item => {
             const Icon = item.icon;
-            const opensInNewTab = item.id === 'resource-center';
-            const itemRoute = item.id === 'whats-new' ? '/whats-new' : '/resource-center';
+            const opensInNewTab = item.id === 'resource-center' || item.id === 'desktop-app';
+            const itemRoute = item.id === 'whats-new'
+              ? '/whats-new'
+              : item.id === 'desktop-app'
+                ? '#'
+                : '/resource-center';
             const isActive = !opensInNewTab && location.pathname === itemRoute;
             const handleClick = () => {
               setIsMobileMenuOpen(false);

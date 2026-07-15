@@ -24,6 +24,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { generateNoteFromTemplate, availableTemplates } from "@/data/templates";
 import { format } from "date-fns";
 import { DEMO_NOTES } from "@/data/demoContent";
+import { DesktopAppPromoModal } from "@/components/onboarding/DesktopAppPromoModal";
 
 const NewSession = () => {
   const {
@@ -423,6 +424,8 @@ const NewSession = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <DesktopAppPromoModal />
     </AppLayout>;
 };
 export default NewSession;
