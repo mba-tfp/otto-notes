@@ -36,7 +36,6 @@ export const AppLayout = ({ children, hideGlobalSessionsPanel = false }: AppLayo
         {shouldShowGlobalSessionsPanel && <GlobalSessionsPanel />}
       </div>
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <UpdateAvailableBanner />
         <div className="flex-1 overflow-hidden min-w-0">
           {children}
         </div>
@@ -44,6 +43,7 @@ export const AppLayout = ({ children, hideGlobalSessionsPanel = false }: AppLayo
       </div>
       <TrainingBanner />
       <FeedbackNudgeBanner />
+      <UpdateAvailableToast />
     </div>
   );
 };
