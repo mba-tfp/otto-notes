@@ -320,30 +320,64 @@ export const LeftPane = () => {
       }
       navigate(itemRoute);
     };
+
+    const buttonEl = isCollapsed ? (
+      <button onClick={handleClick} className={`relative w-full flex items-center justify-center p-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+        {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
+        <div className="flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 group-hover:scale-105">
+          <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
+        </div>
+      </button>
+    ) : (
+      <button onClick={handleClick} className={`relative w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground font-semibold' : 'text-muted-foreground font-medium'}`}>
+        {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
+        <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
+        <span className="flex-1 text-left">{item.label}</span>
+      </button>
+    );
+
+    if (item.id === 'desktop-app') {
+      return (
+        <li key={item.id}>
+          <HoverCard openDelay={150} closeDelay={100}>
+            <HoverCardTrigger asChild>{buttonEl}</HoverCardTrigger>
+            <HoverCardContent side="right" align="end" className="w-72 p-4 bg-card border-border shadow-lg rounded-xl">
+              <div className="flex items-start gap-3">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary flex-shrink-0">
+                  <Monitor className="h-5 w-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-semibold text-foreground">Otto Notes for Desktop</h4>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                    Faster performance, native microphone access, and works offline. Available for macOS and Windows.
+                  </p>
+                  <button
+                    onClick={handleClick}
+                    className="mt-3 inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                  >
+                    Download now
+                  </button>
+                </div>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
+        </li>
+      );
+    }
+
     return (
       <li key={item.id}>
         {isCollapsed ? (
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={handleClick} className={`relative w-full flex items-center justify-center p-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
-                  {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
-                  <div className="flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 group-hover:scale-105">
-                    <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
-                  </div>
-                </button>
-              </TooltipTrigger>
+              <TooltipTrigger asChild>{buttonEl}</TooltipTrigger>
               <TooltipContent side="right" className="bg-card border-border text-foreground shadow-lg font-medium">
                 <p>{item.label}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         ) : (
-          <button onClick={handleClick} className={`relative w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground font-semibold' : 'text-muted-foreground font-medium'}`}>
-            {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
-            <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
-            <span className="flex-1 text-left">{item.label}</span>
-          </button>
+          buttonEl
         )}
       </li>
     );
