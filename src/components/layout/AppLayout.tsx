@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { useSessionsPanel } from '@/contexts/SessionsPanelContext';
 import { TrainingBanner } from '@/components/onboarding/TrainingBanner';
 import { FeedbackNudgeBanner } from '@/components/onboarding/FeedbackNudgeBanner';
-import { UpdateAvailableBanner } from '@/components/updates/UpdateAvailableBanner';
+import { UpdateAvailableToast } from '@/components/updates/UpdateAvailableToast';
 
 interface AppLayoutProps {
   children: ReactNode;
