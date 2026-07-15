@@ -1,15 +1,11 @@
 import { useState } from 'react';
 import { Globe } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { useAppUpdateAvailable } from '@/hooks/useAppUpdateAvailable';
-import { RelaunchConfirmDialog } from '@/components/updates/RelaunchConfirmDialog';
 
 type Language = 'en' | 'fr';
 
 export const AppFooter = () => {
   const [language, setLanguage] = useState<Language>('en');
-  const { updateAvailable, applyUpdate } = useAppUpdateAvailable();
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'en' ? 'fr' : 'en');
@@ -20,28 +16,15 @@ export const AppFooter = () => {
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <div className="flex items-center gap-4">
           <span>© 2025 TFP. All Rights Reserved.</span>
-          <button
+          <button 
             onClick={() => window.open('/privacy', '_blank')}
             className="hover:text-foreground transition-colors underline underline-offset-2"
           >
             Privacy Policy
           </button>
         </div>
-
+        
         <div className="flex items-center gap-3">
-          {updateAvailable && (
-            <button
-              onClick={() => setDialogOpen(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/15 transition-colors font-medium"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-              </span>
-              <span>Update ready · Relaunch</span>
-            </button>
-          )}
-
           <div className="flex items-center gap-1.5">
             <Globe className="h-3.5 w-3.5" />
             <span>Canada ({language === 'en' ? 'English' : 'Français'})</span>
@@ -61,12 +44,6 @@ export const AppFooter = () => {
           </TooltipProvider>
         </div>
       </div>
-
-      <RelaunchConfirmDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onConfirm={applyUpdate}
-      />
     </footer>
   );
 };
