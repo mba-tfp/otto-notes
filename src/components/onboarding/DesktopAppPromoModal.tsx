@@ -5,32 +5,15 @@ import { Monitor, Zap, WifiOff, Mic, X } from 'lucide-react';
 import ottoLogo from '@/assets/otto-logo.png';
 
 const DISMISS_KEY = 'otto-desktop-promo-dismissed';
-const ONBOARDING_KEY = 'otto-onboarding-completed';
 export const DESKTOP_APP_DOWNLOAD_URL = '#';
 
 export const DesktopAppPromoModal = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const dismissed = localStorage.getItem(DISMISS_KEY) === 'true';
-    if (dismissed) return;
-
-    const check = () => {
-      const onboardingDone = localStorage.getItem(ONBOARDING_KEY) === 'true';
-      if (onboardingDone || localStorage.getItem(ONBOARDING_KEY) === null) {
-        // Show shortly after mount so it doesn't fight page paint
-        setTimeout(() => setOpen(true), 600);
-        return true;
-      }
-      return false;
-    };
-
-    if (!check()) {
-      const interval = setInterval(() => {
-        if (check()) clearInterval(interval);
-      }, 500);
-      return () => clearInterval(interval);
-    }
+    if (localStorage.getItem(DISMISS_KEY) === 'true') return;
+    const t = setTimeout(() => setOpen(true), 600);
+    return () => clearTimeout(t);
   }, []);
 
   const dismiss = () => {
