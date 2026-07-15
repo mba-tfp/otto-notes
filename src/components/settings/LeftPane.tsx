@@ -94,6 +94,10 @@ export const LeftPane = () => {
     route: '/settings'
   }];
   const footerItems = [{
+    icon: Monitor,
+    label: 'Get desktop app',
+    id: 'desktop-app'
+  }, {
     icon: Sparkles,
     label: "What's New",
     id: 'whats-new'
