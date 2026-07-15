@@ -8,7 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import ottoLogo from '@/assets/otto-logo.png';
 import { SwitchAppPopover } from '@/components/sidebar/SwitchAppPopover';
-import { useUnseenReleases } from '@/hooks/useUnseenReleases';
+
 
 // Mock user - in production, this would come from auth context
 const mockUser = {
