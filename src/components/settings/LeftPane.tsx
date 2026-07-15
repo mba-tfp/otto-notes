@@ -98,10 +98,6 @@ export const LeftPane = () => {
     label: 'Get desktop app',
     id: 'desktop-app'
   }, {
-    icon: Sparkles,
-    label: "What's New",
-    id: 'whats-new'
-  }, {
     icon: BookOpen,
     label: 'Help Center',
     id: 'resource-center'
