@@ -307,57 +307,45 @@ export const LeftPane = () => {
       </div>
     </>;
 
-  function renderFooterItem(item: typeof footerItems[number]) {
-    {
-            const Icon = item.icon;
-            const opensInNewTab = item.id === 'resource-center' || item.id === 'desktop-app';
-            const itemRoute = item.id === 'desktop-app'
-              ? '#'
-              : '/resource-center';
-            const Icon = item.icon;
-            const opensInNewTab = item.id === 'resource-center' || item.id === 'desktop-app';
-            const itemRoute = item.id === 'whats-new'
-              ? '/whats-new'
-              : item.id === 'desktop-app'
-                ? '#'
-                : '/resource-center';
-            const isActive = !opensInNewTab && location.pathname === itemRoute;
-            const handleClick = () => {
-              setIsMobileMenuOpen(false);
-              if (opensInNewTab) {
-                window.open(itemRoute, '_blank', 'noopener,noreferrer');
-                return;
-              }
-              navigate(itemRoute);
-            };
-            const showBadge = item.id === 'whats-new' && hasUnseen;
-            return <li key={item.id}>
-                  {isCollapsed ? <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button onClick={handleClick} className={`relative w-full flex items-center justify-center p-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
-                             {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
-                             <div className="flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 group-hover:scale-105">
-                               <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
-                             </div>
-                             {showBadge && <span className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-destructive ring-2 ring-sidebar" />}
-                           </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="right" className="bg-card border-border text-foreground shadow-lg font-medium">
-                          <p>{item.label}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider> : <button onClick={handleClick} className={`relative w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground font-semibold' : 'text-muted-foreground font-medium'}`}>
-                       {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
-                       <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
-                       <span className="flex-1 text-left">{item.label}</span>
-                       {showBadge && <span className="h-2.5 w-2.5 rounded-full bg-destructive ring-2 ring-sidebar" />}
-                     </button>}
-                </li>;
-          })}
-          </ul>
-        </div>
-      </div>
-      
-    </>;
+  function renderFooterItem(item: (typeof footerItems)[number]) {
+    const Icon = item.icon;
+    const opensInNewTab = item.id === 'resource-center' || item.id === 'desktop-app';
+    const itemRoute = item.id === 'desktop-app' ? '#' : '/resource-center';
+    const isActive = !opensInNewTab && location.pathname === itemRoute;
+    const handleClick = () => {
+      setIsMobileMenuOpen(false);
+      if (opensInNewTab) {
+        window.open(itemRoute, '_blank', 'noopener,noreferrer');
+        return;
+      }
+      navigate(itemRoute);
+    };
+    return (
+      <li key={item.id}>
+        {isCollapsed ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={handleClick} className={`relative w-full flex items-center justify-center p-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
+                  <div className="flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 group-hover:scale-105">
+                    <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
+                  </div>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="bg-card border-border text-foreground shadow-lg font-medium">
+                <p>{item.label}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <button onClick={handleClick} className={`relative w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground font-semibold' : 'text-muted-foreground font-medium'}`}>
+            {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
+            <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
+            <span className="flex-1 text-left">{item.label}</span>
+          </button>
+        )}
+      </li>
+    );
+  }
 };
