@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { ChevronDown, Plus, Pencil, Search, X, Loader2, CalendarIcon } from 'lucide-react';
 import { Patient, ReferringPhysician } from '@/types/session';
 import { PatientSelector } from './PatientSelector';
+import { MicrophoneSelector } from './MicrophoneSelector';
+import { SpeakerSelector } from './SpeakerSelector';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +43,12 @@ interface SessionHeaderRowProps {
   // Referring physician state
   selectedPhysician: string | null;
   onPhysicianChange: (physician: string | null) => void;
+  // Audio device state
+  selectedMicrophoneId: string;
+  onMicrophoneChange: (deviceId: string) => void;
+  selectedSpeakerId: string;
+  onSpeakerChange: (deviceId: string) => void;
+  audioLevel: number;
 }
 
 interface PartnerDetails {
@@ -62,6 +70,11 @@ export const SessionHeaderRow = ({
   onPartnerChange,
   selectedPhysician,
   onPhysicianChange,
+  selectedMicrophoneId,
+  onMicrophoneChange,
+  selectedSpeakerId,
+  onSpeakerChange,
+  audioLevel,
 }: SessionHeaderRowProps) => {
   // Partner modal state
   const [partnerModalOpen, setPartnerModalOpen] = useState(false);
@@ -341,6 +354,19 @@ export const SessionHeaderRow = ({
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Audio device selectors - aligned right */}
+        <div className="ml-auto flex items-center gap-3">
+          <MicrophoneSelector
+            selectedDeviceId={selectedMicrophoneId}
+            onDeviceChange={onMicrophoneChange}
+            audioLevel={audioLevel}
+          />
+          <SpeakerSelector
+            selectedDeviceId={selectedSpeakerId}
+            onDeviceChange={onSpeakerChange}
+          />
+        </div>
       </div>
 
       {/* Partner Modal */}
