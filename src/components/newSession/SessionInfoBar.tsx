@@ -1,19 +1,12 @@
 import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
-import { MicrophoneSelector } from './MicrophoneSelector';
 import { RecordingModeButton } from './RecordingModeButton';
-import { SpeakerSelector } from './SpeakerSelector';
 import { RecordingMode } from '@/types/session';
 import { cn } from '@/lib/utils';
 
 interface SessionInfoBarProps {
   sessionDate: Date;
   recordingDuration: number;
-  selectedMicrophoneId: string;
-  onMicrophoneChange: (deviceId: string) => void;
-  selectedSpeakerId: string;
-  onSpeakerChange: (deviceId: string) => void;
-  audioLevel: number;
   recordingMode: RecordingMode;
   isRecording: boolean;
   isPaused: boolean;
@@ -26,11 +19,6 @@ interface SessionInfoBarProps {
 export const SessionInfoBar = ({
   sessionDate,
   recordingDuration,
-  selectedMicrophoneId,
-  onMicrophoneChange,
-  selectedSpeakerId,
-  onSpeakerChange,
-  audioLevel,
   recordingMode,
   isRecording,
   isPaused,
@@ -47,18 +35,16 @@ export const SessionInfoBar = ({
 
   return (
     <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-background">
-      {/* Left side: Date chip only - language moved to NoteTab */}
+      {/* Left side: Date chip */}
       <div className="flex items-center gap-3">
-        {/* Date chip */}
         <div className="inline-flex items-center gap-2 px-3 py-1.5 text-foreground rounded-full text-[13px] bg-white">
           <Calendar className="h-3.5 w-3.5 stroke-[1.5]" />
           <span>{format(sessionDate, "MMM d, yyyy h:mma")}</span>
         </div>
       </div>
 
-      {/* Right side: Timer, Mic, Record button with mode selector */}
+      {/* Right side: Timer, Record button with mode selector */}
       <div className="flex items-center gap-4">
-        {/* Timer with paused indicator */}
         <span className={cn(
           "font-medium text-[13px] tabular-nums",
           isPaused ? "text-amber-500" : "text-foreground/80"
@@ -66,27 +52,15 @@ export const SessionInfoBar = ({
           {formatDuration(recordingDuration)}
           {isPaused && <span className="ml-1 text-xs">(paused)</span>}
         </span>
-        
-        <MicrophoneSelector 
-          selectedDeviceId={selectedMicrophoneId} 
-          onDeviceChange={onMicrophoneChange} 
-          audioLevel={audioLevel} 
-        />
 
-        <SpeakerSelector
-          selectedDeviceId={selectedSpeakerId}
-          onDeviceChange={onSpeakerChange}
-        />
-        
-        
-        <RecordingModeButton 
-          mode={recordingMode} 
+        <RecordingModeButton
+          mode={recordingMode}
           isRecording={isRecording}
           isPaused={isPaused}
-          onModeChange={onModeChange} 
+          onModeChange={onModeChange}
           onToggleRecording={onToggleRecording}
           onTogglePause={onTogglePause}
-          onUploadAudio={onUploadAudio} 
+          onUploadAudio={onUploadAudio}
         />
       </div>
     </div>
