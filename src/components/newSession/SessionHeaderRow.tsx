@@ -358,16 +358,16 @@ export const SessionHeaderRow = ({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Audio device selectors - aligned right */}
-        <div className="ml-auto flex items-center gap-3">
-          <MicrophoneSelector
-            selectedDeviceId={selectedMicrophoneId}
-            onDeviceChange={onMicrophoneChange}
-            audioLevel={audioLevel}
-          />
-          <SpeakerSelector
-            selectedDeviceId={selectedSpeakerId}
-            onDeviceChange={onSpeakerChange}
+        {/* Recording controls - aligned right */}
+        <div className="ml-auto flex items-center">
+          <RecordingModeButton
+            mode={recordingMode}
+            isRecording={isRecording}
+            isPaused={isPaused}
+            onModeChange={onModeChange}
+            onToggleRecording={onToggleRecording}
+            onTogglePause={onTogglePause}
+            onUploadAudio={onUploadAudio}
           />
         </div>
       </div>
