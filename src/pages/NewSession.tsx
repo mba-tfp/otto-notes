@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { SessionHeaderRow } from "@/components/newSession/SessionHeaderRow";
 import { SessionInfoBar } from "@/components/newSession/SessionInfoBar";
+import { RecordingModeButton } from "@/components/newSession/RecordingModeButton";
 import { TwoColumnLayout } from "@/components/newSession/TwoColumnLayout";
 import { AskAIInput } from "@/components/newSession/AskAIInput";
 import { ConsentPopupDialog } from "@/components/newSession/ConsentPopupDialog";
@@ -381,6 +382,17 @@ const NewSession = () => {
           onPartnerChange={setSelectedPartner}
           selectedPhysician={selectedPhysician}
           onPhysicianChange={setSelectedPhysician}
+          rightContent={
+            <RecordingModeButton
+              mode={recordingMode}
+              isRecording={isRecording}
+              isPaused={isPaused}
+              onModeChange={handleModeChange}
+              onToggleRecording={handleToggleRecording}
+              onTogglePause={handleTogglePause}
+              onUploadAudio={handleUploadAudio}
+            />
+          }
         />
 
         <SessionInfoBar sessionDate={sessionDate} recordingDuration={recordingDuration} selectedMicrophoneId={selectedMicrophoneId} onMicrophoneChange={setSelectedMicrophoneId} selectedSpeakerId={selectedSpeakerId} onSpeakerChange={setSelectedSpeakerId} audioLevel={audioLevel} recordingMode={recordingMode} isRecording={isRecording} isPaused={isPaused} onModeChange={handleModeChange} onToggleRecording={handleToggleRecording} onTogglePause={handleTogglePause} onUploadAudio={handleUploadAudio} />
