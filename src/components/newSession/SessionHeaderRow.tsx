@@ -71,11 +71,13 @@ export const SessionHeaderRow = ({
   onPartnerChange,
   selectedPhysician,
   onPhysicianChange,
-  selectedMicrophoneId,
-  onMicrophoneChange,
-  selectedSpeakerId,
-  onSpeakerChange,
-  audioLevel,
+  recordingMode,
+  isRecording,
+  isPaused,
+  onModeChange,
+  onToggleRecording,
+  onTogglePause,
+  onUploadAudio,
 }: SessionHeaderRowProps) => {
   // Partner modal state
   const [partnerModalOpen, setPartnerModalOpen] = useState(false);
