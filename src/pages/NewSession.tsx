@@ -381,9 +381,15 @@ const NewSession = () => {
           onPartnerChange={setSelectedPartner}
           selectedPhysician={selectedPhysician}
           onPhysicianChange={setSelectedPhysician}
+          selectedMicrophoneId={selectedMicrophoneId}
+          onMicrophoneChange={setSelectedMicrophoneId}
+          selectedSpeakerId={selectedSpeakerId}
+          onSpeakerChange={setSelectedSpeakerId}
+          audioLevel={audioLevel}
         />
 
-        <SessionInfoBar sessionDate={sessionDate} recordingDuration={recordingDuration} selectedMicrophoneId={selectedMicrophoneId} onMicrophoneChange={setSelectedMicrophoneId} selectedSpeakerId={selectedSpeakerId} onSpeakerChange={setSelectedSpeakerId} audioLevel={audioLevel} recordingMode={recordingMode} isRecording={isRecording} isPaused={isPaused} onModeChange={handleModeChange} onToggleRecording={handleToggleRecording} onTogglePause={handleTogglePause} onUploadAudio={handleUploadAudio} />
+        <SessionInfoBar sessionDate={sessionDate} recordingDuration={recordingDuration} recordingMode={recordingMode} isRecording={isRecording} isPaused={isPaused} onModeChange={handleModeChange} onToggleRecording={handleToggleRecording} onTogglePause={handleTogglePause} onUploadAudio={handleUploadAudio} />
+
 
         <div className="flex-1 overflow-hidden">
           <TwoColumnLayout recordingMode={recordingMode} transcriptContent={transcriptContent} onTranscriptChange={setTranscriptContent} isRecording={isRecording} isPaused={isPaused} contextContent={contextContent} onContextChange={setContextContent} noteTabs={noteTabs} activeNoteTabId={activeNoteTabId} onNoteTabsChange={setNoteTabs} onActiveNoteTabChange={setActiveNoteTabId} isGenerating={isGenerating} hasContent={hasContent} onGenerate={handleGenerate} sessionId={currentSessionId || undefined} patientName={selectedPatient?.name} sessionDate={sessionDate} selectedPatient={selectedPatient} />
