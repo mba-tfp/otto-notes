@@ -73,10 +73,10 @@ export const SpeakerSelector = ({
         <Button
           variant="outline"
           size="sm"
-          className="gap-2 h-9 bg-white border-[hsl(216_20%_90%)] text-foreground hover:bg-sidebar hover:border-primary/30"
+          className="gap-2 h-9 w-[200px] justify-start bg-white border-[hsl(216_20%_90%)] text-foreground hover:bg-sidebar hover:border-primary/30"
         >
-          <Volume2 className="h-4 w-4 stroke-[1.5]" />
-          <span className="max-w-[120px] truncate text-xs font-medium">
+          <Volume2 className="h-4 w-4 stroke-[1.5] shrink-0" />
+          <span className="flex-1 truncate text-xs font-medium text-left">
             {truncateLabel(selectedLabel)}
           </span>
         </Button>
