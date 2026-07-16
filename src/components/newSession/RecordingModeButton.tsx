@@ -64,7 +64,7 @@ export const RecordingModeButton = ({
         ) : (
           <>
             <Mic className="h-4 w-4 stroke-[1.5]" />
-            {isTranscribe ? 'Transcribe' : 'Dictate'}
+            {modeLabel}
           </>
         )}
       </Button>
