@@ -74,7 +74,7 @@ export const RecordingModeButton = ({
         {([
           { value: 'transcribe', label: 'Transcribe' },
           { value: 'dictate', label: 'Dictate' },
-          { value: 'virtual_call', label: 'Virtual Call' },
+          
         ] as { value: RecordingMode; label: string }[]).map(opt => (
           <button
             key={opt.value}
