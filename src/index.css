@@ -142,6 +142,10 @@ All colors MUST be HSL.
 }
 
 @layer base {
+  html {
+    font-size: 90%; /* Global ~10% shrink; matches browser zoom at 90% */
+  }
+
   * {
     @apply border-border;
   }
