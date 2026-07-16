@@ -77,8 +77,18 @@ export const SessionInfoBar = ({
           selectedDeviceId={selectedSpeakerId}
           onDeviceChange={onSpeakerChange}
         />
+        
+        
+        <RecordingModeButton 
+          mode={recordingMode} 
+          isRecording={isRecording}
+          isPaused={isPaused}
+          onModeChange={onModeChange} 
+          onToggleRecording={onToggleRecording}
+          onTogglePause={onTogglePause}
+          onUploadAudio={onUploadAudio} 
+        />
       </div>
     </div>
   );
 };
-

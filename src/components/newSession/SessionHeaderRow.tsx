@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronDown, Plus, Pencil, Search, X, Loader2, CalendarIcon } from 'lucide-react';
 import { Patient, ReferringPhysician } from '@/types/session';
 import { PatientSelector } from './PatientSelector';
@@ -41,7 +41,6 @@ interface SessionHeaderRowProps {
   // Referring physician state
   selectedPhysician: string | null;
   onPhysicianChange: (physician: string | null) => void;
-  rightContent?: ReactNode;
 }
 
 interface PartnerDetails {
@@ -63,7 +62,6 @@ export const SessionHeaderRow = ({
   onPartnerChange,
   selectedPhysician,
   onPhysicianChange,
-  rightContent,
 }: SessionHeaderRowProps) => {
   // Partner modal state
   const [partnerModalOpen, setPartnerModalOpen] = useState(false);
@@ -209,7 +207,6 @@ export const SessionHeaderRow = ({
   return (
     <>
       <div className="px-6 py-4 border-b border-border flex items-center gap-3">
-        <div className="flex items-center gap-3 flex-1 min-w-0 flex-wrap">
         <PatientSelector
           selectedPatient={selectedPatient}
           patients={patients}
@@ -344,8 +341,6 @@ export const SessionHeaderRow = ({
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-        </div>
-        {rightContent && <div className="flex items-center gap-3 shrink-0 mr-[5px]">{rightContent}</div>}
       </div>
 
       {/* Partner Modal */}
