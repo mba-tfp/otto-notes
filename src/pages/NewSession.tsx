@@ -396,8 +396,6 @@ const NewSession = () => {
           isPaused={isPaused}
           selectedMicrophoneId={selectedMicrophoneId}
           onMicrophoneChange={setSelectedMicrophoneId}
-          selectedSpeakerId={selectedSpeakerId}
-          onSpeakerChange={setSelectedSpeakerId}
           audioLevel={audioLevel}
         />
 
