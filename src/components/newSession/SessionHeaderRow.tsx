@@ -344,6 +344,8 @@ export const SessionHeaderRow = ({
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
+        {rightContent && <div className="flex items-center gap-3 shrink-0">{rightContent}</div>}
       </div>
 
       {/* Partner Modal */}
