@@ -2,6 +2,7 @@ import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { MicrophoneSelector } from './MicrophoneSelector';
+import { SpeakerSelector } from './SpeakerSelector';
 
 interface SessionInfoBarProps {
   sessionDate: Date;
@@ -9,6 +10,8 @@ interface SessionInfoBarProps {
   isPaused: boolean;
   selectedMicrophoneId: string;
   onMicrophoneChange: (deviceId: string) => void;
+  selectedSpeakerId: string;
+  onSpeakerChange: (deviceId: string) => void;
   audioLevel: number;
 }
 
@@ -18,6 +21,8 @@ export const SessionInfoBar = ({
   isPaused,
   selectedMicrophoneId,
   onMicrophoneChange,
+  selectedSpeakerId,
+  onSpeakerChange,
   audioLevel,
 }: SessionInfoBarProps) => {
   const formatDuration = (seconds: number) => {
@@ -50,6 +55,11 @@ export const SessionInfoBar = ({
           selectedDeviceId={selectedMicrophoneId}
           onDeviceChange={onMicrophoneChange}
           audioLevel={audioLevel}
+        />
+
+        <SpeakerSelector
+          selectedDeviceId={selectedSpeakerId}
+          onDeviceChange={onSpeakerChange}
         />
       </div>
     </div>
