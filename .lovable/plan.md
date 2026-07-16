@@ -1,45 +1,42 @@
+# Add Speaker Input + Rearrange Recording Controls
+
 ## Goal
-Add a UI-only "Relaunch to update" prompt that simulates the desktop app detecting a new version via version-endpoint polling. Shown in two places at once: a persistent top banner and a subtle sidebar footer pill. Clicking either opens a confirmation dialog before "relaunching".
+- Add a **Speaker (audio output) selector** next to the Microphone selector in the top session header.
+- Keep the **Microphone selector** where it currently is (top-right of `SessionInfoBar`).
+- Move the **Transcribe/Dictate action button** and the **Transcribe / Dictate segmented pill** up into that same top header, sitting to the right of the speaker selector.
+- The bottom `RecordingControlsBar` (if still shown anywhere below) no longer duplicates these controls.
 
-## Behavior
-- A lightweight hook `useAppUpdateAvailable` polls a version manifest (e.g. `/version.json`) every N minutes and compares to the app's current version. For the UI-only phase, it returns a mockable boolean driven by:
-  - `localStorage.otto-mock-update-available === 'true'` (dev toggle), OR
-  - a hardcoded stub returning `true` so the UI is visible to design.
-- Only surfaces when running in the desktop app. Detected via `navigator.userAgent.includes('Electron')` OR `localStorage.otto-force-desktop === 'true'` for preview testing. In the browser preview the prompts stay hidden unless the force flag is set.
-- Dismissal: banner has a close (X) that hides it for the current session only (sessionStorage). Sidebar pill stays visible until the update is "applied".
+Scope: UI only. No backend, no real device I/O wiring beyond the existing browser enumerateDevices pattern.
 
-## UI
+## Target layout (top header, right side)
+```text
+[00:16 timer] [🎙 Mic ▾ ▮▮▮▮▯] [🔊 Speaker ▾]   [Pause] [Transcribe ●] [ Transcribe | Dictate ]
+```
 
-1. **Persistent top banner** (`src/components/updates/UpdateAvailableBanner.tsx`, new)
-   - Full-width strip above main content, mounted in `AppLayout`.
-   - Left: small sparkle/download icon + text: "A new version of Otto Notes is available."
-   - Right: primary button "Relaunch to update" (Salmon `bg-primary`) + ghost X to dismiss for session.
-   - Subtle salmon-tinted background (`bg-primary/10`, `border-b border-primary/20`), 40px tall, matches existing banner styling patterns (TrainingBanner / FeedbackNudgeBanner).
+## Changes
 
-2. **Sidebar footer pill** (inside `LeftPane.tsx` footer list)
-   - New footer item "Update available" with a small green dot indicator.
-   - Sits above "Get desktop app" so it's the first thing users notice.
-   - Collapsed sidebar: shows just the icon with a green dot; tooltip reads "Update available — click to relaunch".
-   - Clicking opens the same confirmation dialog as the banner button.
+### 1. New component: `src/components/newSession/SpeakerSelector.tsx`
+- Mirror `MicrophoneSelector.tsx` styling/behavior for consistency.
+- Enumerate `audiooutput` devices via `navigator.mediaDevices.enumerateDevices()`.
+- Same trigger look: white outline pill, icon + truncated label + chevron, dropdown with check-marked selected item.
+- Use `Volume2` (or `Speaker`) icon from lucide-react.
+- Props: `selectedDeviceId`, `onDeviceChange`.
+- No audio-level meter (output devices don't have input levels).
+- Note: browsers restrict programmatic output-device changes; this is a UI-only selector for now (same "demo" fidelity as the mic bars).
 
-3. **Confirmation dialog** (`src/components/updates/RelaunchConfirmDialog.tsx`, new)
-   - Standard shadcn Dialog following the app's modal layout spec.
-   - Title: "Relaunch to update?"
-   - Body: "Otto Notes will close and reopen to install the latest version. Any unsaved work in the current session may be lost."
-   - Footer: "Cancel" (ghost) + "Relaunch now" (Salmon primary).
-   - On confirm (UI-only): show success toast "Relaunching…", clear the update-available flag, close dialog. No actual quit call.
+### 2. `SessionInfoBar.tsx`
+- Add `selectedSpeakerId` + `onSpeakerChange` props.
+- Render `<SpeakerSelector />` directly to the right of `<MicrophoneSelector />`.
+- Keep `<RecordingModeButton />` where it already is (right end of the header). It already contains the Transcribe/Dictate action button, the Pause/Resume button, and the Transcribe|Dictate segmented pill — so "moving controls to the top header" is satisfied by ensuring these live only here.
 
-## Files
+### 3. `NewSession.tsx` (parent page)
+- Add local state `selectedSpeakerId` and pass it + setter into `SessionInfoBar`.
+- Confirm no duplicate Transcribe/Dictate controls are rendered elsewhere below the header. If a bottom bar still renders `RecordingModeButton` or an equivalent action, remove that instance so controls live only in the top header.
 
-- `src/hooks/useAppUpdateAvailable.ts` (new) — polling stub + isDesktop detection + dismissal state.
-- `src/components/updates/UpdateAvailableBanner.tsx` (new)
-- `src/components/updates/RelaunchConfirmDialog.tsx` (new)
-- `src/components/layout/AppLayout.tsx` (edit) — mount banner above the main content region.
-- `src/components/settings/LeftPane.tsx` (edit) — add "Update available" footer item with green dot, wire click to open the dialog. Keep existing "Get desktop app" hover card untouched.
+### 4. Cleanup
+- Do not modify unrelated components (`RecordingControls.tsx` in `src/components/session/` is a separate legacy view — leave untouched unless it is actively mounted on `/new-session`; verify during implementation and remove duplication only if present).
 
-## Out of scope
-- Real electron-updater / IPC wiring (deferred to Electron integration phase).
-- Actual version manifest endpoint (stubbed).
-- Deferring relaunch until session ends.
-
-Ready to build on approval.
+## Non-goals
+- Actual routing of audio to selected output device (`HTMLMediaElement.setSinkId`) — future work.
+- Grouping outputs by "Speakers / Apps" like the reference screenshot — we'll ship a flat device list first.
+- Any change to recording logic, timers, or transcript simulation.
