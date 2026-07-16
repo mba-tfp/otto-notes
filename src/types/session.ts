@@ -63,7 +63,7 @@ export interface NoteTab {
   content: string;
 }
 
-export type RecordingMode = 'transcribe' | 'dictate';
+export type RecordingMode = 'transcribe' | 'dictate' | 'virtual_call';
 export type MainTab = 'context' | 'transcript' | 'dictation' | 'note';
 
 export interface TranscriptData {
