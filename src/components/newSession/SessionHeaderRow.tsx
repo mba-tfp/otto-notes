@@ -43,6 +43,12 @@ interface SessionHeaderRowProps {
   // Referring physician state
   selectedPhysician: string | null;
   onPhysicianChange: (physician: string | null) => void;
+  // Audio device state
+  selectedMicrophoneId: string;
+  onMicrophoneChange: (deviceId: string) => void;
+  selectedSpeakerId: string;
+  onSpeakerChange: (deviceId: string) => void;
+  audioLevel: number;
 }
 
 interface PartnerDetails {
