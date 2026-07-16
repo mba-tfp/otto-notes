@@ -64,6 +64,8 @@ export const SessionHeaderRow = ({
   onPartnerChange,
   selectedPhysician,
   onPhysicianChange,
+  recordingMode,
+  onModeChange,
 }: SessionHeaderRowProps) => {
   // Partner modal state
   const [partnerModalOpen, setPartnerModalOpen] = useState(false);
