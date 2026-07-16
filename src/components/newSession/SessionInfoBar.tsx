@@ -51,18 +51,16 @@ export const SessionInfoBar = ({
           {isPaused && <span className="ml-1 text-xs">(paused)</span>}
         </span>
 
-        <div className="flex items-center gap-[19px]">
-          <MicrophoneSelector
-            selectedDeviceId={selectedMicrophoneId}
-            onDeviceChange={onMicrophoneChange}
-            audioLevel={audioLevel}
-          />
+        <MicrophoneSelector
+          selectedDeviceId={selectedMicrophoneId}
+          onDeviceChange={onMicrophoneChange}
+          audioLevel={audioLevel}
+        />
 
-          <SpeakerSelector
-            selectedDeviceId={selectedSpeakerId}
-            onDeviceChange={onSpeakerChange}
-          />
-        </div>
+        <SpeakerSelector
+          selectedDeviceId={selectedSpeakerId}
+          onDeviceChange={onSpeakerChange}
+        />
       </div>
     </div>
   );
