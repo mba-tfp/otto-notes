@@ -22,7 +22,7 @@ export const RecordingModeButton = ({
   onTogglePause,
   onUploadAudio,
 }: RecordingModeButtonProps) => {
-  const isTranscribe = mode === 'transcribe';
+  const modeLabel = mode === 'transcribe' ? 'Transcribe' : mode === 'dictate' ? 'Dictate' : 'Virtual Call';
 
   return (
     <div className="flex items-center gap-2">
