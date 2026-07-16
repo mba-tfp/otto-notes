@@ -381,6 +381,19 @@ const NewSession = () => {
           onPartnerChange={setSelectedPartner}
           selectedPhysician={selectedPhysician}
           onPhysicianChange={setSelectedPhysician}
+          recordingMode={recordingMode}
+          isRecording={isRecording}
+          isPaused={isPaused}
+          onModeChange={handleModeChange}
+          onToggleRecording={handleToggleRecording}
+          onTogglePause={handleTogglePause}
+          onUploadAudio={handleUploadAudio}
+        />
+
+        <SessionInfoBar
+          sessionDate={sessionDate}
+          recordingDuration={recordingDuration}
+          isPaused={isPaused}
           selectedMicrophoneId={selectedMicrophoneId}
           onMicrophoneChange={setSelectedMicrophoneId}
           selectedSpeakerId={selectedSpeakerId}
@@ -388,7 +401,6 @@ const NewSession = () => {
           audioLevel={audioLevel}
         />
 
-        <SessionInfoBar sessionDate={sessionDate} recordingDuration={recordingDuration} recordingMode={recordingMode} isRecording={isRecording} isPaused={isPaused} onModeChange={handleModeChange} onToggleRecording={handleToggleRecording} onTogglePause={handleTogglePause} onUploadAudio={handleUploadAudio} />
 
 
         <div className="flex-1 overflow-hidden">
