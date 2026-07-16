@@ -2,6 +2,7 @@ import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { MicrophoneSelector } from './MicrophoneSelector';
 import { RecordingModeButton } from './RecordingModeButton';
+import { SpeakerSelector } from './SpeakerSelector';
 import { RecordingMode } from '@/types/session';
 import { cn } from '@/lib/utils';
 
@@ -10,6 +11,8 @@ interface SessionInfoBarProps {
   recordingDuration: number;
   selectedMicrophoneId: string;
   onMicrophoneChange: (deviceId: string) => void;
+  selectedSpeakerId: string;
+  onSpeakerChange: (deviceId: string) => void;
   audioLevel: number;
   recordingMode: RecordingMode;
   isRecording: boolean;
@@ -25,6 +28,8 @@ export const SessionInfoBar = ({
   recordingDuration,
   selectedMicrophoneId,
   onMicrophoneChange,
+  selectedSpeakerId,
+  onSpeakerChange,
   audioLevel,
   recordingMode,
   isRecording,
