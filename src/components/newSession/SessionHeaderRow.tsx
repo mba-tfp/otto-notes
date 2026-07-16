@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, Plus, Pencil, Search, X, Loader2, CalendarIcon } from 'lucide-react';
-import { Patient, ReferringPhysician } from '@/types/session';
+import { Patient, ReferringPhysician, RecordingMode } from '@/types/session';
 import { PatientSelector } from './PatientSelector';
 import {
   DropdownMenu,
@@ -41,6 +41,8 @@ interface SessionHeaderRowProps {
   // Referring physician state
   selectedPhysician: string | null;
   onPhysicianChange: (physician: string | null) => void;
+  recordingMode: RecordingMode;
+  onModeChange: (mode: RecordingMode) => void;
 }
 
 interface PartnerDetails {
@@ -62,6 +64,8 @@ export const SessionHeaderRow = ({
   onPartnerChange,
   selectedPhysician,
   onPhysicianChange,
+  recordingMode,
+  onModeChange,
 }: SessionHeaderRowProps) => {
   // Partner modal state
   const [partnerModalOpen, setPartnerModalOpen] = useState(false);
@@ -341,6 +345,28 @@ export const SessionHeaderRow = ({
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Recording mode segmented pill */}
+        <div className="ml-auto flex items-center rounded-full border border-[hsl(216_20%_90%)] bg-white overflow-hidden">
+          {([
+            { id: 'transcribe', label: 'Transcribe' },
+            { id: 'dictate', label: 'Dictate' },
+            { id: 'virtual_call', label: 'Virtual Call' },
+          ] as { id: RecordingMode; label: string }[]).map((opt) => (
+            <button
+              key={opt.id}
+              onClick={() => onModeChange(opt.id)}
+              className={cn(
+                "px-4 py-1.5 text-[13px] font-medium transition-colors",
+                recordingMode === opt.id
+                  ? "bg-[hsl(5_85%_92%)] text-foreground"
+                  : "bg-white text-foreground/70 hover:bg-sidebar"
+              )}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Partner Modal */}

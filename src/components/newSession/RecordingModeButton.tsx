@@ -22,7 +22,10 @@ export const RecordingModeButton = ({
   onTogglePause,
   onUploadAudio,
 }: RecordingModeButtonProps) => {
-  const isTranscribe = mode === 'transcribe';
+  const actionLabel =
+    mode === 'transcribe' ? 'Transcribe' :
+    mode === 'dictate' ? 'Dictate' :
+    'Start Call';
 
   return (
     <div className="flex items-center gap-2">
@@ -64,36 +67,10 @@ export const RecordingModeButton = ({
         ) : (
           <>
             <Mic className="h-4 w-4 stroke-[1.5]" />
-            {isTranscribe ? 'Transcribe' : 'Dictate'}
+            {actionLabel}
           </>
         )}
       </Button>
-
-      {/* Segmented control for mode selection */}
-      <div className="flex items-center rounded-full border border-[hsl(216_20%_90%)] bg-white overflow-hidden">
-        <button
-          onClick={() => onModeChange('transcribe')}
-          className={cn(
-            "px-4 py-2 text-[13px] font-medium transition-colors",
-            mode === 'transcribe'
-              ? "bg-[hsl(5_85%_92%)] text-foreground"
-              : "bg-white text-foreground/70 hover:bg-sidebar"
-          )}
-        >
-          Transcribe
-        </button>
-        <button
-          onClick={() => onModeChange('dictate')}
-          className={cn(
-            "px-4 py-2 text-[13px] font-medium transition-colors",
-            mode === 'dictate'
-              ? "bg-[hsl(5_85%_92%)] text-foreground"
-              : "bg-white text-foreground/70 hover:bg-sidebar"
-          )}
-        >
-          Dictate
-        </button>
-      </div>
     </div>
   );
 };
