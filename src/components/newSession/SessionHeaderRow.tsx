@@ -354,6 +354,19 @@ export const SessionHeaderRow = ({
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Audio device selectors - aligned right */}
+        <div className="ml-auto flex items-center gap-3">
+          <MicrophoneSelector
+            selectedDeviceId={selectedMicrophoneId}
+            onDeviceChange={onMicrophoneChange}
+            audioLevel={audioLevel}
+          />
+          <SpeakerSelector
+            selectedDeviceId={selectedSpeakerId}
+            onDeviceChange={onSpeakerChange}
+          />
+        </div>
       </div>
 
       {/* Partner Modal */}
