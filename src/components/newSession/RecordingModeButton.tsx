@@ -71,28 +71,24 @@ export const RecordingModeButton = ({
 
       {/* Segmented control for mode selection */}
       <div className="flex items-center rounded-full border border-[hsl(216_20%_90%)] bg-white overflow-hidden">
-        <button
-          onClick={() => onModeChange('transcribe')}
-          className={cn(
-            "px-4 py-2 text-[13px] font-medium transition-colors",
-            mode === 'transcribe'
-              ? "bg-[hsl(5_85%_92%)] text-foreground"
-              : "bg-white text-foreground/70 hover:bg-sidebar"
-          )}
-        >
-          Transcribe
-        </button>
-        <button
-          onClick={() => onModeChange('dictate')}
-          className={cn(
-            "px-4 py-2 text-[13px] font-medium transition-colors",
-            mode === 'dictate'
-              ? "bg-[hsl(5_85%_92%)] text-foreground"
-              : "bg-white text-foreground/70 hover:bg-sidebar"
-          )}
-        >
-          Dictate
-        </button>
+        {([
+          { value: 'transcribe', label: 'Transcribe' },
+          { value: 'dictate', label: 'Dictate' },
+          { value: 'virtual_call', label: 'Virtual Call' },
+        ] as { value: RecordingMode; label: string }[]).map(opt => (
+          <button
+            key={opt.value}
+            onClick={() => onModeChange(opt.value)}
+            className={cn(
+              "px-4 py-2 text-[13px] font-medium transition-colors",
+              mode === opt.value
+                ? "bg-[hsl(5_85%_92%)] text-foreground"
+                : "bg-white text-foreground/70 hover:bg-sidebar"
+            )}
+          >
+            {opt.label}
+          </button>
+        ))}
       </div>
     </div>
   );
