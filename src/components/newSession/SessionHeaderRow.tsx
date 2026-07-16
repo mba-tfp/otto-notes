@@ -41,6 +41,8 @@ interface SessionHeaderRowProps {
   // Referring physician state
   selectedPhysician: string | null;
   onPhysicianChange: (physician: string | null) => void;
+  recordingMode: RecordingMode;
+  onModeChange: (mode: RecordingMode) => void;
 }
 
 interface PartnerDetails {
