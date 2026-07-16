@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { ChevronDown, Plus, Pencil, Search, X, Loader2, CalendarIcon } from 'lucide-react';
 import { Patient, ReferringPhysician } from '@/types/session';
 import { PatientSelector } from './PatientSelector';
+import { MicrophoneSelector } from './MicrophoneSelector';
+import { SpeakerSelector } from './SpeakerSelector';
 import {
   DropdownMenu,
   DropdownMenuContent,
