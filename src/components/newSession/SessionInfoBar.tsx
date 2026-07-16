@@ -82,6 +82,3 @@ export const SessionInfoBar = ({
   );
 };
 
-    </div>
-  );
-};
