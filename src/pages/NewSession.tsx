@@ -381,6 +381,8 @@ const NewSession = () => {
           onPartnerChange={setSelectedPartner}
           selectedPhysician={selectedPhysician}
           onPhysicianChange={setSelectedPhysician}
+          recordingMode={recordingMode}
+          onModeChange={handleModeChange}
         />
 
         <SessionInfoBar sessionDate={sessionDate} recordingDuration={recordingDuration} selectedMicrophoneId={selectedMicrophoneId} onMicrophoneChange={setSelectedMicrophoneId} selectedSpeakerId={selectedSpeakerId} onSpeakerChange={setSelectedSpeakerId} audioLevel={audioLevel} recordingMode={recordingMode} isRecording={isRecording} isPaused={isPaused} onModeChange={handleModeChange} onToggleRecording={handleToggleRecording} onTogglePause={handleTogglePause} onUploadAudio={handleUploadAudio} />
