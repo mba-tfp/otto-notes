@@ -67,16 +67,6 @@ export const SessionInfoBar = ({
           {isPaused && <span className="ml-1 text-xs">(paused)</span>}
         </span>
         
-        <RecordingModeButton 
-          mode={recordingMode} 
-          isRecording={isRecording}
-          isPaused={isPaused}
-          onModeChange={onModeChange} 
-          onToggleRecording={onToggleRecording}
-          onTogglePause={onTogglePause}
-          onUploadAudio={onUploadAudio} 
-        />
-
         <MicrophoneSelector 
           selectedDeviceId={selectedMicrophoneId} 
           onDeviceChange={onMicrophoneChange} 
@@ -86,6 +76,17 @@ export const SessionInfoBar = ({
         <SpeakerSelector
           selectedDeviceId={selectedSpeakerId}
           onDeviceChange={onSpeakerChange}
+        />
+        
+        
+        <RecordingModeButton 
+          mode={recordingMode} 
+          isRecording={isRecording}
+          isPaused={isPaused}
+          onModeChange={onModeChange} 
+          onToggleRecording={onToggleRecording}
+          onTogglePause={onTogglePause}
+          onUploadAudio={onUploadAudio} 
         />
       </div>
     </div>
