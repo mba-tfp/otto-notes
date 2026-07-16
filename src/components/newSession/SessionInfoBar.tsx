@@ -72,6 +72,12 @@ export const SessionInfoBar = ({
           onDeviceChange={onMicrophoneChange} 
           audioLevel={audioLevel} 
         />
+
+        <SpeakerSelector
+          selectedDeviceId={selectedSpeakerId}
+          onDeviceChange={onSpeakerChange}
+        />
+        
         
         <RecordingModeButton 
           mode={recordingMode} 
