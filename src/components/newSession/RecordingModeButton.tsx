@@ -22,7 +22,7 @@ export const RecordingModeButton = ({
   onTogglePause,
   onUploadAudio,
 }: RecordingModeButtonProps) => {
-  const modeLabel = mode === 'transcribe' ? 'Transcribe' : mode === 'dictate' ? 'Dictate' : 'Virtual Call';
+  const modeLabel = mode === 'transcribe' ? 'Transcribe' : 'Dictate';
 
   return (
     <div className="flex items-center gap-2">
@@ -74,7 +74,7 @@ export const RecordingModeButton = ({
         {([
           { value: 'transcribe', label: 'Transcribe' },
           { value: 'dictate', label: 'Dictate' },
-          { value: 'virtual_call', label: 'Virtual Call' },
+          
         ] as { value: RecordingMode; label: string }[]).map(opt => (
           <button
             key={opt.value}
