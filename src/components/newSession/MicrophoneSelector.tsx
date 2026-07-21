@@ -94,7 +94,7 @@ export const MicrophoneSelector = ({
         >
           <Mic className="h-4 w-4 stroke-[1.5] shrink-0" />
           <span className="flex-1 truncate text-xs font-medium text-left">
-            {truncateLabel(selectedLabel)}
+            {selectedLabel}
           </span>
           {renderAudioLevels()}
         </Button>
