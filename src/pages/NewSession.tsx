@@ -25,6 +25,7 @@ import { generateNoteFromTemplate, availableTemplates } from "@/data/templates";
 import { format } from "date-fns";
 import { DEMO_NOTES } from "@/data/demoContent";
 import { DesktopAppPromoModal } from "@/components/onboarding/DesktopAppPromoModal";
+import { requireOnline } from "@/lib/requireOnline";
 
 const NewSession = () => {
   const {
@@ -215,6 +216,7 @@ const NewSession = () => {
 
   const handleToggleRecording = useCallback(() => {
     if (!isRecording) {
+      if (!requireOnline("start recording")) return;
       // Check if there's existing content
       const hasExistingContent = recordingMode === 'transcribe'
         ? transcriptContent.trim().length > 0
@@ -332,6 +334,7 @@ const NewSession = () => {
   const hasContent = contextContent.trim().length > 0 || transcriptContent.trim().length > 0 || dictationContent.trim().length > 0;
   const handleGenerate = useCallback((templateId: string) => {
     if (!templateId) return;
+    if (!requireOnline("generate a note")) return;
     setIsGenerating(true);
     setTimeout(() => {
       const template = availableTemplates.find(t => t.id === templateId);
