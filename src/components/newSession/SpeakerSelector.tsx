@@ -62,11 +62,6 @@ export const SpeakerSelector = ({
     }
   }, [selectedDeviceId, devices]);
 
-  const truncateLabel = (label: string, maxLength: number = 20) => {
-    if (label.length <= maxLength) return label;
-    return label.slice(0, maxLength) + '...';
-  };
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -77,7 +72,7 @@ export const SpeakerSelector = ({
         >
           <Volume2 className="h-4 w-4 stroke-[1.5] shrink-0" />
           <span className="flex-1 truncate text-xs font-medium text-left">
-            {truncateLabel(selectedLabel)}
+            {selectedLabel}
           </span>
         </Button>
       </DropdownMenuTrigger>
