@@ -61,10 +61,8 @@ export const MicrophoneSelector = ({
     }
   }, [selectedDeviceId, devices]);
 
-  const truncateLabel = (label: string, maxLength: number = 20) => {
-    if (label.length <= maxLength) return label;
-    return label.slice(0, maxLength) + '...';
-  };
+
+
 
   // Audio level bars (5 bars)
   const renderAudioLevels = () => {
