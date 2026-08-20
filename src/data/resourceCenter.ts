@@ -58,6 +58,7 @@ Check the AI-generated note, edit if needed, and click **Reviewed**. Use the + i
     id: 'manage-create-templates',
     categoryId: 'getting-started',
     title: 'Manage and create templates',
+    icon: LayoutTemplate,
     description: 'Build custom templates and organize your personal template library.',
     videoUrl: 'https://player.vimeo.com/video/1219879560?h=f058d1d5a8',
     duration: '4:12',
