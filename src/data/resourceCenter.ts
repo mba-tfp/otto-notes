@@ -30,6 +30,7 @@ export const topics: ResourceTopic[] = [
     id: 'generating-note',
     categoryId: 'getting-started',
     title: 'Generating a note in Otto notes',
+    icon: Mic,
     description: 'Capture audio or dictation and convert it into a structured clinical note.',
     videoUrl: 'https://player.vimeo.com/video/1219879561?h=2f0ff63c6a',
     duration: '6:15',
