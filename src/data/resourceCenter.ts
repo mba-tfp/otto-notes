@@ -27,6 +27,63 @@ export const categories: ResourceCategory[] = [
 export const topics: ResourceTopic[] = [
   // Getting Started — Video Guides
   {
+    id: 'generating-note',
+    categoryId: 'getting-started',
+    title: 'Generating a note in Otto notes',
+    description: 'Capture audio or dictation and convert it into a structured clinical note.',
+    videoUrl: 'https://player.vimeo.com/video/1219879561?h=2f0ff63c6a',
+    duration: '6:15',
+    date: 'Aug 11, 2026',
+    isVideo: true,
+    content: `
+## Generating a note in Otto notes
+
+This guide covers how to generate a note in Otto Notes.
+
+### Step 1: Start a session
+Click **New session** and add patient details, searching from Otto Onboard, previously CNP, or your EMR, or create a new patient.
+
+### Step 2: Capture the encounter
+Use **Transcribe** with your microphone, or switch to **Dictate**. Add extra context by typing in the **Context** tab, or upload supporting documents like lab results.
+
+### Step 3: Generate the note
+Go to the **Note** tab, select a template, and Otto will generate the note from your transcript, context, and any uploaded files.
+
+### Step 4: Review and confirm
+Check the AI-generated note, edit if needed, and click **Reviewed**. Use the + icon to try a different template on the same transcript without overwriting this note.
+    `,
+  },
+  {
+    id: 'manage-create-templates',
+    categoryId: 'getting-started',
+    title: 'Manage and create templates',
+    description: 'Build custom templates and organize your personal template library.',
+    videoUrl: 'https://player.vimeo.com/video/1219879560?h=f058d1d5a8',
+    duration: '4:12',
+    date: 'Aug 14, 2026',
+    isVideo: true,
+    content: `
+## Manage and create templates
+
+This guide covers how to manage and build templates in Otto Notes.
+
+### Step 1: Browse your library
+Go to **My Templates** to search, sort, and manage your personal templates. Hover over any template to edit, duplicate, or delete it.
+
+### Step 2: Start a new template
+Click **Create a template**, then add a name and description.
+
+### Step 3: Build the content
+Use plain text for section headings, square brackets for placeholders the AI fills in, quotation marks for word-for-word content, and round brackets for AI instructions.
+
+### Step 4: Set visibility and type
+Visibility is **Just me**, **Clinic**, or **TFP Network**. Type is **Note** for clinical notes, **Letter** for letters routed to the Letters section, or **Document** for general forms. Flag before publishing, the template editor's Type field needs to be confirmed live, one internal reference lists only Note and Document as dropdown options.
+
+### Step 5: Save
+The template is now available from the Note tab dropdown in your sessions.
+    `,
+  },
+  {
     id: 'letters-workflow',
     categoryId: 'getting-started',
     title: 'Letters workflow',
@@ -54,41 +111,11 @@ Administrator and General Admin roles see all clinic letters, physicians and nur
     `,
   },
   {
-    id: 'manage-create-templates',
-    categoryId: 'getting-started',
-    title: 'Manage and create templates',
-    description: 'Build custom templates and organize your personal template library.',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    duration: '4:12',
-    date: 'Aug 14, 2026',
-    isVideo: true,
-    content: `
-## Manage and create templates
-
-This guide covers how to manage and build templates in Otto Notes.
-
-### Step 1: Browse your library
-Go to **My Templates** to search, sort, and manage your personal templates. Hover over any template to edit, duplicate, or delete it.
-
-### Step 2: Start a new template
-Click **Create a template**, then add a name and description.
-
-### Step 3: Build the content
-Use plain text for section headings, square brackets for placeholders the AI fills in, quotation marks for word-for-word content, and round brackets for AI instructions.
-
-### Step 4: Set visibility and type
-Visibility is **Just me**, **Clinic**, or **TFP Network**. Type is **Note** for clinical notes, **Letter** for letters routed to the Letters section, or **Document** for general forms. Flag before publishing, the template editor's Type field needs to be confirmed live, one internal reference lists only Note and Document as dropdown options.
-
-### Step 5: Save
-The template is now available from the Note tab dropdown in your sessions.
-    `,
-  },
-  {
     id: 'template-hub',
     categoryId: 'getting-started',
     title: 'Template hub',
     description: 'Browse and install templates shared by the Otto Notes community.',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: 'https://player.vimeo.com/video/1219879562?h=0835ac34fe',
     duration: '2:48',
     date: 'Aug 13, 2026',
     isVideo: true,
@@ -112,7 +139,7 @@ One click adds it to **My Templates**, where you can edit and customize it.
     categoryId: 'getting-started',
     title: 'Settings in Otto notes',
     description: 'Configure your profile, signature, AI preferences, and account settings.',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: 'https://player.vimeo.com/video/1219879563?h=afb5f93bcd',
     duration: '5:06',
     date: 'Aug 12, 2026',
     isVideo: true,
@@ -135,33 +162,6 @@ Administrator and General Admin roles can invite, disable, or delete users here.
 
 ### Step 5: Update security
 Change your account password.
-    `,
-  },
-  {
-    id: 'generating-note',
-    categoryId: 'getting-started',
-    title: 'Generating a note in Otto notes',
-    description: 'Capture audio or dictation and convert it into a structured clinical note.',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    duration: '6:15',
-    date: 'Aug 11, 2026',
-    isVideo: true,
-    content: `
-## Generating a note in Otto notes
-
-This guide covers how to generate a note in Otto Notes.
-
-### Step 1: Start a session
-Click **New session** and add patient details, searching from Otto Onboard, previously CNP, or your EMR, or create a new patient.
-
-### Step 2: Capture the encounter
-Use **Transcribe** with your microphone, or switch to **Dictate**. Add extra context by typing in the **Context** tab, or upload supporting documents like lab results.
-
-### Step 3: Generate the note
-Go to the **Note** tab, select a template, and Otto will generate the note from your transcript, context, and any uploaded files.
-
-### Step 4: Review and confirm
-Check the AI-generated note, edit if needed, and click **Reviewed**. Use the + icon to try a different template on the same transcript without overwriting this note.
     `,
   },
 
