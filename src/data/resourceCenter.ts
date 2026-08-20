@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Mic, Mail, Sparkles, MessageSquare } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 
 export interface ResourceCategory {
   id: string;
@@ -11,9 +11,12 @@ export interface ResourceTopic {
   categoryId: string;
   title: string;
   description: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon?: React.ComponentType<{ className?: string }>;
   videoUrl?: string;
+  duration?: string;
+  date?: string;
   content: string;
+  isVideo?: boolean;
 }
 
 export const categories: ResourceCategory[] = [
@@ -22,153 +25,150 @@ export const categories: ResourceCategory[] = [
 ];
 
 export const topics: ResourceTopic[] = [
-  // Getting Started
+  // Getting Started — Video Guides
   {
-    id: 'create-first-session',
+    id: 'letters-workflow',
     categoryId: 'getting-started',
-    title: 'Create Your First Session',
-    description: 'Learn how to start a new clinical session and capture notes.',
-    icon: BookOpen,
+    title: 'Letters workflow',
+    description: 'Learn how to create, review, and send referral letters from a session.',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    duration: '3:24',
+    date: 'Aug 15, 2026',
+    isVideo: true,
     content: `
-## Create Your First Session
+## Letters workflow
 
-Getting started with Otto Notes is simple. Follow these steps to create your first clinical session.
+This guide covers the complete letters workflow in Otto Notes.
 
-### Step 1: Click "New Session"
-Navigate to the sidebar and click the **New Session** button. This will open a blank session workspace.
+### Step 1: Generate a note
+Start a session and capture your consultation notes. Once the note is ready, click **Send to Letters**.
 
-### Step 2: Add Patient Details
-Use the patient selector at the top to search for an existing patient or add a new one. Fill in the relevant demographic information.
+### Step 2: Review the letter
+The letter is generated automatically from the session content. Review the draft and make any edits.
 
-### Step 3: Choose Your Input Method
-You can capture clinical notes in several ways:
-- **Dictation**: Use real-time voice recording to capture your notes hands-free.
-- **Manual Entry**: Type directly into the note editor.
-- **Context Panel**: Add relevant medical context before generating notes.
-
-### Step 4: Generate & Review
-Once you've captured your input, click **Generate Note** to produce a structured clinical note. Review and edit as needed before saving.
+### Step 3: Send or save
+When ready, mark the letter as reviewed and send it to the recipient. Letters can also be saved to send later.
 
 ### Tips
-- Use templates to standardize your note format across visits.
-- You can attach files like lab results or referral letters to any session.
-- The AI Assistant can help refine or restructure your notes.
+- You can unsend a letter if you need to make changes.
+- Internal review notes help your team coordinate before sending.
     `,
   },
   {
-    id: 'using-templates',
+    id: 'manage-create-templates',
     categoryId: 'getting-started',
-    title: 'Using Templates',
-    description: 'Customize and apply templates to streamline your workflow.',
-    icon: FileText,
+    title: 'Manage and create templates',
+    description: 'Build custom templates and organize your personal template library.',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    duration: '4:12',
+    date: 'Aug 14, 2026',
+    isVideo: true,
     content: `
-## Using Templates
+## Manage and create templates
 
-Templates help you maintain consistency and save time across clinical encounters.
+Templates save time by providing a consistent structure for your notes.
 
-### Accessing Templates
-Navigate to **My Templates** from the sidebar to view your saved templates, or visit the **Template Hub** to discover community-shared templates.
+### Creating a template
+1. Navigate to **My Templates** from the sidebar.
+2. Click **Create Template** and choose a template type (Note, Document, or Letter).
+3. Add headings, placeholder text, and formatting.
+4. Save and publish your template.
 
-### Creating a Template
-1. Click **Create Template** in the My Templates page.
-2. Choose a template type (e.g., SOAP Note, Consultation, Follow-up).
-3. Define the structure, headings, and any default content.
-4. Save your template for future use.
-
-### Applying a Template
-When starting a new session, select a template from the template picker. The note structure will be pre-filled based on your template, and you can customize it per encounter.
+### Managing templates
+- Edit templates anytime from the My Templates page.
+- Control visibility: keep templates private, share with your clinic, or make them public.
+- Star frequently used templates for quick access.
 
 ### Tips
-- Star your most-used templates for quick access.
-- Templates can include placeholder variables that auto-fill with patient data.
+- Use placeholders for patient-specific data that auto-fills at runtime.
+- Template types determine which editor and workflow is used.
     `,
   },
   {
-    id: 'dictation-recording',
+    id: 'template-hub',
     categoryId: 'getting-started',
-    title: 'Dictation & Recording',
-    description: 'Use voice recording to capture clinical notes hands-free.',
-    icon: Mic,
+    title: 'Template hub',
+    description: 'Browse and install templates shared by the Otto Notes community.',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    duration: '2:48',
+    date: 'Aug 13, 2026',
+    isVideo: true,
     content: `
-## Dictation & Recording
+## Template hub
 
-Otto Notes supports real-time voice dictation so you can focus on your patient while your notes are captured automatically.
+The Template Hub is your source for community-shared templates across specialties and clinics.
 
-### Starting a Recording
-1. Open a new or existing session.
-2. Click the **Record** button in the dictation panel.
-3. Speak naturally — Otto Notes will transcribe your words in real time.
+### Browsing templates
+Use filters for specialty, clinic, template type, and language to find the right template.
 
-### Recording Modes
-- **Monologue**: Best for solo dictation where only the physician is speaking.
-- **Dialogue**: Captures a two-way conversation between physician and patient.
-
-### Editing Transcripts
-After recording, review the transcript in the Transcript tab. You can edit any text before generating the final note.
+### Installing a template
+1. Open a template detail page.
+2. Click **Use Template** to add it to your library.
+3. Customize it to fit your workflow.
 
 ### Tips
-- Use a high-quality microphone for best results.
-- Speak clearly and at a moderate pace.
-- You can pause and resume recording as needed.
+- Filter by your specialty to see the most relevant templates first.
+- Community templates can be cloned and modified privately.
     `,
   },
   {
-    id: 'managing-letters',
+    id: 'settings-in-otto',
     categoryId: 'getting-started',
-    title: 'Managing Letters',
-    description: 'Create, send, and manage referral and patient letters.',
-    icon: Mail,
+    title: 'Settings in Otto notes',
+    description: 'Configure your profile, signature, AI preferences, and account settings.',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    duration: '5:06',
+    date: 'Aug 12, 2026',
+    isVideo: true,
     content: `
-## Managing Letters
+## Settings in Otto notes
 
-The Letters section helps you create and manage referral letters, patient correspondence, and other clinical documents.
+Personalize Otto Notes to match your workflow and preferences.
 
-### Creating a Letter
-1. Navigate to **Letters** from the sidebar.
-2. Letters are automatically generated when you send a note from a session.
-3. You can also create letters manually from the Letters page.
+### Profile
+Update your name, clinic, specialty, and contact details. These fields are used throughout the app.
 
-### Letter Statuses
-- **To be sent**: Draft letters awaiting review and sending.
-- **Sent**: Letters that have been finalized and sent.
+### Signature
+Create a digital signature using the rich text editor. It is applied to letters and documents automatically.
 
-### Deleting Letters
-If a letter was created by mistake, you can delete it from the letter detail view or the letter list (only for "To be sent" letters).
+### AI settings
+Adjust **Temperature** and **Nucleus Sampling** to control how creative or focused the AI output is.
+
+### Privacy
+Manage consent and data-sharing preferences from a single toggle.
 
 ### Tips
-- Review all letters before sending to ensure accuracy.
-- Use the physician search to quickly find referring doctors.
+- Remember to click **Save** after making changes in any settings tab.
     `,
   },
   {
-    id: 'ai-assistant-basics',
+    id: 'generating-note',
     categoryId: 'getting-started',
-    title: 'AI Assistant Basics',
-    description: 'Learn how to use the AI assistant to enhance your notes.',
-    icon: Sparkles,
+    title: 'Generating a note in Otto notes',
+    description: 'Capture audio or dictation and convert it into a structured clinical note.',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    duration: '6:15',
+    date: 'Aug 11, 2026',
+    isVideo: true,
     content: `
-## AI Assistant Basics
+## Generating a note in Otto notes
 
-The AI Assistant helps you refine, restructure, and enhance your clinical notes using natural language commands.
+Otto Notes turns your spoken or written input into a structured clinical note.
 
-### Accessing the AI Assistant
-Click **AI Assistant** in the sidebar to open the assistant. You can start a new conversation or continue a previous one.
+### Step 1: Choose an input method
+- **Transcribe** captures live conversation.
+- **Dictate** is optimized for monologue-style dictation.
+- **Virtual Call** handles remote consultation audio.
 
-### What Can the AI Assistant Do?
-- **Summarize** lengthy notes into concise formats.
-- **Restructure** notes into different templates (e.g., SOAP format).
-- **Suggest** missing clinical information or follow-up actions.
-- **Translate** notes into different languages.
+### Step 2: Add context
+Select the patient, template type, and any relevant documents before generating.
+
+### Step 3: Generate and review
+Click **Generate Note** to produce a structured draft. Review the output, edit as needed, and save.
 
 ### Tips
-- Be specific in your prompts for best results.
-- You can ask follow-up questions to refine the output.
-- The assistant works best with structured clinical content.
+- Use pause and resume during long recordings.
+- Attach files to give the AI more context about the patient.
     `,
   },
 
