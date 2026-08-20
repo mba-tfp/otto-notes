@@ -32,8 +32,6 @@ export const LeftPane = () => {
     const saved = localStorage.getItem('sidebar-collapsed');
     return saved === 'true';
   });
-  const { showSidebarPill, applyUpdate } = useAppUpdateAvailable();
-  const [relaunchDialogOpen, setRelaunchDialogOpen] = useState(false);
 
   // Get global sessions panel context
   const {
