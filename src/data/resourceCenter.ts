@@ -18,9 +18,7 @@ export interface ResourceTopic {
 
 export const categories: ResourceCategory[] = [
   { id: 'getting-started', label: 'Getting Started', description: 'Onboarding guides for new users' },
-  { id: 'faqs', label: 'FAQs', description: 'Common questions by topic' },
   { id: 'contact-support', label: 'Contact Support', description: 'Chat with our support team' },
-  { id: 'give-feedback', label: 'Give Feedback', description: 'Share your thoughts and report issues' },
 ];
 
 export const topics: ResourceTopic[] = [
