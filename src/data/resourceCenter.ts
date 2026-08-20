@@ -119,22 +119,22 @@ One click adds it to **My Templates**, where you can edit and customize it.
     content: `
 ## Settings in Otto notes
 
-Personalize Otto Notes to match your workflow and preferences.
+This guide covers your settings and preferences in Otto Notes.
 
-### Profile
-Update your name, clinic, specialty, and contact details. These fields are used throughout the app.
+### Step 1: Update your profile
+Manage your name, title, and contact information.
 
-### Signature
-Create a digital signature using the rich text editor. It is applied to letters and documents automatically.
+### Step 2: Set your signature
+Add or update your signature, and toggle whether it's appended automatically to AI-generated letters.
 
-### AI settings
-Adjust **Temperature** and **Nucleus Sampling** to control how creative or focused the AI output is.
+### Step 3: Adjust AI settings
+Writing style controls how brief or detailed notes are, language diversity controls how varied the phrasing is. Neither changes what content is included.
 
-### Privacy
-Manage consent and data-sharing preferences from a single toggle.
+### Step 4: Manage users
+Administrator and General Admin roles can invite, disable, or delete users here.
 
-### Tips
-- Remember to click **Save** after making changes in any settings tab.
+### Step 5: Update security
+Change your account password.
     `,
   },
   {
