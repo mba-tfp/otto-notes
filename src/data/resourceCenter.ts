@@ -89,6 +89,7 @@ The template is now available from the Note tab dropdown in your sessions.
     id: 'letters-workflow',
     categoryId: 'getting-started',
     title: 'Letters workflow',
+    icon: Mail,
     description: 'Learn how to create, review, and send referral letters from a session.',
     videoUrl: 'https://player.vimeo.com/video/1219876667?h=e0e9f04f7d',
     duration: '3:24',
