@@ -149,22 +149,19 @@ Change your account password.
     content: `
 ## Generating a note in Otto notes
 
-Otto Notes turns your spoken or written input into a structured clinical note.
+This guide covers how to generate a note in Otto Notes.
 
-### Step 1: Choose an input method
-- **Transcribe** captures live conversation.
-- **Dictate** is optimized for monologue-style dictation.
-- **Virtual Call** handles remote consultation audio.
+### Step 1: Start a session
+Click **New session** and add patient details, searching from Otto Onboard, previously CNP, or your EMR, or create a new patient.
 
-### Step 2: Add context
-Select the patient, template type, and any relevant documents before generating.
+### Step 2: Capture the encounter
+Use **Transcribe** with your microphone, or switch to **Dictate**. Add extra context by typing in the **Context** tab, or upload supporting documents like lab results.
 
-### Step 3: Generate and review
-Click **Generate Note** to produce a structured draft. Review the output, edit as needed, and save.
+### Step 3: Generate the note
+Go to the **Note** tab, select a template, and Otto will generate the note from your transcript, context, and any uploaded files.
 
-### Tips
-- Use pause and resume during long recordings.
-- Attach files to give the AI more context about the patient.
+### Step 4: Review and confirm
+Check the AI-generated note, edit if needed, and click **Reviewed**. Use the + icon to try a different template on the same transcript without overwriting this note.
     `,
   },
 
