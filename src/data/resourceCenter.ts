@@ -31,7 +31,7 @@ export const topics: ResourceTopic[] = [
     categoryId: 'getting-started',
     title: 'Letters workflow',
     description: 'Learn how to create, review, and send referral letters from a session.',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: 'https://vimeo.com/1219876667/e0e9f04f7d?share=copy&fl=sv&fe=ci',
     duration: '3:24',
     date: 'Aug 15, 2026',
     isVideo: true,
@@ -49,9 +49,8 @@ The letter is generated automatically from the session content. Review the draft
 ### Step 3: Send or save
 When ready, mark the letter as reviewed and send it to the recipient. Letters can also be saved to send later.
 
-### Tips
-- You can unsend a letter if you need to make changes.
-- Internal review notes help your team coordinate before sending.
+### Note
+Administrator and General Admin roles see all clinic letters, physicians and nurses only see their own. Mark as sent is final, the letter becomes read only after.
     `,
   },
   {
