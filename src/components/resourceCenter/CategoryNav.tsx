@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { categories, topics, ResourceTopic } from '@/data/resourceCenter';
 import { TopicCard } from './TopicCard';
+import { VideoTopicCard } from './VideoTopicCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 
