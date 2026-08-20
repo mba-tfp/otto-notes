@@ -31,7 +31,7 @@ export const topics: ResourceTopic[] = [
     categoryId: 'getting-started',
     title: 'Letters workflow',
     description: 'Learn how to create, review, and send referral letters from a session.',
-    videoUrl: 'https://vimeo.com/1219876667/e0e9f04f7d?share=copy&fl=sv&fe=ci',
+    videoUrl: 'https://player.vimeo.com/video/1219876667?h=e0e9f04f7d',
     duration: '3:24',
     date: 'Aug 15, 2026',
     isVideo: true,
