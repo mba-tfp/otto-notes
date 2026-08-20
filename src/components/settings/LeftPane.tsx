@@ -347,12 +347,8 @@ export const LeftPane = () => {
         </div>
       </div>
 
-      <RelaunchConfirmDialog
-        open={relaunchDialogOpen}
-        onOpenChange={setRelaunchDialogOpen}
-        onConfirm={applyUpdate}
-      />
     </>;
+
 
   function renderFooterItem(item: (typeof footerItems)[number]) {
     const Icon = item.icon;
