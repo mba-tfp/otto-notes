@@ -356,7 +356,7 @@ export const LeftPane = () => {
 
   function renderFooterItem(item: (typeof footerItems)[number]) {
     const Icon = item.icon;
-    const opensInNewTab = item.id === 'resource-center' || item.id === 'desktop-app';
+    const opensInNewTab = item.id === 'desktop-app';
     const itemRoute = item.id === 'desktop-app' ? '#' : '/resource-center';
     const isActive = !opensInNewTab && location.pathname === itemRoute;
     const handleClick = () => {
