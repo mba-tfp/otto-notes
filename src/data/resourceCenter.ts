@@ -65,22 +65,22 @@ Administrator and General Admin roles see all clinic letters, physicians and nur
     content: `
 ## Manage and create templates
 
-Templates save time by providing a consistent structure for your notes.
+This guide covers how to manage and build templates in Otto Notes.
 
-### Creating a template
-1. Navigate to **My Templates** from the sidebar.
-2. Click **Create Template** and choose a template type (Note, Document, or Letter).
-3. Add headings, placeholder text, and formatting.
-4. Save and publish your template.
+### Step 1: Browse your library
+Go to **My Templates** to search, sort, and manage your personal templates. Hover over any template to edit, duplicate, or delete it.
 
-### Managing templates
-- Edit templates anytime from the My Templates page.
-- Control visibility: keep templates private, share with your clinic, or make them public.
-- Star frequently used templates for quick access.
+### Step 2: Start a new template
+Click **Create a template**, then add a name and description.
 
-### Tips
-- Use placeholders for patient-specific data that auto-fills at runtime.
-- Template types determine which editor and workflow is used.
+### Step 3: Build the content
+Use plain text for section headings, square brackets for placeholders the AI fills in, quotation marks for word-for-word content, and round brackets for AI instructions.
+
+### Step 4: Set visibility and type
+Visibility is **Just me**, **Clinic**, or **TFP Network**. Type is **Note** for clinical notes, **Letter** for letters routed to the Letters section, or **Document** for general forms. Flag before publishing, the template editor's Type field needs to be confirmed live, one internal reference lists only Note and Document as dropdown options.
+
+### Step 5: Save
+The template is now available from the Note tab dropdown in your sessions.
     `,
   },
   {
