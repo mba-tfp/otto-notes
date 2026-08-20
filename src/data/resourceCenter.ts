@@ -95,19 +95,16 @@ The template is now available from the Note tab dropdown in your sessions.
     content: `
 ## Template hub
 
-The Template Hub is your source for community-shared templates across specialties and clinics.
+This guide covers how to find and use community templates in Otto Notes.
 
-### Browsing templates
-Use filters for specialty, clinic, template type, and language to find the right template.
+### Step 1: Browse the hub
+Go to **Template hub** to see templates shared across the TFP network. Filter by clinic, specialty, or category, or search directly.
 
-### Installing a template
-1. Open a template detail page.
-2. Click **Use Template** to add it to your library.
-3. Customize it to fit your workflow.
+### Step 2: Preview a template
+Click a card to see who created it, their specialty and clinic, and the full template content.
 
-### Tips
-- Filter by your specialty to see the most relevant templates first.
-- Community templates can be cloned and modified privately.
+### Step 3: Add it to your library
+One click adds it to **My Templates**, where you can edit and customize it.
     `,
   },
   {
