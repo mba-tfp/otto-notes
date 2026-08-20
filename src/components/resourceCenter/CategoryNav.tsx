@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { categories, topics, ResourceTopic } from '@/data/resourceCenter';
 import { TopicCard } from './TopicCard';
-import { VideoTopicCard } from './VideoTopicCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 
@@ -94,21 +93,12 @@ export const CategoryNav = ({
                 <CollapsibleContent>
                   <div className="grid grid-cols-1 gap-3 pl-4 pr-1 pt-1.5 pb-2">
                     {catTopics.map(topic => (
-                      topic.isVideo ? (
-                        <VideoTopicCard
-                          key={topic.id}
-                          topic={topic}
-                          isSelected={selectedTopicId === topic.id}
-                          onClick={() => onSelectTopic(topic)}
-                        />
-                      ) : (
-                        <TopicCard
-                          key={topic.id}
-                          topic={topic}
-                          isSelected={selectedTopicId === topic.id}
-                          onClick={() => onSelectTopic(topic)}
-                        />
-                      )
+                      <TopicCard
+                        key={topic.id}
+                        topic={topic}
+                        isSelected={selectedTopicId === topic.id}
+                        onClick={() => onSelectTopic(topic)}
+                      />
                     ))}
                   </div>
                 </CollapsibleContent>
