@@ -65,22 +65,22 @@ Administrator and General Admin roles see all clinic letters, physicians and nur
     content: `
 ## Manage and create templates
 
-Templates save time by providing a consistent structure for your notes.
+This guide covers how to manage and build templates in Otto Notes.
 
-### Creating a template
-1. Navigate to **My Templates** from the sidebar.
-2. Click **Create Template** and choose a template type (Note, Document, or Letter).
-3. Add headings, placeholder text, and formatting.
-4. Save and publish your template.
+### Step 1: Browse your library
+Go to **My Templates** to search, sort, and manage your personal templates. Hover over any template to edit, duplicate, or delete it.
 
-### Managing templates
-- Edit templates anytime from the My Templates page.
-- Control visibility: keep templates private, share with your clinic, or make them public.
-- Star frequently used templates for quick access.
+### Step 2: Start a new template
+Click **Create a template**, then add a name and description.
 
-### Tips
-- Use placeholders for patient-specific data that auto-fills at runtime.
-- Template types determine which editor and workflow is used.
+### Step 3: Build the content
+Use plain text for section headings, square brackets for placeholders the AI fills in, quotation marks for word-for-word content, and round brackets for AI instructions.
+
+### Step 4: Set visibility and type
+Visibility is **Just me**, **Clinic**, or **TFP Network**. Type is **Note** for clinical notes, **Letter** for letters routed to the Letters section, or **Document** for general forms. Flag before publishing, the template editor's Type field needs to be confirmed live, one internal reference lists only Note and Document as dropdown options.
+
+### Step 5: Save
+The template is now available from the Note tab dropdown in your sessions.
     `,
   },
   {
@@ -95,19 +95,16 @@ Templates save time by providing a consistent structure for your notes.
     content: `
 ## Template hub
 
-The Template Hub is your source for community-shared templates across specialties and clinics.
+This guide covers how to find and use community templates in Otto Notes.
 
-### Browsing templates
-Use filters for specialty, clinic, template type, and language to find the right template.
+### Step 1: Browse the hub
+Go to **Template hub** to see templates shared across the TFP network. Filter by clinic, specialty, or category, or search directly.
 
-### Installing a template
-1. Open a template detail page.
-2. Click **Use Template** to add it to your library.
-3. Customize it to fit your workflow.
+### Step 2: Preview a template
+Click a card to see who created it, their specialty and clinic, and the full template content.
 
-### Tips
-- Filter by your specialty to see the most relevant templates first.
-- Community templates can be cloned and modified privately.
+### Step 3: Add it to your library
+One click adds it to **My Templates**, where you can edit and customize it.
     `,
   },
   {
@@ -122,22 +119,22 @@ Use filters for specialty, clinic, template type, and language to find the right
     content: `
 ## Settings in Otto notes
 
-Personalize Otto Notes to match your workflow and preferences.
+This guide covers your settings and preferences in Otto Notes.
 
-### Profile
-Update your name, clinic, specialty, and contact details. These fields are used throughout the app.
+### Step 1: Update your profile
+Manage your name, title, and contact information.
 
-### Signature
-Create a digital signature using the rich text editor. It is applied to letters and documents automatically.
+### Step 2: Set your signature
+Add or update your signature, and toggle whether it's appended automatically to AI-generated letters.
 
-### AI settings
-Adjust **Temperature** and **Nucleus Sampling** to control how creative or focused the AI output is.
+### Step 3: Adjust AI settings
+Writing style controls how brief or detailed notes are, language diversity controls how varied the phrasing is. Neither changes what content is included.
 
-### Privacy
-Manage consent and data-sharing preferences from a single toggle.
+### Step 4: Manage users
+Administrator and General Admin roles can invite, disable, or delete users here.
 
-### Tips
-- Remember to click **Save** after making changes in any settings tab.
+### Step 5: Update security
+Change your account password.
     `,
   },
   {
@@ -152,22 +149,19 @@ Manage consent and data-sharing preferences from a single toggle.
     content: `
 ## Generating a note in Otto notes
 
-Otto Notes turns your spoken or written input into a structured clinical note.
+This guide covers how to generate a note in Otto Notes.
 
-### Step 1: Choose an input method
-- **Transcribe** captures live conversation.
-- **Dictate** is optimized for monologue-style dictation.
-- **Virtual Call** handles remote consultation audio.
+### Step 1: Start a session
+Click **New session** and add patient details, searching from Otto Onboard, previously CNP, or your EMR, or create a new patient.
 
-### Step 2: Add context
-Select the patient, template type, and any relevant documents before generating.
+### Step 2: Capture the encounter
+Use **Transcribe** with your microphone, or switch to **Dictate**. Add extra context by typing in the **Context** tab, or upload supporting documents like lab results.
 
-### Step 3: Generate and review
-Click **Generate Note** to produce a structured draft. Review the output, edit as needed, and save.
+### Step 3: Generate the note
+Go to the **Note** tab, select a template, and Otto will generate the note from your transcript, context, and any uploaded files.
 
-### Tips
-- Use pause and resume during long recordings.
-- Attach files to give the AI more context about the patient.
+### Step 4: Review and confirm
+Check the AI-generated note, edit if needed, and click **Reviewed**. Use the + icon to try a different template on the same transcript without overwriting this note.
     `,
   },
 
