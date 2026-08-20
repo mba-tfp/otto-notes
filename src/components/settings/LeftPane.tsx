@@ -299,41 +299,6 @@ export const LeftPane = () => {
         {/* Footer Section */}
         <div className={`${isCollapsed ? 'px-2 py-4' : 'px-4 py-5'}`}>
           <ul className="space-y-1">
-            {showSidebarPill && (
-              <li>
-                {isCollapsed ? (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={() => setRelaunchDialogOpen(true)}
-                          className="relative w-full flex items-center justify-center p-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted text-foreground"
-                        >
-                          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 group-hover:scale-105">
-                            <Sparkles className="h-[18px] w-[18px]" strokeWidth={1.75} />
-                            <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-sidebar" />
-                          </div>
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="right" className="bg-card border-border text-foreground shadow-lg font-medium">
-                        <p>Update available — click to relaunch</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ) : (
-                  <button
-                    onClick={() => setRelaunchDialogOpen(true)}
-                    className="relative w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted text-foreground font-medium"
-                  >
-                    <div className="relative flex items-center justify-center w-[18px] h-[18px]">
-                      <Sparkles className="h-[18px] w-[18px] text-primary" strokeWidth={1.75} />
-                    </div>
-                    <span className="flex-1 text-left">Relaunch to update</span>
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                  </button>
-                )}
-              </li>
-            )}
 
             {footerItems.filter(i => i.id === 'desktop-app').map(item => renderFooterItem(item))}
 
