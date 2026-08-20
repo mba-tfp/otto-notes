@@ -7,7 +7,7 @@ interface TopicCardProps {
 }
 
 export const TopicCard = ({ topic, isSelected, onClick }: TopicCardProps) => {
-  const Icon = topic.icon;
+  const Icon = topic.icon ?? (() => null);
 
   return (
     <button
