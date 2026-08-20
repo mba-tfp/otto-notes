@@ -117,6 +117,7 @@ Administrator and General Admin roles see all clinic letters, physicians and nur
     id: 'template-hub',
     categoryId: 'getting-started',
     title: 'Template hub',
+    icon: Library,
     description: 'Browse and install templates shared by the Otto Notes community.',
     videoUrl: 'https://player.vimeo.com/video/1219879562?h=0835ac34fe',
     duration: '2:48',
