@@ -92,14 +92,23 @@ export const CategoryNav = ({
                   </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <div className="flex flex-col gap-1.5 pl-4 pr-1 pt-1.5 pb-2">
+                  <div className="grid grid-cols-1 gap-3 pl-4 pr-1 pt-1.5 pb-2">
                     {catTopics.map(topic => (
-                      <TopicCard
-                        key={topic.id}
-                        topic={topic}
-                        isSelected={selectedTopicId === topic.id}
-                        onClick={() => onSelectTopic(topic)}
-                      />
+                      topic.isVideo ? (
+                        <VideoTopicCard
+                          key={topic.id}
+                          topic={topic}
+                          isSelected={selectedTopicId === topic.id}
+                          onClick={() => onSelectTopic(topic)}
+                        />
+                      ) : (
+                        <TopicCard
+                          key={topic.id}
+                          topic={topic}
+                          isSelected={selectedTopicId === topic.id}
+                          onClick={() => onSelectTopic(topic)}
+                        />
+                      )
                     ))}
                   </div>
                 </CollapsibleContent>
