@@ -1,4 +1,4 @@
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Mic, LayoutTemplate, Mail, Library, Settings } from 'lucide-react';
 
 export interface ResourceCategory {
   id: string;
@@ -30,6 +30,7 @@ export const topics: ResourceTopic[] = [
     id: 'generating-note',
     categoryId: 'getting-started',
     title: 'Generating a note in Otto notes',
+    icon: Mic,
     description: 'Capture audio or dictation and convert it into a structured clinical note.',
     videoUrl: 'https://player.vimeo.com/video/1219879561?h=2f0ff63c6a',
     duration: '6:15',
@@ -57,6 +58,7 @@ Check the AI-generated note, edit if needed, and click **Reviewed**. Use the + i
     id: 'manage-create-templates',
     categoryId: 'getting-started',
     title: 'Manage and create templates',
+    icon: LayoutTemplate,
     description: 'Build custom templates and organize your personal template library.',
     videoUrl: 'https://player.vimeo.com/video/1219879560?h=f058d1d5a8',
     duration: '4:12',
@@ -87,6 +89,7 @@ The template is now available from the Note tab dropdown in your sessions.
     id: 'letters-workflow',
     categoryId: 'getting-started',
     title: 'Letters workflow',
+    icon: Mail,
     description: 'Learn how to create, review, and send referral letters from a session.',
     videoUrl: 'https://player.vimeo.com/video/1219876667?h=e0e9f04f7d',
     duration: '3:24',
@@ -114,6 +117,7 @@ Administrator and General Admin roles see all clinic letters, physicians and nur
     id: 'template-hub',
     categoryId: 'getting-started',
     title: 'Template hub',
+    icon: Library,
     description: 'Browse and install templates shared by the Otto Notes community.',
     videoUrl: 'https://player.vimeo.com/video/1219879562?h=0835ac34fe',
     duration: '2:48',
@@ -138,6 +142,7 @@ One click adds it to **My Templates**, where you can edit and customize it.
     id: 'settings-in-otto',
     categoryId: 'getting-started',
     title: 'Settings in Otto notes',
+    icon: Settings,
     description: 'Configure your profile, signature, AI preferences, and account settings.',
     videoUrl: 'https://player.vimeo.com/video/1219879563?h=afb5f93bcd',
     duration: '5:06',
