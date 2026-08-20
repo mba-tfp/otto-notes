@@ -1,4 +1,4 @@
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Mic, LayoutTemplate, Mail, Library, Settings } from 'lucide-react';
 
 export interface ResourceCategory {
   id: string;
