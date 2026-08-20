@@ -142,6 +142,7 @@ One click adds it to **My Templates**, where you can edit and customize it.
     id: 'settings-in-otto',
     categoryId: 'getting-started',
     title: 'Settings in Otto notes',
+    icon: Settings,
     description: 'Configure your profile, signature, AI preferences, and account settings.',
     videoUrl: 'https://player.vimeo.com/video/1219879563?h=afb5f93bcd',
     duration: '5:06',
