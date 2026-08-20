@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { categories, topics, ResourceTopic } from '@/data/resourceCenter';
 import { TopicCard } from './TopicCard';
+import { VideoTopicCard } from './VideoTopicCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 
@@ -44,7 +45,7 @@ export const CategoryNav = ({
     <div className="w-80 h-full flex flex-col border-r border-border bg-card">
       <div className="px-5 pt-6 pb-4">
         <h2 className="text-lg font-semibold text-foreground">Help Center</h2>
-        <p className="text-xs text-muted-foreground mt-1">Guides, FAQs, and support</p>
+        <p className="text-xs text-muted-foreground mt-1">Guides and support</p>
       </div>
 
       <div className="h-px bg-border mx-4" />
@@ -91,14 +92,23 @@ export const CategoryNav = ({
                   </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <div className="flex flex-col gap-1.5 pl-4 pr-1 pt-1.5 pb-2">
+                  <div className="grid grid-cols-1 gap-3 pl-4 pr-1 pt-1.5 pb-2">
                     {catTopics.map(topic => (
-                      <TopicCard
-                        key={topic.id}
-                        topic={topic}
-                        isSelected={selectedTopicId === topic.id}
-                        onClick={() => onSelectTopic(topic)}
-                      />
+                      topic.isVideo ? (
+                        <VideoTopicCard
+                          key={topic.id}
+                          topic={topic}
+                          isSelected={selectedTopicId === topic.id}
+                          onClick={() => onSelectTopic(topic)}
+                        />
+                      ) : (
+                        <TopicCard
+                          key={topic.id}
+                          topic={topic}
+                          isSelected={selectedTopicId === topic.id}
+                          onClick={() => onSelectTopic(topic)}
+                        />
+                      )
                     ))}
                   </div>
                 </CollapsibleContent>

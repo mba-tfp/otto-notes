@@ -17,7 +17,7 @@ export const ArticleDetail = ({ topic }: ArticleDetailProps) => {
         </div>
         <h3 className="text-xl font-semibold text-foreground mb-2">Select a topic</h3>
         <p className="text-sm text-muted-foreground max-w-sm">
-          Choose a topic from the left to view guides, FAQs, or contact our support team.
+          Choose a topic from the left to view guides or contact our support team.
         </p>
       </div>
     );
