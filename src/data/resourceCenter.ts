@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Mic, Mail, Sparkles, CreditCard, ScrollText, Radio, ShieldCheck, MessageSquare, MessageCircle } from 'lucide-react';
+import { BookOpen, FileText, Mic, Mail, Sparkles, MessageSquare } from 'lucide-react';
 
 export interface ResourceCategory {
   id: string;
@@ -172,99 +172,6 @@ Click **AI Assistant** in the sidebar to open the assistant. You can start a new
     `,
   },
 
-  // FAQs
-  {
-    id: 'account-billing',
-    categoryId: 'faqs',
-    title: 'Account & Billing',
-    description: 'Questions about your account, subscription, and billing.',
-    icon: CreditCard,
-    content: `
-## Account & Billing
-
-### How do I update my profile information?
-Go to **Settings** → **Profile** to update your name, email, phone number, and other details.
-
-### How do I change my password?
-Navigate to **Settings** → **Security** to update your password.
-
-### What subscription plans are available?
-Otto Notes offers several plans tailored to individual practitioners and clinics. Contact our sales team for detailed pricing.
-
-### How do I cancel my subscription?
-Please contact our support team to discuss cancellation options. We're happy to help resolve any issues before you go.
-
-### Can I add more team members?
-Yes! Go to **Settings** → **Team** to invite new members to your clinic. You can assign roles like Physician, Nurse, or Staff.
-    `,
-  },
-  {
-    id: 'templates-notes-faq',
-    categoryId: 'faqs',
-    title: 'Templates & Notes',
-    description: 'Common questions about templates and note generation.',
-    icon: ScrollText,
-    content: `
-## Templates & Notes FAQ
-
-### Can I create custom templates?
-Yes, you can create fully custom templates from the **My Templates** page. Define your own headings, structure, and default content.
-
-### How do I share a template with my team?
-Currently, templates are personal. Team template sharing is coming soon via the Template Hub.
-
-### Can I edit a generated note?
-Absolutely. All generated notes are fully editable. You can modify text, add sections, or restructure the content.
-
-### Are my notes saved automatically?
-Notes are saved when you make changes. Draft sessions persist until you finalize or delete them.
-    `,
-  },
-  {
-    id: 'recording-transcription-faq',
-    categoryId: 'faqs',
-    title: 'Recording & Transcription',
-    description: 'Questions about voice recording and transcription accuracy.',
-    icon: Radio,
-    content: `
-## Recording & Transcription FAQ
-
-### What microphone should I use?
-Any decent USB or built-in microphone works well. For best results, use a headset or directional microphone in a quiet environment.
-
-### How accurate is the transcription?
-Otto Notes uses advanced speech recognition that achieves high accuracy for medical terminology. You can always review and edit the transcript.
-
-### Can I record in languages other than English?
-Currently, Otto Notes supports English and French. Additional languages are planned for future releases.
-
-### Is my recording data stored?
-Recordings are processed in real-time and transcripts are saved to your session. Raw audio is not permanently stored for privacy.
-    `,
-  },
-  {
-    id: 'privacy-security-faq',
-    categoryId: 'faqs',
-    title: 'Privacy & Security',
-    description: 'How we protect your data and patient information.',
-    icon: ShieldCheck,
-    content: `
-## Privacy & Security
-
-### Is Otto Notes HIPAA compliant?
-Yes, Otto Notes is designed with healthcare compliance in mind. We implement industry-standard security measures to protect patient data.
-
-### Where is my data stored?
-All data is stored in secure, encrypted cloud infrastructure. We use SOC 2 compliant hosting providers.
-
-### Can I export my data?
-Data export functionality is available through our support team. We can provide your data in standard formats.
-
-### How do I report a security concern?
-Please contact our security team immediately at security@ottonotes.com or use the Contact Support section.
-    `,
-  },
-
   // Contact Support
   {
     id: 'send-message',
@@ -272,16 +179,6 @@ Please contact our security team immediately at security@ottonotes.com or use th
     title: 'Send us a message',
     description: 'Chat with our support team — we typically reply in under 10 minutes.',
     icon: MessageSquare,
-    content: '',
-  },
-
-  // Give Feedback
-  {
-    id: 'give-feedback-form',
-    categoryId: 'give-feedback',
-    title: 'Give Feedback',
-    description: 'Share feedback, report bugs, or rate your experience.',
-    icon: MessageCircle,
     content: '',
   },
 ];
