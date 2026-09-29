@@ -4,6 +4,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { OnboardingStepOne } from './OnboardingStepOne';
+import { OnboardingStepTwo } from './OnboardingStepTwo';
 import { OnboardingStepThree } from './OnboardingStepThree';
 
 export interface OnboardingFormState {
@@ -22,7 +23,7 @@ export interface OnboardingFormState {
 export const NewUserOnboardingModal = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [step, setStep] = useState<1 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [imagePreview, setImagePreview] = useState<string | undefined>();
   const [saving, setSaving] = useState(false);
 
@@ -40,7 +41,7 @@ export const NewUserOnboardingModal = () => {
   });
 
   const handleStepOneContinue = async () => {
-    const isValid = form.firstName.trim() && form.lastName.trim() && form.specialty && form.agreedToTerms;
+    const isValid = form.firstName.trim() && form.lastName.trim() && form.specialty;
     if (!isValid) return;
     setSaving(true);
     try {
@@ -67,7 +68,7 @@ export const NewUserOnboardingModal = () => {
     } finally {
       setSaving(false);
     }
-    setStep(3);
+    setStep(2);
   };
 
   const finishOnboarding = () => {
@@ -75,8 +76,8 @@ export const NewUserOnboardingModal = () => {
     navigate('/new-session');
   };
 
-  // Dynamic width: step 1 narrow, step 3 wider for video list
-  const modalWidth = step === 3 ? 'max-w-2xl' : 'max-w-md';
+  // Dynamic width: profile and signature are compact, training is wider for its two-column list.
+  const modalWidth = step === 3 ? 'max-w-2xl' : step === 1 ? 'max-w-[512px]' : 'max-w-[512px]';
 
   return (
     <Dialog open modal>
@@ -95,9 +96,15 @@ export const NewUserOnboardingModal = () => {
             saving={saving}
             onContinue={handleStepOneContinue}
           />
+        ) : step === 2 ? (
+          <OnboardingStepTwo
+            form={form}
+            onBack={() => setStep(1)}
+            onContinue={() => setStep(3)}
+          />
         ) : (
           <OnboardingStepThree
-            onBack={() => setStep(1)}
+            onBack={() => setStep(2)}
             onSkip={finishOnboarding}
             onFinish={finishOnboarding}
           />

@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -22,7 +21,7 @@ interface Props {
 
 export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview, saving, onContinue }: Props) => {
   const { toast } = useToast();
-  const isValid = form.firstName.trim() && form.lastName.trim() && form.specialty && form.agreedToTerms;
+  const isValid = form.firstName.trim() && form.lastName.trim() && form.specialty;
 
   const getInitials = () => {
     const f = form.firstName?.[0] || '';
@@ -43,20 +42,20 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
   };
 
   return (
-    <div className="overflow-y-auto max-h-[90vh] p-8 pb-6">
-      {/* Logo + Header */}
-      <div className="flex flex-col items-center mb-6">
-        
+    <div>
+      <header className="border-b border-border px-6 pb-4 pt-6">
         <DialogTitle className="text-2xl font-semibold text-foreground text-center">
           Tell us about yourself
         </DialogTitle>
         <DialogDescription className="text-sm text-muted-foreground text-center mt-1">
           Let's get your account set up.
         </DialogDescription>
-      </div>
+      </header>
+
+      <div className="px-6 pb-6 pt-6">
 
       {/* Profile Image */}
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-4 mb-5">
         <Avatar className="h-16 w-16">
           <AvatarImage src={imagePreview} />
           <AvatarFallback className="bg-primary text-primary-foreground text-lg">
@@ -64,7 +63,7 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
           </AvatarFallback>
         </Avatar>
         <div>
-          <p className="text-xs text-muted-foreground mb-1.5">JPG, PNG up to 5MB</p>
+          <p className="text-sm text-muted-foreground mb-1.5">JPG, PNG up to 5MB</p>
           <label htmlFor="onboarding-image-upload">
             <Button type="button" variant="outline" size="sm" className="cursor-pointer" asChild>
               <span>
@@ -78,7 +77,7 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
       </div>
 
       {/* Title + First/Last Name */}
-      <div className="grid grid-cols-[90px_1fr_1fr] gap-3 mb-4">
+      <div className="grid grid-cols-[112px_1fr_1fr] gap-3 mb-5">
         <div>
           <Label className="text-sm font-medium mb-1.5 block">Title</Label>
           <Select value={form.title} onValueChange={(v) => setForm({ ...form, title: v })}>
@@ -94,7 +93,7 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
         </div>
         <div>
           <Label className="text-sm font-medium mb-1.5 block">
-            First name <span className="text-destructive">*</span>
+            First Name <span className="text-destructive">*</span>
           </Label>
           <Input
             value={form.firstName}
@@ -103,7 +102,7 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
         </div>
         <div>
           <Label className="text-sm font-medium mb-1.5 block">
-            Last name <span className="text-destructive">*</span>
+            Last Name <span className="text-destructive">*</span>
           </Label>
           <Input
             value={form.lastName}
@@ -112,18 +111,8 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
         </div>
       </div>
 
-      {/* Preferred Name */}
-      <div className="mb-4">
-        <Label className="text-sm font-medium mb-1.5 block">Preferred name</Label>
-        <Input
-          value={form.preferredName}
-          onChange={(e) => setForm({ ...form, preferredName: e.target.value })}
-          placeholder="The name you prefer to go by"
-        />
-      </div>
-
       {/* Specialty */}
-      <div className="mb-4">
+      <div className="mb-5">
         <Label className="text-sm font-medium mb-1.5 block">
           Specialty <span className="text-destructive">*</span>
         </Label>
@@ -138,8 +127,8 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
       </div>
 
       {/* Primary Location */}
-      <div className="mb-4">
-        <Label className="text-sm font-medium mb-1.5 block">Primary location</Label>
+      <div className="mb-5">
+        <Label className="text-sm font-medium mb-1.5 block">Primary location <span className="font-normal text-muted-foreground">(optional)</span></Label>
         <Select value={form.primaryLocation} onValueChange={(v) => setForm({ ...form, primaryLocation: v })}>
           <SelectTrigger><SelectValue placeholder="Select location" /></SelectTrigger>
           <SelectContent>
@@ -152,8 +141,8 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
       </div>
 
       {/* Phone Number */}
-      <div className="mb-4">
-        <Label className="text-sm font-medium mb-1.5 block">Phone number</Label>
+      <div className="mb-5">
+        <Label className="text-sm font-medium mb-1.5 block">Phone Number <span className="font-normal text-muted-foreground">(optional)</span></Label>
         <PhoneInput
           countryCode={form.phoneCountryCode}
           onCountryCodeChange={(code) => setForm({ ...form, phoneCountryCode: code })}
@@ -163,7 +152,7 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
       </div>
 
       {/* Display Language */}
-      <div className="mb-6">
+      <div className="mb-5">
         <Label className="text-sm font-medium mb-1.5 block">Display language</Label>
         <Select value={form.displayLanguage} onValueChange={(v) => setForm({ ...form, displayLanguage: v })}>
           <SelectTrigger><SelectValue placeholder="Select language" /></SelectTrigger>
@@ -172,21 +161,6 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
             <SelectItem value="French">French</SelectItem>
           </SelectContent>
         </Select>
-      </div>
-
-      {/* Terms Checkbox */}
-      <div className="flex items-start gap-2.5 mb-6">
-        <Checkbox
-          id="terms"
-          checked={form.agreedToTerms}
-          onCheckedChange={(checked) => setForm({ ...form, agreedToTerms: checked === true })}
-          className="mt-0.5"
-        />
-        <label htmlFor="terms" className="text-sm text-muted-foreground leading-snug cursor-pointer">
-          I agree to the{' '}
-          <a href="#" className="text-[hsl(var(--link))] underline">Privacy Policy</a> and{' '}
-          <a href="#" className="text-[hsl(var(--link))] underline">Terms of Use</a>
-        </label>
       </div>
 
       {/* Continue Button */}
@@ -198,6 +172,7 @@ export const OnboardingStepOne = ({ form, setForm, imagePreview, setImagePreview
       >
         {saving ? 'Setting up...' : 'Continue'}
       </Button>
+      </div>
     </div>
   );
 };
