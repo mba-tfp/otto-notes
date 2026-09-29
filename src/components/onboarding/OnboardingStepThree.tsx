@@ -1,7 +1,7 @@
 import { useState, useMemo, type ReactNode } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Play, Clock, X, ExternalLink, ChevronDown, Check, CircleCheck } from 'lucide-react';
+import { ArrowLeft, Play, Clock, X, ExternalLink, ChevronDown, Check } from 'lucide-react';
 import { topics, ResourceTopic } from '@/data/resourceCenter';
 import { useTrainingProgress } from '@/contexts/TrainingProgressContext';
 
