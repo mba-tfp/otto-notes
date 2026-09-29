@@ -33,6 +33,19 @@ export const TopicCard = ({ topic, isSelected, onClick }: TopicCardProps) => {
           <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
             {topic.description}
           </p>
+          {topic.isPdf && (
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded bg-primary/10 text-primary">
+                PDF
+              </span>
+              {topic.version && (
+                <span className="text-[11px] text-muted-foreground">
+                  {topic.version}
+                  {topic.date ? ` · ${topic.date}` : ''}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </button>

@@ -1,4 +1,4 @@
-import { MessageSquare, Mic, LayoutTemplate, Mail, Library, Settings } from 'lucide-react';
+import { MessageSquare, Mic, LayoutTemplate, Mail, Library, Settings, FileText } from 'lucide-react';
 
 export interface ResourceCategory {
   id: string;
@@ -17,6 +17,10 @@ export interface ResourceTopic {
   date?: string;
   content: string;
   isVideo?: boolean;
+  isPdf?: boolean;
+  pdfUrl?: string;
+  version?: string;
+  fileSize?: string;
 }
 
 export const categories: ResourceCategory[] = [
@@ -168,6 +172,21 @@ Administrator and General Admin roles can invite, disable, or delete users here.
 ### Step 5: Update security
 Change your account password.
     `,
+  },
+
+  // Getting Started — SOP document
+  {
+    id: 'otto-notes-sop',
+    categoryId: 'getting-started',
+    title: 'Otto Notes Standard Operating Procedure',
+    icon: FileText,
+    description: 'Clinical documentation protocol, patient consent rules, and review requirements.',
+    isPdf: true,
+    pdfUrl: '/otto-notes-sop.pdf',
+    version: 'v1.0',
+    date: 'Sep 2026',
+    fileSize: 'PDF',
+    content: '',
   },
 
   // Contact Support

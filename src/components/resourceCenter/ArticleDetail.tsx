@@ -1,5 +1,6 @@
 import { ResourceTopic } from '@/data/resourceCenter';
-import { BookOpen, Play } from 'lucide-react';
+import { BookOpen, Play, Download, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ContactSupport } from './ContactSupport';
 import { FeedbackForm } from './FeedbackForm';
@@ -31,6 +32,43 @@ export const ArticleDetail = ({ topic }: ArticleDetailProps) => {
   // Feedback form renders its own UI
   if (topic.id === 'give-feedback-form') {
     return <FeedbackForm />;
+  }
+
+  // PDF documents render in an embedded viewer
+  if (topic.isPdf && topic.pdfUrl) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex items-start justify-between gap-4 px-6 py-4 border-b border-border bg-card">
+          <div className="min-w-0">
+            <h2 className="text-base font-semibold text-foreground truncate">{topic.title}</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {[topic.version, topic.date, topic.fileSize].filter(Boolean).join(' · ')}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Button variant="outline" size="sm" asChild>
+              <a href={topic.pdfUrl} target="_blank" rel="noreferrer">
+                <ExternalLink className="h-4 w-4 mr-1.5" />
+                Open in new tab
+              </a>
+            </Button>
+            <Button size="sm" asChild>
+              <a href={topic.pdfUrl} download>
+                <Download className="h-4 w-4 mr-1.5" />
+                Download PDF
+              </a>
+            </Button>
+          </div>
+        </div>
+        <div className="flex-1 min-h-0 bg-muted p-4">
+          <iframe
+            src={`${topic.pdfUrl}#view=FitH`}
+            title={topic.title}
+            className="w-full h-full rounded-lg border border-border bg-background"
+          />
+        </div>
+      </div>
+    );
   }
 
   // Parse simple markdown-like content
