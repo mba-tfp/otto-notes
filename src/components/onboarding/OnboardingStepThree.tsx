@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, Play, Clock, X, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Play, Clock, X, ExternalLink, ChevronDown } from 'lucide-react';
 import { topics, ResourceTopic } from '@/data/resourceCenter';
 
 interface Props {
@@ -53,6 +53,7 @@ function renderGuideContent(content: string) {
 export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
   const [noTraining, setNoTraining] = useState(false);
   const [activeVideo, setActiveVideo] = useState<ResourceTopic | null>(null);
+  const [openSection, setOpenSection] = useState<'videos' | 'documents'>('videos');
 
   const videoGuides = useMemo(
     () => topics.filter((t) => t.categoryId === 'getting-started' && t.isVideo),
@@ -76,7 +77,7 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
   };
 
   return (
-    <div className="overflow-y-auto max-h-[90vh] p-8 pb-6">
+    <div className="p-8 pb-6">
       {/* Back */}
       <button
         onClick={onBack}
@@ -96,51 +97,71 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
         </DialogDescription>
       </div>
 
-      {/* Video Guides — matches Help Center */}
-      <div className="mb-6">
-        <h3 className="text-sm font-medium text-foreground mb-3">Quick start videos</h3>
-        <div className="max-h-[320px] overflow-y-auto pr-1">
-          <div className="flex flex-col gap-2 pr-1">
+      {/* Training resources accordion */}
+      <div className="mb-5 space-y-2">
+        <section className="overflow-hidden rounded-lg border border-border">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setOpenSection('videos')}
+            aria-expanded={openSection === 'videos'}
+            className="h-10 w-full justify-between rounded-none px-3 text-sm font-medium hover:bg-muted/50"
+          >
+            <span>Quick start videos</span>
+            <ChevronDown
+              className={`h-4 w-4 text-muted-foreground transition-transform ${openSection === 'videos' ? 'rotate-180' : ''}`}
+            />
+          </Button>
+
+          {openSection === 'videos' && (
+            <div className="grid grid-cols-2 gap-2 border-t border-border p-2">
             {videoGuides.map((video) => {
               const Icon = video.icon;
               return (
                 <button
                   key={video.id}
                   onClick={() => setActiveVideo(video)}
-                  className="group flex items-center gap-3 rounded-xl border border-border bg-muted/30 hover:bg-muted/60 transition-colors text-left p-3"
+                  className="group flex min-h-[68px] items-center gap-2 rounded-lg border border-border bg-muted/30 p-2.5 text-left transition-colors hover:bg-muted/60"
                 >
-                  <div className="w-9 h-9 rounded-lg bg-brand/10 text-brand flex items-center justify-center flex-shrink-0">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-brand/10 text-brand">
                     {Icon && <Icon className="h-4 w-4" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground leading-snug truncate">
+                    <p className="truncate text-xs font-medium leading-snug text-foreground">
                       {video.title}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                      {video.description}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                    <span className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground">
                       <Clock className="h-3 w-3" />
                       {video.duration}
                     </span>
-                    <div className="w-8 h-8 rounded-full bg-brand/90 text-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                      <Play className="h-3.5 w-3.5 ml-0.5" />
-                    </div>
+                  </div>
+                  <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-brand/90 text-primary-foreground transition-transform group-hover:scale-105">
+                    <Play className="ml-0.5 h-3 w-3" />
                   </div>
                 </button>
               );
             })}
-          </div>
-        </div>
-      </div>
+            </div>
+          )}
+        </section>
 
-      {/* Documents */}
-      {sopDocs.length > 0 && (
-        <div className="mb-6">
-          <h3 className="text-sm font-medium text-foreground mb-3">Documents</h3>
-          <div className="flex flex-col gap-2">
+        {sopDocs.length > 0 && (
+          <section className="overflow-hidden rounded-lg border border-border">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setOpenSection('documents')}
+              aria-expanded={openSection === 'documents'}
+              className="h-10 w-full justify-between rounded-none px-3 text-sm font-medium hover:bg-muted/50"
+            >
+              <span>Documents</span>
+              <ChevronDown
+                className={`h-4 w-4 text-muted-foreground transition-transform ${openSection === 'documents' ? 'rotate-180' : ''}`}
+              />
+            </Button>
+
+            {openSection === 'documents' && (
+              <div className="flex flex-col gap-2 border-t border-border p-2">
             {sopDocs.map((doc) => {
               const Icon = doc.icon;
               return (
@@ -149,7 +170,7 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
                   href={doc.pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-3 rounded-xl border border-border bg-muted/30 hover:bg-muted/60 transition-colors text-left p-3"
+                  className="group flex min-h-[68px] items-center gap-3 rounded-lg border border-border bg-muted/30 p-2.5 text-left transition-colors hover:bg-muted/60"
                 >
                   <div className="w-9 h-9 rounded-lg bg-brand/10 text-brand flex items-center justify-center flex-shrink-0">
                     {Icon && <Icon className="h-4 w-4" />}
@@ -165,9 +186,11 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
                 </a>
               );
             })}
-          </div>
-        </div>
-      )}
+              </div>
+            )}
+          </section>
+        )}
+      </div>
 
       {/* Opt-out */}
       <div className="mb-6">
