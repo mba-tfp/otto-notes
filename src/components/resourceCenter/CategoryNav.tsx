@@ -25,6 +25,13 @@ export const CategoryNav = ({
     return initial;
   });
 
+  // Sub-groups (Video guides / Documents) start expanded
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+
+  const toggleGroup = (key: string) => {
+    setOpenGroups(prev => ({ ...prev, [key]: !(prev[key] ?? true) }));
+  };
+
   const toggleCategory = (catId: string) => {
     const catTopics = topics.filter(t => t.categoryId === catId);
 
@@ -91,28 +98,39 @@ export const CategoryNav = ({
                 {isOpen && (
                   <div className="flex flex-col gap-3 pl-4 pr-1 pt-1.5 pb-2">
                     {[
-                      { label: 'Video guides', items: catTopics.filter(t => t.isVideo) },
-                      { label: 'Documents', items: catTopics.filter(t => t.isPdf) },
-                      { label: '', items: catTopics.filter(t => !t.isVideo && !t.isPdf) },
+                      { key: 'videos', label: 'Video guides', items: catTopics.filter(t => t.isVideo) },
+                      { key: 'documents', label: 'Documents', items: catTopics.filter(t => t.isPdf) },
+                      { key: 'other', label: '', items: catTopics.filter(t => !t.isVideo && !t.isPdf) },
                     ]
                       .filter(g => g.items.length > 0)
-                      .map(group => (
-                        <div key={group.label || 'other'} className="flex flex-col gap-2">
-                          {group.label && catTopics.some(t => t.isVideo) && catTopics.some(t => t.isPdf) && (
-                            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground px-1 pt-1">
-                              {group.label}
-                            </p>
-                          )}
-                          {group.items.map(topic => (
-                            <TopicCard
-                              key={topic.id}
-                              topic={topic}
-                              isSelected={selectedTopicId === topic.id}
-                              onClick={() => onSelectTopic(topic)}
-                            />
-                          ))}
-                        </div>
-                      ))}
+                      .map(group => {
+                        const showLabel = !!group.label && catTopics.some(t => t.isVideo) && catTopics.some(t => t.isPdf);
+                        const isGroupOpen = openGroups[group.key] ?? true;
+
+                        return (
+                          <div key={group.key} className="flex flex-col gap-2">
+                            {showLabel && (
+                              <button
+                                type="button"
+                                onClick={() => toggleGroup(group.key)}
+                                aria-expanded={isGroupOpen}
+                                className="flex items-center gap-1 px-1 pt-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground transition-colors"
+                              >
+                                <ChevronRight className={`h-3 w-3 flex-shrink-0 transition-transform duration-200 ${isGroupOpen ? 'rotate-90' : ''}`} />
+                                {group.label}
+                              </button>
+                            )}
+                            {isGroupOpen && group.items.map(topic => (
+                              <TopicCard
+                                key={topic.id}
+                                topic={topic}
+                                isSelected={selectedTopicId === topic.id}
+                                onClick={() => onSelectTopic(topic)}
+                              />
+                            ))}
+                          </div>
+                        );
+                      })}
                   </div>
                 )}
               </div>
