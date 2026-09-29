@@ -1,22 +1,17 @@
 import { useState, useMemo } from 'react';
-import { DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, Play, Calendar, Clock } from 'lucide-react';
+import { ArrowLeft, Play, Clock, X } from 'lucide-react';
 import { addDays, format, isWeekend } from 'date-fns';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { topics, ResourceTopic } from '@/data/resourceCenter';
 
 interface Props {
   onBack: () => void;
   onSkip: () => void;
   onFinish: () => void;
 }
-
-const TRAINING_VIDEOS = [
-  { title: 'How to use Otto Notes: A Basic Guide', duration: '4 min' },
-  { title: 'How to generate a note, document, or letter', duration: '3 min' },
-  { title: 'How to create your own template', duration: '2 min' },
-];
 
 function getNextBusinessDays(count: number): Date[] {
   const days: Date[] = [];
@@ -41,13 +36,58 @@ function generateTimeSlots(): string[] {
   return slots;
 }
 
+// Lightweight renderer for the guide's markdown-ish content
+function renderGuideContent(content: string) {
+  return content
+    .trim()
+    .split('\n')
+    .map((line, i) => {
+      const trimmed = line.trim();
+      if (!trimmed) return null;
+      if (trimmed.startsWith('### ')) {
+        return (
+          <h4 key={i} className="text-sm font-semibold text-foreground mt-4">
+            {trimmed.slice(4)}
+          </h4>
+        );
+      }
+      if (trimmed.startsWith('## ')) {
+        return (
+          <h3 key={i} className="text-base font-semibold text-foreground mt-4">
+            {trimmed.slice(3)}
+          </h3>
+        );
+      }
+      const parts = trimmed.split(/(\*\*[^*]+\*\*)/g);
+      return (
+        <p key={i} className="text-sm text-muted-foreground leading-relaxed mt-1.5">
+          {parts.map((part, j) =>
+            part.startsWith('**') && part.endsWith('**') ? (
+              <strong key={j} className="font-medium text-foreground">
+                {part.slice(2, -2)}
+              </strong>
+            ) : (
+              part
+            )
+          )}
+        </p>
+      );
+    });
+}
+
 export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
   const [bookDemo, setBookDemo] = useState(false);
   const [noTraining, setNoTraining] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [activeVideo, setActiveVideo] = useState<ResourceTopic | null>(null);
 
   const businessDays = useMemo(() => getNextBusinessDays(5), []);
   const timeSlots = useMemo(() => generateTimeSlots(), []);
+
+  const videoGuides = useMemo(
+    () => topics.filter((t) => t.categoryId === 'getting-started' && t.isVideo),
+    []
+  );
 
   const handleFinish = () => {
     if (noTraining) {
@@ -88,33 +128,44 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
         </DialogDescription>
       </div>
 
-      {/* Training Videos */}
+      {/* Video Guides — matches Help Center */}
       <div className="mb-6">
         <h3 className="text-sm font-medium text-foreground mb-3">Quick start videos</h3>
-        <div className="grid grid-cols-3 gap-3">
-          {TRAINING_VIDEOS.map((video) => (
-            <button
-              key={video.title}
-              className="group rounded-xl border border-border bg-muted/30 hover:bg-muted/60 transition-colors text-left overflow-hidden"
-            >
-              {/* Thumbnail placeholder */}
-              <div className="aspect-video bg-muted flex items-center justify-center relative">
-                <div className="w-10 h-10 rounded-full bg-brand/90 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                  <Play className="h-4 w-4 ml-0.5" />
-                </div>
-              </div>
-              <div className="p-2.5">
-                <p className="text-xs font-medium text-foreground leading-snug line-clamp-2">
-                  {video.title}
-                </p>
-                <p className="text-[11px] text-muted-foreground mt-1 flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {video.duration}
-                </p>
-              </div>
-            </button>
-          ))}
-        </div>
+        <ScrollArea className="max-h-[260px]">
+          <div className="flex flex-col gap-2 pr-2">
+            {videoGuides.map((video) => {
+              const Icon = video.icon;
+              return (
+                <button
+                  key={video.id}
+                  onClick={() => setActiveVideo(video)}
+                  className="group flex items-center gap-3 rounded-xl border border-border bg-muted/30 hover:bg-muted/60 transition-colors text-left p-3"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-brand/10 text-brand flex items-center justify-center flex-shrink-0">
+                    {Icon && <Icon className="h-4 w-4" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground leading-snug truncate">
+                      {video.title}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                      {video.description}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {video.duration}
+                    </span>
+                    <div className="w-8 h-8 rounded-full bg-brand/90 text-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                      <Play className="h-3.5 w-3.5 ml-0.5" />
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </ScrollArea>
       </div>
 
       {/* Book a Demo */}
@@ -208,6 +259,50 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
           {noTraining ? 'Finish setup' : bookDemo && selectedSlot ? 'Book & continue' : 'Continue'}
         </Button>
       </div>
+
+      {/* Video player dialog */}
+      <Dialog open={!!activeVideo} onOpenChange={(open) => !open && setActiveVideo(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] p-0 gap-0 overflow-hidden flex flex-col">
+          {activeVideo && (
+            <>
+              <div className="flex items-center justify-between px-5 py-3 border-b border-border flex-shrink-0">
+                <div className="min-w-0">
+                  <DialogTitle className="text-base font-semibold text-foreground truncate">
+                    {activeVideo.title}
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {activeVideo.duration}
+                  </DialogDescription>
+                </div>
+                <button
+                  onClick={() => setActiveVideo(null)}
+                  className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 ml-3"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="overflow-y-auto flex-1">
+                {activeVideo.videoUrl && (
+                  <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+                    <iframe
+                      src={activeVideo.videoUrl}
+                      className="absolute top-0 left-0 w-full h-full"
+                      frameBorder="0"
+                      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                      allowFullScreen
+                      title={activeVideo.title}
+                    />
+                  </div>
+                )}
+                <div className="px-5 py-4 pb-6">
+                  {renderGuideContent(activeVideo.content)}
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
