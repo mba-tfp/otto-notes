@@ -45,11 +45,6 @@ export const TrainingBanner = () => {
     setDialogOpen(false);
   };
 
-  const handleSkip = () => {
-    localStorage.setItem('otto-training-skipped-at', Date.now().toString());
-    setDialogOpen(false);
-  };
-
   if (!visible && !dialogOpen) return null;
 
   return (
