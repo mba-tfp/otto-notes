@@ -45,11 +45,6 @@ export const TrainingBanner = () => {
     setDialogOpen(false);
   };
 
-  const handleSkip = () => {
-    localStorage.setItem('otto-training-skipped-at', Date.now().toString());
-    setDialogOpen(false);
-  };
-
   if (!visible && !dialogOpen) return null;
 
   return (
@@ -73,7 +68,6 @@ export const TrainingBanner = () => {
         <DialogContent className="max-w-2xl max-h-[90vh] p-0 gap-0 overflow-hidden">
           <OnboardingStepThree
             onBack={() => setDialogOpen(false)}
-            onSkip={handleSkip}
             onFinish={handleFinish}
           />
         </DialogContent>

@@ -105,7 +105,6 @@ export const NewUserOnboardingModal = () => {
         ) : (
           <OnboardingStepThree
             onBack={() => setStep(2)}
-            onSkip={finishOnboarding}
             onFinish={finishOnboarding}
           />
         )}

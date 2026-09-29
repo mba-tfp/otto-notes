@@ -7,7 +7,6 @@ import { useTrainingProgress } from '@/contexts/TrainingProgressContext';
 
 interface Props {
   onBack: () => void;
-  onSkip: () => void;
   onFinish: () => void;
 }
 
@@ -64,7 +63,7 @@ function renderGuideContent(content: string) {
     });
 }
 
-export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
+export const OnboardingStepThree = ({ onBack, onFinish }: Props) => {
   const [activeVideo, setActiveVideo] = useState<ResourceTopic | null>(null);
   const [openSection, setOpenSection] = useState<'videos' | 'documents'>('videos');
   const { completedVideoIds, markVideoComplete } = useTrainingProgress();
@@ -78,10 +77,6 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
     []
   );
 
-  const handleSkip = () => {
-    localStorage.setItem('otto-training-skipped-at', Date.now().toString());
-    onSkip();
-  };
 
   return (
     <div className="p-8 pb-6">
@@ -221,10 +216,7 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between gap-3">
-        <Button variant="ghost" onClick={handleSkip} className="text-muted-foreground">
-          Skip for now
-        </Button>
+      <div className="flex items-center justify-end gap-3">
         <Button onClick={onFinish} size="lg">
           Continue
         </Button>
