@@ -304,6 +304,33 @@ export type Database = {
         }
         Relationships: []
       }
+      user_training_progress: {
+        Row: {
+          completed_video_ids: string[]
+          created_at: string
+          id: string
+          legacy_prompt_seen: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_video_ids?: string[]
+          created_at?: string
+          id?: string
+          legacy_prompt_seen?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_video_ids?: string[]
+          created_at?: string
+          id?: string
+          legacy_prompt_seen?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
