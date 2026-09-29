@@ -126,9 +126,11 @@ export const CategoryNav = ({
                                 key={topic.id}
                                 topic={topic}
                                 isSelected={selectedTopicId === topic.id}
-                                onClick={() => onSelectTopic(topic)}
-                               isCompleted={completedVideoIds.includes(topic.id)}
-                               onMarkComplete={topic.isVideo ? () => void markVideoComplete(topic.id) : undefined}
+                                onClick={() => {
+                                  onSelectTopic(topic);
+                                  if (topic.isVideo) void markVideoComplete(topic.id);
+                                }}
+                                isCompleted={completedVideoIds.includes(topic.id)}
                               />
                             ))}
                           </div>

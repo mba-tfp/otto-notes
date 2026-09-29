@@ -1,16 +1,14 @@
 import { ResourceTopic } from '@/data/resourceCenter';
-import { Check, CircleCheck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { CircleCheck } from 'lucide-react';
 
 interface TopicCardProps {
   topic: ResourceTopic;
   isSelected: boolean;
   onClick: () => void;
   isCompleted?: boolean;
-  onMarkComplete?: () => void;
 }
 
-export const TopicCard = ({ topic, isSelected, onClick, isCompleted = false, onMarkComplete }: TopicCardProps) => {
+export const TopicCard = ({ topic, isSelected, onClick, isCompleted = false }: TopicCardProps) => {
   const Icon = topic.icon ?? (() => null);
 
   return (
@@ -30,9 +28,14 @@ export const TopicCard = ({ topic, isSelected, onClick, isCompleted = false, onM
           <Icon className="h-[18px] w-[18px]" />
         </div>
         <div className="min-w-0 flex-1">
-          <h4 className={`text-sm font-semibold truncate ${isSelected ? 'text-primary' : 'text-foreground'}`}>
-            {topic.title}
-          </h4>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <h4 className={`text-sm font-semibold truncate ${isSelected ? 'text-primary' : 'text-foreground'}`}>
+              {topic.title}
+            </h4>
+            {topic.isVideo && isCompleted && (
+              <CircleCheck className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
+            )}
+          </div>
           <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
             {topic.description}
           </p>
@@ -51,19 +54,6 @@ export const TopicCard = ({ topic, isSelected, onClick, isCompleted = false, onM
           )}
         </div>
       </button>
-      {topic.isVideo && onMarkComplete && (
-        <Button
-          type="button"
-          size="sm"
-          variant={isCompleted ? 'ghost' : 'outline'}
-          disabled={isCompleted}
-          onClick={onMarkComplete}
-          className="mt-3 h-8 w-full text-xs"
-        >
-          {isCompleted ? <CircleCheck className="mr-1.5 h-4 w-4 text-primary" /> : <Check className="mr-1.5 h-4 w-4" />}
-          {isCompleted ? 'Completed' : 'Mark complete'}
-        </Button>
-      )}
     </div>
   );
 };

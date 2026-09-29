@@ -1,17 +1,15 @@
 import { ResourceTopic } from '@/data/resourceCenter';
-import { BookOpen, Download, ExternalLink, Check, CircleCheck } from 'lucide-react';
+import { BookOpen, Download, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ContactSupport } from './ContactSupport';
 import { FeedbackForm } from './FeedbackForm';
-import { useTrainingProgress } from '@/contexts/TrainingProgressContext';
 
 interface ArticleDetailProps {
   topic: ResourceTopic | null;
 }
 
 export const ArticleDetail = ({ topic }: ArticleDetailProps) => {
-  const { completedVideoIds, markVideoComplete } = useTrainingProgress();
   if (!topic) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-8">
@@ -164,16 +162,6 @@ export const ArticleDetail = ({ topic }: ArticleDetailProps) => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
-            </div>
-            <div className="mt-3 flex justify-end">
-              <Button
-                variant={completedVideoIds.includes(topic.id) ? 'ghost' : 'outline'}
-                disabled={completedVideoIds.includes(topic.id)}
-                onClick={() => void markVideoComplete(topic.id)}
-              >
-                {completedVideoIds.includes(topic.id) ? <CircleCheck className="mr-2 h-4 w-4 text-primary" /> : <Check className="mr-2 h-4 w-4" />}
-                {completedVideoIds.includes(topic.id) ? 'Completed' : 'Mark complete'}
-              </Button>
             </div>
           </div>
         )}
