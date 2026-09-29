@@ -26,7 +26,7 @@ const ResourceCenter = () => {
 
   return (
     <AppLayout hideGlobalSessionsPanel>
-      <div className="flex h-full">
+      <div className="flex h-full min-h-0 overflow-hidden">
         <CategoryNav
           selectedCategoryId={selectedCategoryId}
           selectedTopicId={selectedTopic?.id ?? null}
