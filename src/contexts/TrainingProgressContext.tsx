@@ -8,6 +8,7 @@ interface TrainingProgressContextValue {
   completedVideoIds: string[];
   requiredVideoIds: string[];
   isComplete: boolean;
+  needsTraining: boolean;
   isLoading: boolean;
   shouldAskLegacyUser: boolean;
   markVideoComplete: (videoId: string) => Promise<void>;
@@ -105,16 +106,18 @@ export const TrainingProgressProvider = ({ children }: { children: ReactNode }) 
     [completedVideoIds, saveProgress]
   );
 
+  const isComplete = requiredVideoIds.every((id) => completedVideoIds.includes(id));
   const value = useMemo<TrainingProgressContextValue>(() => ({
     completedVideoIds,
     requiredVideoIds,
-    isComplete: requiredVideoIds.every((id) => completedVideoIds.includes(id)),
+    isComplete,
+    needsTraining: Boolean(userId && !isComplete),
     isLoading,
     shouldAskLegacyUser: Boolean(userId && isLegacyUser && !legacyPromptSeen),
     markVideoComplete,
     markAllComplete,
     acknowledgeLegacyPrompt,
-  }), [acknowledgeLegacyPrompt, completedVideoIds, isLegacyUser, isLoading, legacyPromptSeen, markAllComplete, markVideoComplete, requiredVideoIds, userId]);
+  }), [acknowledgeLegacyPrompt, completedVideoIds, isComplete, isLegacyUser, isLoading, legacyPromptSeen, markAllComplete, markVideoComplete, requiredVideoIds, userId]);
 
   return <TrainingProgressContext.Provider value={value}>{children}</TrainingProgressContext.Provider>;
 };

@@ -9,6 +9,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import ottoLogo from '@/assets/otto-logo.png';
 import { SwitchAppPopover } from '@/components/sidebar/SwitchAppPopover';
+import { useTrainingProgress } from '@/contexts/TrainingProgressContext';
 
 
 // Mock user - in production, this would come from auth context
@@ -23,6 +24,7 @@ export const LeftPane = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = mockUser;
+  const { needsTraining, isLoading: trainingLoading } = useTrainingProgress();
   
   
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -328,8 +330,11 @@ export const LeftPane = () => {
     const buttonEl = isCollapsed ? (
       <button onClick={handleClick} className={`relative w-full flex items-center justify-center p-2.5 rounded-xl text-sm transition-all duration-200 group hover:bg-muted hover:text-foreground ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
         {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
-        <div className="flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 group-hover:scale-105">
+        <div className="relative flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 group-hover:scale-105">
           <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
+          {item.id === 'resource-center' && needsTraining && !trainingLoading && (
+            <span aria-label="Training incomplete" className="absolute right-0.5 top-0.5 h-2.5 w-2.5 rounded-full border-2 border-sidebar bg-primary" />
+          )}
         </div>
       </button>
     ) : (
@@ -337,6 +342,9 @@ export const LeftPane = () => {
         {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[3px] rounded-r-full bg-primary" />}
         <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
         <span className="flex-1 text-left">{item.label}</span>
+        {item.id === 'resource-center' && needsTraining && !trainingLoading && (
+          <span aria-label="Training incomplete" className="h-2.5 w-2.5 rounded-full bg-primary" />
+        )}
       </button>
     );
 

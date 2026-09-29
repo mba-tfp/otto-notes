@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { categories, topics, ResourceTopic } from '@/data/resourceCenter';
 import { TopicCard } from './TopicCard';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { useTrainingProgress } from '@/contexts/TrainingProgressContext';
 
 interface CategoryNavProps {
   selectedCategoryId: string;
@@ -17,6 +17,7 @@ export const CategoryNav = ({
   onSelectCategory,
   onSelectTopic,
 }: CategoryNavProps) => {
+  const { completedVideoIds, markVideoComplete } = useTrainingProgress();
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     categories.forEach(cat => {
@@ -126,6 +127,8 @@ export const CategoryNav = ({
                                 topic={topic}
                                 isSelected={selectedTopicId === topic.id}
                                 onClick={() => onSelectTopic(topic)}
+                               isCompleted={completedVideoIds.includes(topic.id)}
+                               onMarkComplete={topic.isVideo ? () => void markVideoComplete(topic.id) : undefined}
                               />
                             ))}
                           </div>
