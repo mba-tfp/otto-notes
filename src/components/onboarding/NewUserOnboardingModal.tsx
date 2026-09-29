@@ -4,7 +4,6 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { OnboardingStepOne } from './OnboardingStepOne';
-import { OnboardingStepTwo } from './OnboardingStepTwo';
 import { OnboardingStepThree } from './OnboardingStepThree';
 
 export interface OnboardingFormState {
@@ -23,7 +22,7 @@ export interface OnboardingFormState {
 export const NewUserOnboardingModal = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 3>(1);
   const [imagePreview, setImagePreview] = useState<string | undefined>();
   const [saving, setSaving] = useState(false);
 
@@ -68,7 +67,7 @@ export const NewUserOnboardingModal = () => {
     } finally {
       setSaving(false);
     }
-    setStep(2);
+    setStep(3);
   };
 
   const finishOnboarding = () => {
@@ -76,7 +75,7 @@ export const NewUserOnboardingModal = () => {
     navigate('/new-session');
   };
 
-  // Dynamic width: steps 1-2 narrow, step 3 wider for calendar
+  // Dynamic width: step 1 narrow, step 3 wider for video list
   const modalWidth = step === 3 ? 'max-w-2xl' : 'max-w-md';
 
   return (
@@ -96,15 +95,9 @@ export const NewUserOnboardingModal = () => {
             saving={saving}
             onContinue={handleStepOneContinue}
           />
-        ) : step === 2 ? (
-          <OnboardingStepTwo
-            userName={`${form.title} ${form.firstName} ${form.lastName}`.trim()}
-            onBack={() => setStep(1)}
-            onFinish={() => setStep(3)}
-          />
         ) : (
           <OnboardingStepThree
-            onBack={() => setStep(2)}
+            onBack={() => setStep(1)}
             onSkip={finishOnboarding}
             onFinish={finishOnboarding}
           />
