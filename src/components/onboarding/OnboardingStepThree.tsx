@@ -7,7 +7,6 @@ import { useTrainingProgress } from '@/contexts/TrainingProgressContext';
 
 interface Props {
   onBack: () => void;
-  onSkip: () => void;
   onFinish: () => void;
 }
 
