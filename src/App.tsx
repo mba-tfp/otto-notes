@@ -9,6 +9,7 @@ import { SessionsPanelProvider } from "./contexts/SessionsPanelContext";
 import { LettersProvider } from "./contexts/LettersContext";
 import { OnboardingTourProvider } from "./contexts/OnboardingTourContext";
 import { SettingsProvider } from "./contexts/SettingsContext";
+import { TrainingProgressProvider } from "./contexts/TrainingProgressContext";
 import { TourOverlay } from "./components/onboarding/TourOverlay";
 import { KeyboardShortcutsHandler } from "./components/KeyboardShortcutsHandler";
 import Index from "./pages/Index";
@@ -39,9 +40,10 @@ const App = () => (
               <Sonner />
               <TourOverlay />
               <BrowserRouter>
-                <KeyboardShortcutsHandler />
-                <SessionsPanelProvider>
-                  <Routes>
+                <TrainingProgressProvider>
+                  <KeyboardShortcutsHandler />
+                  <SessionsPanelProvider>
+                    <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/new-session" element={<NewSession />} />
                     <Route path="/new-user-screen" element={<NewUserScreen />} />
@@ -56,8 +58,9 @@ const App = () => (
                     <Route path="/resource-center" element={<ResourceCenter />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </SessionsPanelProvider>
+                    </Routes>
+                  </SessionsPanelProvider>
+                </TrainingProgressProvider>
               </BrowserRouter>
               </TooltipProvider>
             </OnboardingTourProvider>

@@ -1,8 +1,9 @@
 import { useState, useMemo, type ReactNode } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Play, Clock, X, ExternalLink, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Play, Clock, X, ExternalLink, ChevronDown, Check, CircleCheck } from 'lucide-react';
 import { topics, ResourceTopic } from '@/data/resourceCenter';
+import { useTrainingProgress } from '@/contexts/TrainingProgressContext';
 
 interface Props {
   onBack: () => void;
@@ -66,6 +67,7 @@ function renderGuideContent(content: string) {
 export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
   const [activeVideo, setActiveVideo] = useState<ResourceTopic | null>(null);
   const [openSection, setOpenSection] = useState<'videos' | 'documents'>('videos');
+  const { completedVideoIds, markVideoComplete } = useTrainingProgress();
 
   const videoGuides = useMemo(
     () => topics.filter((t) => t.categoryId === 'getting-started' && t.isVideo),
@@ -124,29 +126,44 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
             <div className="grid grid-cols-2 gap-2 border-t border-border p-2">
               {videoGuides.map((video) => {
                 const Icon = video.icon;
+                const completed = completedVideoIds.includes(video.id);
                 return (
-                  <button
+                  <div
                     key={video.id}
-                    tabIndex={openSection === 'videos' ? 0 : -1}
-                    onClick={() => setActiveVideo(video)}
-                    className="group flex min-h-[68px] items-center gap-2 rounded-lg border border-border bg-muted/30 p-2.5 text-left transition-colors hover:bg-muted/60"
+                    className={`group flex min-h-[76px] items-center gap-2 rounded-lg border p-2.5 text-left transition-colors ${completed ? 'border-primary/30 bg-primary/5' : 'border-border bg-muted/30 hover:bg-muted/60'}`}
                   >
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-brand/10 text-brand">
-                      {Icon && <Icon className="h-4 w-4" />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="truncate text-xs font-medium leading-snug text-foreground">
-                        {video.title}
-                      </p>
-                      <span className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        {video.duration}
-                      </span>
-                    </div>
-                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-brand/90 text-primary-foreground transition-transform group-hover:scale-105">
-                      <Play className="ml-0.5 h-3 w-3" />
-                    </div>
-                  </button>
+                    <button
+                      type="button"
+                      tabIndex={openSection === 'videos' ? 0 : -1}
+                      onClick={() => setActiveVideo(video)}
+                      className="flex min-w-0 flex-1 items-center gap-2"
+                    >
+                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-brand/10 text-brand">
+                        {Icon && <Icon className="h-4 w-4" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="truncate text-xs font-medium leading-snug text-foreground">{video.title}</p>
+                        <span className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground">
+                          <Clock className="h-3 w-3" />{video.duration}
+                        </span>
+                      </div>
+                      <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-brand/90 text-primary-foreground transition-transform group-hover:scale-105">
+                        <Play className="ml-0.5 h-3 w-3" />
+                      </div>
+                    </button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={completed ? 'ghost' : 'outline'}
+                      tabIndex={openSection === 'videos' ? 0 : -1}
+                      disabled={completed}
+                      onClick={() => void markVideoComplete(video.id)}
+                      className="h-7 flex-shrink-0 px-2 text-[11px]"
+                    >
+                      {completed ? <CircleCheck className="h-3.5 w-3.5 text-primary" /> : <Check className="h-3.5 w-3.5" />}
+                      <span className="ml-1">{completed ? 'Completed' : 'Mark complete'}</span>
+                    </Button>
+                  </div>
                 );
               })}
             </div>

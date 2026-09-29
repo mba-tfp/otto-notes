@@ -3,16 +3,20 @@ import { X, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { OnboardingStepThree } from '@/components/onboarding/OnboardingStepThree';
+import { useTrainingProgress } from '@/contexts/TrainingProgressContext';
 
 const NUDGE_DELAY_MS = 5 * 60 * 1000; // 5 minutes
 
 export const TrainingBanner = () => {
+  const { isComplete, isLoading } = useTrainingProgress();
   const [visible, setVisible] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
-    const dismissed = localStorage.getItem('otto-training-dismissed') === 'true';
-    if (dismissed) return;
+    if (isLoading || isComplete) {
+      setVisible(false);
+      return;
+    }
 
     const skippedAt = localStorage.getItem('otto-training-skipped-at');
     if (!skippedAt) return;
@@ -24,7 +28,7 @@ export const TrainingBanner = () => {
       const timer = setTimeout(() => setVisible(true), NUDGE_DELAY_MS - elapsed);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [isComplete, isLoading]);
 
   const handleDismiss = () => {
     setVisible(false);
