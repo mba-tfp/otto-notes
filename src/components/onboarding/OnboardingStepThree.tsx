@@ -77,10 +77,6 @@ export const OnboardingStepThree = ({ onBack, onFinish }: Props) => {
     []
   );
 
-  const handleSkip = () => {
-    localStorage.setItem('otto-training-skipped-at', Date.now().toString());
-    onSkip();
-  };
 
   return (
     <div className="p-8 pb-6">
