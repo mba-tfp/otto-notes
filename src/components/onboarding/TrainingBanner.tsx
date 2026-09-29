@@ -68,7 +68,6 @@ export const TrainingBanner = () => {
         <DialogContent className="max-w-2xl max-h-[90vh] p-0 gap-0 overflow-hidden">
           <OnboardingStepThree
             onBack={() => setDialogOpen(false)}
-            onSkip={handleSkip}
             onFinish={handleFinish}
           />
         </DialogContent>
