@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, type ReactNode } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -10,6 +10,20 @@ interface Props {
   onSkip: () => void;
   onFinish: () => void;
 }
+
+// Smooth height-animated accordion body. Uses the grid-rows technique
+// (1fr <-> 0fr) so the height transition never clips content and runs
+// in sync with the chevron rotation.
+const AccordionBody = ({ open, children }: { open: boolean; children: ReactNode }) => (
+  <div
+    aria-hidden={!open}
+    className={`grid transition-[grid-template-rows,visibility] duration-300 ease-out ${
+      open ? 'visible grid-rows-[1fr]' : 'invisible grid-rows-[0fr]'
+    }`}
+  >
+    <div className="min-h-0 overflow-hidden">{children}</div>
+  </div>
+);
 
 // Lightweight renderer for the guide's markdown-ish content
 function renderGuideContent(content: string) {
@@ -109,40 +123,43 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
           >
             <span>Quick start videos</span>
             <ChevronDown
-              className={`h-4 w-4 text-muted-foreground transition-transform ${openSection === 'videos' ? 'rotate-180' : ''}`}
+              className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ease-out ${
+                openSection === 'videos' ? 'rotate-180' : ''
+              }`}
             />
           </Button>
 
-          {openSection === 'videos' && (
+          <AccordionBody open={openSection === 'videos'}>
             <div className="grid grid-cols-2 gap-2 border-t border-border p-2">
-            {videoGuides.map((video) => {
-              const Icon = video.icon;
-              return (
-                <button
-                  key={video.id}
-                  onClick={() => setActiveVideo(video)}
-                  className="group flex min-h-[68px] items-center gap-2 rounded-lg border border-border bg-muted/30 p-2.5 text-left transition-colors hover:bg-muted/60"
-                >
-                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-brand/10 text-brand">
-                    {Icon && <Icon className="h-4 w-4" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="truncate text-xs font-medium leading-snug text-foreground">
-                      {video.title}
-                    </p>
-                    <span className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground">
-                      <Clock className="h-3 w-3" />
-                      {video.duration}
-                    </span>
-                  </div>
-                  <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-brand/90 text-primary-foreground transition-transform group-hover:scale-105">
-                    <Play className="ml-0.5 h-3 w-3" />
-                  </div>
-                </button>
-              );
-            })}
+              {videoGuides.map((video) => {
+                const Icon = video.icon;
+                return (
+                  <button
+                    key={video.id}
+                    tabIndex={openSection === 'videos' ? 0 : -1}
+                    onClick={() => setActiveVideo(video)}
+                    className="group flex min-h-[68px] items-center gap-2 rounded-lg border border-border bg-muted/30 p-2.5 text-left transition-colors hover:bg-muted/60"
+                  >
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-brand/10 text-brand">
+                      {Icon && <Icon className="h-4 w-4" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate text-xs font-medium leading-snug text-foreground">
+                        {video.title}
+                      </p>
+                      <span className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <Clock className="h-3 w-3" />
+                        {video.duration}
+                      </span>
+                    </div>
+                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-brand/90 text-primary-foreground transition-transform group-hover:scale-105">
+                      <Play className="ml-0.5 h-3 w-3" />
+                    </div>
+                  </button>
+                );
+              })}
             </div>
-          )}
+          </AccordionBody>
         </section>
 
         {sopDocs.length > 0 && (
@@ -156,38 +173,41 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
             >
               <span>Documents</span>
               <ChevronDown
-                className={`h-4 w-4 text-muted-foreground transition-transform ${openSection === 'documents' ? 'rotate-180' : ''}`}
+                className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ease-out ${
+                  openSection === 'documents' ? 'rotate-180' : ''
+                }`}
               />
             </Button>
 
-            {openSection === 'documents' && (
+            <AccordionBody open={openSection === 'documents'}>
               <div className="flex flex-col gap-2 border-t border-border p-2">
-            {sopDocs.map((doc) => {
-              const Icon = doc.icon;
-              return (
-                <a
-                  key={doc.id}
-                  href={doc.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex min-h-[68px] items-center gap-3 rounded-lg border border-border bg-muted/30 p-2.5 text-left transition-colors hover:bg-muted/60"
-                >
-                  <div className="w-9 h-9 rounded-lg bg-brand/10 text-brand flex items-center justify-center flex-shrink-0">
-                    {Icon && <Icon className="h-4 w-4" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground leading-snug truncate">{doc.title}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{doc.description}</p>
-                  </div>
-                  <span className="text-[11px] text-muted-foreground flex items-center gap-1 flex-shrink-0">
-                    PDF · {doc.version}
-                    <ExternalLink className="h-3 w-3 ml-1" />
-                  </span>
-                </a>
-              );
-            })}
+                {sopDocs.map((doc) => {
+                  const Icon = doc.icon;
+                  return (
+                    <a
+                      key={doc.id}
+                      href={doc.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      tabIndex={openSection === 'documents' ? 0 : -1}
+                      className="group flex min-h-[68px] items-center gap-3 rounded-lg border border-border bg-muted/30 p-2.5 text-left transition-colors hover:bg-muted/60"
+                    >
+                      <div className="w-9 h-9 rounded-lg bg-brand/10 text-brand flex items-center justify-center flex-shrink-0">
+                        {Icon && <Icon className="h-4 w-4" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground leading-snug truncate">{doc.title}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{doc.description}</p>
+                      </div>
+                      <span className="text-[11px] text-muted-foreground flex items-center gap-1 flex-shrink-0">
+                        PDF · {doc.version}
+                        <ExternalLink className="h-3 w-3 ml-1" />
+                      </span>
+                    </a>
+                  );
+                })}
               </div>
-            )}
+            </AccordionBody>
           </section>
         )}
       </div>
