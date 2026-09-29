@@ -7,6 +7,7 @@ import { useSessionsPanel } from '@/contexts/SessionsPanelContext';
 import { TrainingBanner } from '@/components/onboarding/TrainingBanner';
 import { FeedbackNudgeBanner } from '@/components/onboarding/FeedbackNudgeBanner';
 import { OfflineBanner } from '@/components/updates/OfflineBanner';
+import { LegacyTrainingPrompt } from '@/components/onboarding/LegacyTrainingPrompt';
 
 
 interface AppLayoutProps {
@@ -44,6 +45,7 @@ export const AppLayout = ({ children, hideGlobalSessionsPanel = false }: AppLayo
         <AppFooter />
       </div>
       <TrainingBanner />
+      <LegacyTrainingPrompt />
       <FeedbackNudgeBanner />
     </div>
   );
