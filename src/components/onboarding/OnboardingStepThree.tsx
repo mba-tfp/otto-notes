@@ -211,7 +211,10 @@ export const OnboardingStepThree = ({ onBack, onFinish }: Props) => {
 
       {/* Video player dialog */}
       <Dialog open={!!activeVideo} onOpenChange={(open) => !open && setActiveVideo(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] p-0 gap-0 overflow-hidden flex flex-col">
+        <DialogContent
+          className="max-w-2xl max-h-[90vh] p-0 gap-0 overflow-hidden flex flex-col"
+          hideCloseButton
+        >
           {activeVideo && (
             <>
               <div className="flex items-center justify-between px-5 py-3 border-b border-border flex-shrink-0">
