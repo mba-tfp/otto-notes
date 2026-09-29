@@ -1,7 +1,6 @@
 import { useState, useMemo, type ReactNode } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Play, Clock, X, ExternalLink, ChevronDown } from 'lucide-react';
 import { topics, ResourceTopic } from '@/data/resourceCenter';
 
@@ -65,7 +64,6 @@ function renderGuideContent(content: string) {
 }
 
 export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
-  const [noTraining, setNoTraining] = useState(false);
   const [activeVideo, setActiveVideo] = useState<ResourceTopic | null>(null);
   const [openSection, setOpenSection] = useState<'videos' | 'documents'>('videos');
 
@@ -77,13 +75,6 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
     () => topics.filter((t) => t.categoryId === 'getting-started' && t.isPdf),
     []
   );
-
-  const handleFinish = () => {
-    if (noTraining) {
-      localStorage.setItem('otto-training-dismissed', 'true');
-    }
-    onFinish();
-  };
 
   const handleSkip = () => {
     localStorage.setItem('otto-training-skipped-at', Date.now().toString());
@@ -212,28 +203,13 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
         )}
       </div>
 
-      {/* Opt-out */}
-      <div className="mb-6">
-        <div className="flex items-start gap-2.5">
-          <Checkbox
-            id="no-training"
-            checked={noTraining}
-            onCheckedChange={(checked) => setNoTraining(checked === true)}
-            className="mt-0.5"
-          />
-          <label htmlFor="no-training" className="text-sm text-muted-foreground leading-snug cursor-pointer">
-            I don't need training to use Otto Notes
-          </label>
-        </div>
-      </div>
-
       {/* Actions */}
       <div className="flex items-center justify-between gap-3">
         <Button variant="ghost" onClick={handleSkip} className="text-muted-foreground">
           Skip for now
         </Button>
-        <Button onClick={handleFinish} size="lg">
-          {noTraining ? 'Finish setup' : 'Continue'}
+        <Button onClick={onFinish} size="lg">
+          Continue
         </Button>
       </div>
 
