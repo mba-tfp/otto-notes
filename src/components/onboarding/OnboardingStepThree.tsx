@@ -203,28 +203,13 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
         )}
       </div>
 
-      {/* Opt-out */}
-      <div className="mb-6">
-        <div className="flex items-start gap-2.5">
-          <Checkbox
-            id="no-training"
-            checked={noTraining}
-            onCheckedChange={(checked) => setNoTraining(checked === true)}
-            className="mt-0.5"
-          />
-          <label htmlFor="no-training" className="text-sm text-muted-foreground leading-snug cursor-pointer">
-            I don't need training to use Otto Notes
-          </label>
-        </div>
-      </div>
-
       {/* Actions */}
       <div className="flex items-center justify-between gap-3">
         <Button variant="ghost" onClick={handleSkip} className="text-muted-foreground">
           Skip for now
         </Button>
-        <Button onClick={handleFinish} size="lg">
-          {noTraining ? 'Finish setup' : 'Continue'}
+        <Button onClick={onFinish} size="lg">
+          Continue
         </Button>
       </div>
 
