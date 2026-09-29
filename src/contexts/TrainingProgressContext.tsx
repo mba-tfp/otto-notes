@@ -122,8 +122,18 @@ export const TrainingProgressProvider = ({ children }: { children: ReactNode }) 
   return <TrainingProgressContext.Provider value={value}>{children}</TrainingProgressContext.Provider>;
 };
 
-export const useTrainingProgress = () => {
-  const context = useContext(TrainingProgressContext);
-  if (!context) throw new Error('useTrainingProgress must be used within TrainingProgressProvider');
-  return context;
+const noop = async () => {};
+const fallbackValue: TrainingProgressContextValue = {
+  completedVideoIds: [],
+  requiredVideoIds: [],
+  isComplete: true,
+  needsTraining: false,
+  isLoading: true,
+  shouldAskLegacyUser: false,
+  markVideoComplete: noop,
+  markAllComplete: noop,
+  acknowledgeLegacyPrompt: noop,
 };
+
+// Safe default outside the provider (e.g. during hot reload) instead of crashing the app.
+export const useTrainingProgress = () => useContext(TrainingProgressContext) ?? fallbackValue;
