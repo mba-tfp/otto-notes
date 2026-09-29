@@ -3,38 +3,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Play, Clock, X } from 'lucide-react';
-import { addDays, format, isWeekend } from 'date-fns';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { topics, ResourceTopic } from '@/data/resourceCenter';
-
-interface Props {
-  onBack: () => void;
-  onSkip: () => void;
-  onFinish: () => void;
-}
-
-function getNextBusinessDays(count: number): Date[] {
-  const days: Date[] = [];
-  let current = new Date();
-  current = addDays(current, 1);
-  while (days.length < count) {
-    if (!isWeekend(current)) days.push(new Date(current));
-    current = addDays(current, 1);
-  }
-  return days;
-}
-
-function generateTimeSlots(): string[] {
-  const slots: string[] = [];
-  for (let hour = 9; hour < 17; hour++) {
-    for (let min = 0; min < 60; min += 15) {
-      const h = hour % 12 || 12;
-      const ampm = hour < 12 ? 'AM' : 'PM';
-      slots.push(`${h}:${min.toString().padStart(2, '0')} ${ampm}`);
-    }
-  }
-  return slots;
-}
 
 // Lightweight renderer for the guide's markdown-ish content
 function renderGuideContent(content: string) {
