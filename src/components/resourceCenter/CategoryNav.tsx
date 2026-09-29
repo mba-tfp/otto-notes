@@ -25,6 +25,13 @@ export const CategoryNav = ({
     return initial;
   });
 
+  // Sub-groups (Video guides / Documents) start expanded
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+
+  const toggleGroup = (key: string) => {
+    setOpenGroups(prev => ({ ...prev, [key]: !(prev[key] ?? true) }));
+  };
+
   const toggleCategory = (catId: string) => {
     const catTopics = topics.filter(t => t.categoryId === catId);
 
