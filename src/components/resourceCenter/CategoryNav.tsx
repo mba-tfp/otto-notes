@@ -48,7 +48,7 @@ export const CategoryNav = ({
 
       <div className="h-px bg-border mx-4" />
 
-      <ScrollArea className="flex-1 px-4 py-3">
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3">
         <div className="flex flex-col gap-1">
           {categories.map(cat => {
             const catTopics = topics.filter(t => t.categoryId === cat.id);
@@ -119,7 +119,7 @@ export const CategoryNav = ({
             );
           })}
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 };
