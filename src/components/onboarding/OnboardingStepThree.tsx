@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, Play, Clock, X } from 'lucide-react';
+import { ArrowLeft, Play, Clock, X, ExternalLink } from 'lucide-react';
 import { topics, ResourceTopic } from '@/data/resourceCenter';
 
 interface Props {
@@ -58,6 +58,10 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
     () => topics.filter((t) => t.categoryId === 'getting-started' && t.isVideo),
     []
   );
+  const sopDocs = useMemo(
+    () => topics.filter((t) => t.categoryId === 'getting-started' && t.isPdf),
+    []
+  );
 
   const handleFinish = () => {
     if (noTraining) {
@@ -95,7 +99,7 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
       {/* Video Guides — matches Help Center */}
       <div className="mb-6">
         <h3 className="text-sm font-medium text-foreground mb-3">Quick start videos</h3>
-        <div className="max-h-[380px] overflow-y-auto pr-1">
+        <div className="max-h-[320px] overflow-y-auto pr-1">
           <div className="flex flex-col gap-2 pr-1">
             {videoGuides.map((video) => {
               const Icon = video.icon;
@@ -131,6 +135,39 @@ export const OnboardingStepThree = ({ onBack, onSkip, onFinish }: Props) => {
           </div>
         </div>
       </div>
+
+      {/* Documents */}
+      {sopDocs.length > 0 && (
+        <div className="mb-6">
+          <h3 className="text-sm font-medium text-foreground mb-3">Documents</h3>
+          <div className="flex flex-col gap-2">
+            {sopDocs.map((doc) => {
+              const Icon = doc.icon;
+              return (
+                <a
+                  key={doc.id}
+                  href={doc.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-3 rounded-xl border border-border bg-muted/30 hover:bg-muted/60 transition-colors text-left p-3"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-brand/10 text-brand flex items-center justify-center flex-shrink-0">
+                    {Icon && <Icon className="h-4 w-4" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground leading-snug truncate">{doc.title}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{doc.description}</p>
+                  </div>
+                  <span className="text-[11px] text-muted-foreground flex items-center gap-1 flex-shrink-0">
+                    PDF · {doc.version}
+                    <ExternalLink className="h-3 w-3 ml-1" />
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Opt-out */}
       <div className="mb-6">

@@ -91,15 +91,30 @@ export const CategoryNav = ({
                   </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <div className="grid grid-cols-1 gap-3 pl-4 pr-1 pt-1.5 pb-2">
-                    {catTopics.map(topic => (
-                      <TopicCard
-                        key={topic.id}
-                        topic={topic}
-                        isSelected={selectedTopicId === topic.id}
-                        onClick={() => onSelectTopic(topic)}
-                      />
-                    ))}
+                  <div className="flex flex-col gap-3 pl-4 pr-1 pt-1.5 pb-2">
+                    {[
+                      { label: 'Video guides', items: catTopics.filter(t => t.isVideo) },
+                      { label: 'Documents', items: catTopics.filter(t => t.isPdf) },
+                      { label: '', items: catTopics.filter(t => !t.isVideo && !t.isPdf) },
+                    ]
+                      .filter(g => g.items.length > 0)
+                      .map(group => (
+                        <div key={group.label || 'other'} className="flex flex-col gap-2">
+                          {group.label && catTopics.some(t => t.isVideo) && catTopics.some(t => t.isPdf) && (
+                            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground px-1 pt-1">
+                              {group.label}
+                            </p>
+                          )}
+                          {group.items.map(topic => (
+                            <TopicCard
+                              key={topic.id}
+                              topic={topic}
+                              isSelected={selectedTopicId === topic.id}
+                              onClick={() => onSelectTopic(topic)}
+                            />
+                          ))}
+                        </div>
+                      ))}
                   </div>
                 </CollapsibleContent>
               </Collapsible>
