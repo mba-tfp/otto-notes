@@ -3,7 +3,6 @@ import { ChevronRight } from 'lucide-react';
 import { categories, topics, ResourceTopic } from '@/data/resourceCenter';
 import { TopicCard } from './TopicCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 
 interface CategoryNavProps {
   selectedCategoryId: string;
@@ -76,21 +75,20 @@ export const CategoryNav = ({
             }
 
             return (
-              <Collapsible key={cat.id} open={isOpen} onOpenChange={() => toggleCategory(cat.id)}>
-                <CollapsibleTrigger className="w-full">
-                  <div
-                    className={`
-                      flex items-center gap-2 text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 w-full
-                      ${isActive
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'}
-                    `}
-                  >
-                    <ChevronRight className={`h-4 w-4 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
-                    {cat.label}
-                  </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
+              <div key={cat.id}>
+                <button
+                  onClick={() => toggleCategory(cat.id)}
+                  className={`
+                    flex items-center gap-2 text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 w-full
+                    ${isActive
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'}
+                  `}
+                >
+                  <ChevronRight className={`h-4 w-4 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
+                  {cat.label}
+                </button>
+                {isOpen && (
                   <div className="flex flex-col gap-3 pl-4 pr-1 pt-1.5 pb-2">
                     {[
                       { label: 'Video guides', items: catTopics.filter(t => t.isVideo) },
@@ -116,8 +114,8 @@ export const CategoryNav = ({
                         </div>
                       ))}
                   </div>
-                </CollapsibleContent>
-              </Collapsible>
+                )}
+              </div>
             );
           })}
         </div>
