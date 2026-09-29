@@ -165,16 +165,6 @@ export const ArticleDetail = ({ topic }: ArticleDetailProps) => {
                 allowFullScreen
               />
             </div>
-            <div className="mt-3 flex justify-end">
-              <Button
-                variant={completedVideoIds.includes(topic.id) ? 'ghost' : 'outline'}
-                disabled={completedVideoIds.includes(topic.id)}
-                onClick={() => void markVideoComplete(topic.id)}
-              >
-                {completedVideoIds.includes(topic.id) ? <CircleCheck className="mr-2 h-4 w-4 text-primary" /> : <Check className="mr-2 h-4 w-4" />}
-                {completedVideoIds.includes(topic.id) ? 'Completed' : 'Mark complete'}
-              </Button>
-            </div>
           </div>
         )}
 
