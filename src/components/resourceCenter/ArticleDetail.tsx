@@ -1,17 +1,15 @@
 import { ResourceTopic } from '@/data/resourceCenter';
-import { BookOpen, Download, ExternalLink, Check, CircleCheck } from 'lucide-react';
+import { BookOpen, Download, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ContactSupport } from './ContactSupport';
 import { FeedbackForm } from './FeedbackForm';
-import { useTrainingProgress } from '@/contexts/TrainingProgressContext';
 
 interface ArticleDetailProps {
   topic: ResourceTopic | null;
 }
 
 export const ArticleDetail = ({ topic }: ArticleDetailProps) => {
-  const { completedVideoIds, markVideoComplete } = useTrainingProgress();
   if (!topic) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-8">
